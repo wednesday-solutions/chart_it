@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_charts/src/charts/common/watcher.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
 
-abstract class BasePainter extends CustomPainter {
+class CartesianChartPainter extends CustomPainter {
   late double graphWidth;
   late double graphHeight;
   late Offset graphOrigin;
@@ -9,10 +11,17 @@ abstract class BasePainter extends CustomPainter {
   late double unitWidth;
   late double unitHeight;
 
-  void paintChart(Canvas canvas, Size size);
+  final Watcher observer;
+  final List<CartesianPainter> painters;
+
+  CartesianChartPainter({
+    required this.observer,
+    required this.painters,
+  }) : super(repaint: observer);
 
   @override
-  bool shouldRepaint(BasePainter oldDelegate) => true;
+  bool shouldRepaint(CartesianChartPainter oldDelegate) =>
+      observer.shouldRepaint(oldDelegate.observer);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -27,7 +36,9 @@ abstract class BasePainter extends CustomPainter {
 
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
-    paintChart(canvas, size);
+    painters.forEach((painter) {
+      painter.paint(canvas, size);
+    });
   }
 
   void _drawGridLines(Canvas canvas, Size size) {
@@ -54,27 +65,6 @@ abstract class BasePainter extends CustomPainter {
       var p2 = Offset(graphConstraints.right, y);
       canvas.drawLine(p1, p2, border);
     }
-  }
-
-  // Helper method to draw text on canvas
-  void drawText(Canvas canvas, Offset position, {required TextSpan text}) {
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.center,
-      text: text,
-    );
-    textPainter.layout(); // needs to be called before paint method
-    // When painter draws the text, it's center is not at the specified position
-    // But rather starts from Top Left as it's origin.
-    // To align the text's center at the specified offset
-    // we reduce half of the width & height of the text painter's constraints
-    textPainter.paint(
-      canvas,
-      Offset(
-        position.dx - (textPainter.width * 0.5),
-        position.dy - (textPainter.height * 0.5),
-      ),
-    );
   }
 
   _calculateGraphConstraints(Size widgetSize) {

@@ -6,5 +6,5 @@
 
 Ticket Link -  
 
-# Screenshot / Gif (if any):
+# Screenshot / GIF (if any):
 

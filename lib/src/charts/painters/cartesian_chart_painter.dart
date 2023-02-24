@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/common/watcher.dart';
+import 'package:flutter_charts/src/charts/common/cartesian_observer.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
 
 class CartesianChartPainter extends CustomPainter {
@@ -11,7 +11,7 @@ class CartesianChartPainter extends CustomPainter {
   late double unitWidth;
   late double unitHeight;
 
-  final Watcher observer;
+  final CartesianObserver observer;
   final List<CartesianPainter> painters;
 
   CartesianChartPainter({

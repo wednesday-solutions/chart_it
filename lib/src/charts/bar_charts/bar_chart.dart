@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'dataset.dart';
 
 class BarChart extends StatefulWidget {
-  final Dataset? dataset;
+  final BarChartData? dataset;
 
   const BarChart({super.key, this.dataset});
 

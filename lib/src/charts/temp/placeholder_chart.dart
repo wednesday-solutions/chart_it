@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_charts/src/charts/common/watcher.dart';
+import 'package:flutter_charts/src/charts/common/cartesian_observer.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_chart_painter.dart';
 import 'package:flutter_charts/src/charts/painters/demo_painter.dart';
 
@@ -11,7 +11,7 @@ class PlaceHolderChart extends StatefulWidget {
 }
 
 class _PlaceHolderChartState extends State<PlaceHolderChart> {
-  late Watcher observer;
+  late CartesianObserver observer;
 
   // We are going to assume that this placeholder widget is let's say a widget
   // BarChart. Then it's last widget in the tree will be a CustomPaint
@@ -20,7 +20,7 @@ class _PlaceHolderChartState extends State<PlaceHolderChart> {
   void initState() {
     super.initState();
 
-    observer = Watcher(
+    observer = CartesianObserver(
       minValue: 0,
       maxValue: 150,
       xRange: 25,

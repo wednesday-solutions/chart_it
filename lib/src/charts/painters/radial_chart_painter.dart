@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/common/radial_observer.dart';
 import 'package:flutter_charts/src/charts/painters/radial_painter.dart';
+import 'package:flutter_charts/src/common/radial_observer.dart';
 
 class RadialChartPainter extends CustomPainter {
   late double graphWidth;

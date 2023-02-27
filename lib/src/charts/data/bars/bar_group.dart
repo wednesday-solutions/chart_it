@@ -1,7 +1,7 @@
 import 'package:flutter_charts/src/charts/data/bars/bar_data_style.dart';
 import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
 
-enum BarGroupOrientation { series, stack }
+enum BarGroupArrangement { series, stack }
 
 abstract class BarGroup {
   final num xValue;

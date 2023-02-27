@@ -4,14 +4,14 @@ import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
 
 class MultiBar extends BarGroup with EquatableMixin {
   final List<BarData> yValues;
-  final BarGroupOrientation orientation;
+  final BarGroupArrangement orientation;
   final double groupSpacing;
 
   MultiBar({
     required super.xValue,
     required this.yValues,
     // defaults to series i.e. side by side
-    this.orientation = BarGroupOrientation.series,
+    this.orientation = BarGroupArrangement.series,
     this.groupSpacing = 5.0,
     super.label,
     super.groupStyle,

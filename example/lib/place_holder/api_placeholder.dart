@@ -25,13 +25,11 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             strokeColor: Colors.white,
           ),
           gridStyle: CartesianGridStyle(
-            // mandatory
             show: true,
             strokeWidth: 1.0,
             strokeColor: Colors.white,
             xUnitsCount: 10,
-            // mandatory
-            yUnitsCount: 10, // mandatory
+            yUnitsCount: 10,
           ),
         ),
         data: BarSeries(
@@ -47,7 +45,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             // mandatory
             MultiBar(
               groupSpacing: 2.0,
-              orientation: BarGroupOrientation.series,
+              orientation: BarGroupArrangement.series,
               // series (default), stack
               // overrides the series style and applies to all bars in the group
               groupStyle: const BarDataStyle(
@@ -65,7 +63,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
                 BarData(
                   yValue: 25, // mandatory
                   label: (yValue) => yValue.toString(),
-                ), // mandatory
+                ),
                 BarData(
                   yValue: 15, // mandatory
                   label: (yValue) => yValue.toString(),
@@ -77,7 +75,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
                     strokeColor: Colors.white,
                     cornerRadius: Radius.circular(5.0),
                   ),
-                ), // mandatory
+                ),
               ],
             ),
           ],

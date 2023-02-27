@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'bar_data.dart';
+import 'package:flutter_charts/src/charts/bar_charts/data_class/bar_plot_data.dart';
 import '../enum.utils.dart';
 
 class BarChartData extends Equatable {
-  final List<BarData> barData;
+  final List<BarPlotData> barData;
   final String xLabel;
   final String yLabel;
   final BarOrientation barOrientation;

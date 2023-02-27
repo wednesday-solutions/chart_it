@@ -1,7 +1,8 @@
-import 'package:flutter_charts/src/charts/pie_charts/data_class/piece_data.dart';
+import 'dart:ui';
 
 abstract class PieData {
-  final PieceData pieceData;
+  final int value;
+  final Color pieceColor;
 
-  PieData(this.pieceData);
+  PieData(this.value, this.pieceColor);
 }

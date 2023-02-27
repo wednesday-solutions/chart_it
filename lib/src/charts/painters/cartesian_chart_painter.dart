@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/common/cartesian_observer.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
+import 'package:flutter_charts/src/common/cartesian_observer.dart';
 
 class CartesianChartPainter extends CustomPainter {
   late double graphWidth;

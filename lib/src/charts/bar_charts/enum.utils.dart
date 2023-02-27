@@ -1,1 +1,0 @@
-enum BarOrientation { vertical, horizontal }

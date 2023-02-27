@@ -13,7 +13,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
   Widget build(BuildContext context) {
     return Container(
       child: BarChart(
-        title: RichText(text: const TextSpan(text: 'Demo Chart')),
+        title: const Text('Demo Chart'),
         chartWidth: 500,
         chartHeight: 500,
         chartStyle: const CartesianChartStyle(

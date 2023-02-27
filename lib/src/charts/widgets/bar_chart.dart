@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 
 class BarChart extends StatefulWidget {
-  final RichText? title;
+  final Text? title;
   final double? chartWidth;
   final double? chartHeight;
   final CartesianChartStyle? chartStyle;

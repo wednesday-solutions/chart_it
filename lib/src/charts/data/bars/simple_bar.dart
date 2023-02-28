@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
 
 class SimpleBar extends BarGroup with EquatableMixin {
-  final num yValue;
+  final BarData yValue;
 
   SimpleBar({
     required super.xValue,

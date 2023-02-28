@@ -45,7 +45,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             // mandatory
             MultiBar(
               groupSpacing: 2.0,
-              orientation: BarGroupArrangement.series,
+              arrangement: BarGroupArrangement.series,
               // series (default), stack
               // overrides the series style and applies to all bars in the group
               groupStyle: const BarDataStyle(

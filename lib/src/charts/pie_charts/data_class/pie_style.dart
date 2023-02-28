@@ -5,11 +5,18 @@ import 'package:equatable/equatable.dart';
 class PieStyle extends Equatable {
   final double? width;
   final Color? pieceColor;
-  final double? border;
+  final double? borderWidth;
+  final Color? borderColor;
   final double? radius;
 
-  const PieStyle({this.width, this.pieceColor, this.border, this.radius});
+  const PieStyle(
+      {this.width,
+      this.pieceColor,
+      this.borderWidth,
+      this.borderColor,
+      this.radius});
 
   @override
-  List<Object?> get props => [width, pieceColor, border, radius];
+  List<Object?> get props =>
+      [width, pieceColor, borderWidth, borderColor, radius];
 }

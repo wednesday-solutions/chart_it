@@ -2,13 +2,13 @@ import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
 
-class ChartStyle extends Equatable {
+class PieSeriesStyle extends Equatable {
   final double width;
   final Color pieceColor;
   final double? border;
   final double radius;
 
-  const ChartStyle(
+  const PieSeriesStyle(
       {required this.width,
       required this.pieceColor,
       this.border,

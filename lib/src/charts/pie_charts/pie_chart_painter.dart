@@ -17,28 +17,25 @@ class PieChartPainter extends RadialPainter {
 
     var total = 0.0;
     var startPoint = 0.0;
-    var pointRadians = [];
+    var pointRadians = 0.0;
     for (var data in pieSeries.pieData) {
       total += data.value;
     }
     for (var data in pieSeries.pieData) {
-      pointRadians.add(data.value * 2 * pi / total);
-    }
-    for (var i = 0; i < pointRadians.length; i++) {
+      pointRadians = (data.value * 2 * pi) / total;
       circlePaint.strokeWidth =
-          (pieSeries.pieData[i].pieStyle?.width ?? chartStyle.pieStyle.width);
-      circlePaint.color = (pieSeries.pieData[i].pieStyle?.pieceColor ??
-          (chartStyle.pieStyle.pieceColor));
+          (data.pieStyle?.width ?? chartStyle.pieSeriesStyle.width);
+      circlePaint.color =
+          (data.pieStyle?.pieceColor ?? (chartStyle.pieSeriesStyle.pieceColor));
       canvas.drawArc(
           Rect.fromCircle(
               center: Offset((size.width / 2), (size.height / 2)),
-              radius: pieSeries.pieData[i].pieStyle?.radius ??
-                  chartStyle.pieStyle.radius),
+              radius: data.pieStyle?.radius ?? chartStyle.pieSeriesStyle.radius),
           startPoint,
-          pointRadians[i],
+          pointRadians,
           false,
           circlePaint);
-      startPoint += pointRadians[i];
+      startPoint += pointRadians;
     }
   }
 }

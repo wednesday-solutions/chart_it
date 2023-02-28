@@ -1,8 +1,12 @@
-import 'dart:ui';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_charts/src/charts/pie_charts/data_class/pie_style.dart';
 
-abstract class PieData {
-  final int value;
-  final Color pieceColor;
+class PieData extends Equatable {
+  final num value;
+  final PieStyle? pieStyle;
 
-  PieData(this.value, this.pieceColor);
+  const PieData({required this.value, this.pieStyle});
+
+  @override
+  List<Object?> get props => [value, pieStyle];
 }

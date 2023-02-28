@@ -15,6 +15,9 @@ class CartesianChartPainter extends CustomPainter {
   late double unitWidth;
   late double unitHeight;
 
+  late int xUnitsCount;
+  late int yUnitsCount;
+
   final CartesianChartStyle style;
   final CartesianObserver observer;
   final List<CartesianPainter> painters;
@@ -39,12 +42,11 @@ class CartesianChartPainter extends CustomPainter {
     canvas.drawPaint(bg);
 
     _drawGridLines(canvas, size);
-    _drawAxis(canvas, size);
 
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
     painters.forEach((painter) {
-      painter.paint(canvas, size);
+      painter.paint(canvas, size, this);
     });
   }
 
@@ -56,7 +58,7 @@ class CartesianChartPainter extends CustomPainter {
 
     var x = graphPolygon.left;
     // create vertical lines
-    for (var i = 0; i <= style.gridStyle!.xUnitsCount; i++) {
+    for (var i = 0; i <= xUnitsCount; i++) {
       var p1 = Offset(x, graphPolygon.bottom);
       var p2 = Offset(x, graphPolygon.top);
       canvas.drawLine(p1, p2, border);
@@ -65,7 +67,7 @@ class CartesianChartPainter extends CustomPainter {
     }
 
     // create horizontal lines
-    for (var i = 0; i <= style.gridStyle!.yUnitsCount; i++) {
+    for (var i = 0; i <= yUnitsCount; i++) {
       var y = graphPolygon.bottom - unitHeight * i;
 
       var p1 = Offset(graphPolygon.left, y);
@@ -74,7 +76,7 @@ class CartesianChartPainter extends CustomPainter {
     }
   }
 
-  void _drawAxis(Canvas canvas, Size size) {
+  void drawAxis(Canvas canvas, Size size) {
     var axisPaint = Paint()
       ..color = style.axisStyle!.strokeColor
       ..strokeWidth = style.axisStyle!.strokeWidth
@@ -92,34 +94,25 @@ class CartesianChartPainter extends CustomPainter {
 
     var x = graphPolygon.left;
     var halfWidth = unitWidth * 0.5;
-    var maxIterations = max(
-      style.gridStyle!.xUnitsCount,
-      style.gridStyle!.yUnitsCount,
-    );
+    var maxIterations = max(xUnitsCount, yUnitsCount);
 
     for (var i = 0; i <= maxIterations; i++) {
       // We will plot texts and point along both X & Y axis
-      if (i > 0) {
-        // TODO: Perform standard plotting along X-axis
-      } else {
-        // This is the first iteration
+      if (i <= xUnitsCount) {
         canvas.drawText(
-          Offset(graphPolygon.left - 15, graphPolygon.bottom + 15),
+          Offset(i == 0 ? (x - 15) : x, graphPolygon.bottom + 15),
           text: TextSpan(text: i.toString()),
         );
 
-        // TODO: Draw the labels for each individual bar series
-        // canvas.drawText(
-        //   Offset(x + (halfWidth * 0.5), graphPolygon.bottom + 15),
-        //   text: TextSpan(text: i.toString()),
-        // );
+        // increment by unitWidth every iteration along x
+        x += unitWidth;
       }
 
-      if (i > 0 && i <= style.gridStyle!.yUnitsCount) {
-        var yCount = style.gridStyle!.yUnitsCount;
+      if (i > 0 && i <= yUnitsCount) {
         canvas.drawText(
           Offset(graphPolygon.left - 15, graphPolygon.bottom - unitHeight * i),
-          text: TextSpan(text: ((observer.yRange / yCount) * i).toString()),
+          text:
+              TextSpan(text: ((observer.yRange / yUnitsCount) * i).toString()),
           align: TextAlign.end,
         );
       }
@@ -138,9 +131,12 @@ class CartesianChartPainter extends CustomPainter {
       height: graphHeight,
     );
 
+    xUnitsCount = style.gridStyle!.xUnitsCount;
+    yUnitsCount = style.gridStyle!.yUnitsCount;
+
     // We will get unitWidth & unitHeight by dividing the
     // graphWidth & graphHeight into X parts
-    unitWidth = graphWidth / style.gridStyle!.xUnitsCount;
-    unitHeight = graphHeight / style.gridStyle!.yUnitsCount;
+    unitWidth = graphWidth / xUnitsCount;
+    unitHeight = graphHeight / yUnitsCount;
   }
 }

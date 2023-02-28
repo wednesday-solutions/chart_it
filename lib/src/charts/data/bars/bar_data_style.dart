@@ -7,7 +7,7 @@ class BarDataStyle extends Equatable {
   final Gradient? gradient;
   final double? strokeWidth;
   final Color? strokeColor;
-  final Radius? cornerRadius;
+  final BorderRadius? cornerRadius;
 
   const BarDataStyle({
     this.barWidth,

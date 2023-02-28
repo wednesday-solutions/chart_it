@@ -79,7 +79,7 @@ class _BarChartState extends State<BarChart> {
       height: widget.chartHeight,
       style: widget.chartStyle ?? defaultChartStyle,
       painters: <CartesianPainter>[
-        BarPainter(),
+        BarPainter(data: widget.data),
       ],
     );
   }

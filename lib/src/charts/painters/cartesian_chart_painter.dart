@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
 import 'package:flutter_charts/src/common/cartesian_observer.dart';
 
@@ -11,10 +12,12 @@ class CartesianChartPainter extends CustomPainter {
   late double unitWidth;
   late double unitHeight;
 
+  final CartesianChartStyle style;
   final CartesianObserver observer;
   final List<CartesianPainter> painters;
 
   CartesianChartPainter({
+    required this.style,
     required this.observer,
     required this.painters,
   }) : super(repaint: observer);
@@ -81,7 +84,7 @@ class CartesianChartPainter extends CustomPainter {
 
     // We will get unitWidth & unitHeight by dividing the
     // graphWidth & graphHeight into X parts
-    unitWidth = graphWidth / 10;
-    unitHeight = graphHeight / 10;
+    unitWidth = graphWidth / style.gridStyle!.xUnitsCount;
+    unitHeight = graphHeight / style.gridStyle!.yUnitsCount;
   }
 }

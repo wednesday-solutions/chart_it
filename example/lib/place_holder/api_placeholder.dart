@@ -29,7 +29,9 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             strokeWidth: 1.0,
             strokeColor: Colors.white,
             xUnitsCount: 10,
+            xUnitValue: 10.0,
             yUnitsCount: 10,
+            yUnitValue: 10.0,
           ),
         ),
         data: BarSeries(

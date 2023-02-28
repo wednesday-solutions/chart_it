@@ -6,17 +6,13 @@ import 'package:flutter_charts/src/charts/data/bars/simple_bar.dart';
 extension YValueGetter on BarGroup {
   // Helper method to strip group data into data object with raw values
   List<BarData> yValues() {
-    var y = <BarData>[];
-
     switch (runtimeType) {
       case SimpleBar:
-        y.add((this as SimpleBar).yValue);
-        break;
+        return [(this as SimpleBar).yValue];
       case MultiBar:
-        y.addAll((this as MultiBar).yValues);
-        break;
+        return (this as MultiBar).yValues;
+      default:
+        throw ArgumentError('Y values must be present!');
     }
-
-    return y;
   }
 }

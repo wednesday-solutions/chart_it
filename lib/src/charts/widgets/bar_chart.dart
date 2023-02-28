@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
+import 'package:flutter_charts/src/charts/constants/defaults.dart';
 import 'package:flutter_charts/src/charts/painters/bar_painter.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
 import 'package:flutter_charts/src/charts/widgets/core/cartesian_charts.dart';
@@ -35,19 +36,29 @@ class _BarChartState extends State<BarChart> {
   void initState() {
     super.initState();
     // We need to find the min & max y value across every bar series
-    var minYValue = 0.0;
+    var minYValue = double.infinity;
     var maxYValue = 0.0;
     widget.data.barData.forEach((group) {
-      var yValue = group.yValues().map((e) => e.yValue);
+      var yValue = group.yValues();
 
-      var minV = yValue.reduce(min); // minimum y value in this iteration
-      var maxV = yValue.reduce(max); // maximum y value in this iteration
-      minYValue = (minV < minYValue ? minV : minYValue).toDouble();
-      maxYValue = (maxV > maxYValue ? maxV : maxYValue).toDouble();
+      var minV = double.infinity;
+      var maxV = 0.0;
+      yValue.forEach((data) {
+        // minimum y value in this iteration
+        minV = min(minV, data.yValue.toDouble());
+        // maximum y value in this iteration
+        maxV = max(maxV, data.yValue.toDouble());
+      });
+
+      minYValue = min(minYValue, minV);
+      maxYValue = max(maxYValue, maxV);
     });
 
+    var moderator = widget.chartStyle?.gridStyle?.yUnitValue ??
+        defaultChartStyle.gridStyle!.yUnitValue;
+
     var maxYRange = maxYValue;
-    while (maxYRange % 10 != 0) {
+    while (maxYRange % moderator != 0) {
       maxYRange++;
     }
 
@@ -64,6 +75,9 @@ class _BarChartState extends State<BarChart> {
   Widget build(BuildContext context) {
     return CartesianCharts(
       observer: _observer,
+      width: widget.chartWidth,
+      height: widget.chartHeight,
+      style: widget.chartStyle ?? defaultChartStyle,
       painters: <CartesianPainter>[
         BarPainter(),
       ],

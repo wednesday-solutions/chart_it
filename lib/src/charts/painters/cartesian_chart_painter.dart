@@ -1,20 +1,29 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
 import 'package:flutter_charts/src/common/cartesian_observer.dart';
+import 'package:flutter_charts/src/extensions/paint_text.dart';
 
 class CartesianChartPainter extends CustomPainter {
   late double graphWidth;
   late double graphHeight;
   late Offset graphOrigin;
-  late Rect graphConstraints;
+  late Rect graphPolygon;
 
   late double unitWidth;
   late double unitHeight;
 
+  late int xUnitsCount;
+  late int yUnitsCount;
+
+  final CartesianChartStyle style;
   final CartesianObserver observer;
   final List<CartesianPainter> painters;
 
   CartesianChartPainter({
+    required this.style,
     required this.observer,
     required this.painters,
   }) : super(repaint: observer);
@@ -28,8 +37,8 @@ class CartesianChartPainter extends CustomPainter {
     // Calculate constraints for the graph
     _calculateGraphConstraints(size);
 
-    // TODO: Create a function for this to handle background
-    var bg = Paint()..color = Colors.cyan;
+    // Paint the background
+    var bg = Paint()..color = style.backgroundColor;
     canvas.drawPaint(bg);
 
     _drawGridLines(canvas, size);
@@ -37,33 +46,79 @@ class CartesianChartPainter extends CustomPainter {
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
     painters.forEach((painter) {
-      painter.paint(canvas, size);
+      painter.paint(canvas, size, this);
     });
+
+    // We will draw axis on top of the painted chart data.
+    _drawAxis(canvas, size);
   }
 
   void _drawGridLines(Canvas canvas, Size size) {
     var border = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 0.5
+      ..color = style.gridStyle!.strokeColor
+      ..strokeWidth = style.gridStyle!.strokeWidth
       ..style = PaintingStyle.stroke;
 
-    var x = graphConstraints.left;
+    var x = graphPolygon.left;
     // create vertical lines
-    for (var i = 0; i <= 10; i++) {
-      var p1 = Offset(x, graphConstraints.bottom);
-      var p2 = Offset(x, graphConstraints.top);
+    for (var i = 0; i <= xUnitsCount; i++) {
+      var p1 = Offset(x, graphPolygon.bottom);
+      var p2 = Offset(x, graphPolygon.top);
       canvas.drawLine(p1, p2, border);
 
       x += unitWidth;
     }
 
     // create horizontal lines
-    for (var i = 0; i <= 10; i++) {
-      var y = graphConstraints.bottom - unitHeight * i;
+    for (var i = 0; i <= yUnitsCount; i++) {
+      var y = graphPolygon.bottom - unitHeight * i;
 
-      var p1 = Offset(graphConstraints.left, y);
-      var p2 = Offset(graphConstraints.right, y);
+      var p1 = Offset(graphPolygon.left, y);
+      var p2 = Offset(graphPolygon.right, y);
       canvas.drawLine(p1, p2, border);
+    }
+  }
+
+  void _drawAxis(Canvas canvas, Size size) {
+    var axisPaint = Paint()
+      ..color = style.axisStyle!.strokeColor
+      ..strokeWidth = style.axisStyle!.strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    // We will use a L shaped path for the Axes
+    var axis = Path();
+    axis.moveTo(graphPolygon.topLeft.dx, graphPolygon.topLeft.dy);
+
+    axis.lineTo(
+        graphPolygon.bottomLeft.dx, graphPolygon.bottomLeft.dy); // y axis
+    axis.lineTo(
+        graphPolygon.bottomRight.dx, graphPolygon.bottomRight.dy); // x axis
+    canvas.drawPath(axis, axisPaint);
+
+    var x = graphPolygon.left;
+    var halfWidth = unitWidth * 0.5;
+    var maxIterations = max(xUnitsCount, yUnitsCount);
+
+    for (var i = 0; i <= maxIterations; i++) {
+      // We will plot texts and point along both X & Y axis
+      if (i <= xUnitsCount) {
+        canvas.drawText(
+          Offset(i == 0 ? (x - 15) : x, graphPolygon.bottom + 15),
+          text: TextSpan(text: i.toString()),
+        );
+
+        // increment by unitWidth every iteration along x
+        x += unitWidth;
+      }
+
+      if (i > 0 && i <= yUnitsCount) {
+        canvas.drawText(
+          Offset(graphPolygon.left - 15, graphPolygon.bottom - unitHeight * i),
+          text:
+              TextSpan(text: ((observer.yRange / yUnitsCount) * i).toString()),
+          align: TextAlign.end,
+        );
+      }
     }
   }
 
@@ -73,15 +128,18 @@ class CartesianChartPainter extends CustomPainter {
     graphWidth = widgetSize.width * 0.8;
     graphHeight = widgetSize.height * 0.8;
 
-    graphConstraints = Rect.fromCenter(
+    graphPolygon = Rect.fromCenter(
       center: graphOrigin,
       width: graphWidth,
       height: graphHeight,
     );
 
+    xUnitsCount = style.gridStyle!.xUnitsCount;
+    yUnitsCount = style.gridStyle!.yUnitsCount;
+
     // We will get unitWidth & unitHeight by dividing the
     // graphWidth & graphHeight into X parts
-    unitWidth = graphWidth / 10;
-    unitHeight = graphHeight / 10;
+    unitWidth = graphWidth / xUnitsCount;
+    unitHeight = graphHeight / yUnitsCount;
   }
 }

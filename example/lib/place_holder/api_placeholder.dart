@@ -29,54 +29,48 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             strokeWidth: 1.0,
             strokeColor: Colors.white,
             xUnitsCount: 10,
+            xUnitValue: 10.0,
             yUnitsCount: 10,
+            yUnitValue: 10.0,
           ),
         ),
         data: BarSeries(
           // mandatory
           seriesStyle: const BarDataStyle(
             barWidth: 10.0,
-            barColor: Colors.blue,
-            strokeWidth: 1.0,
-            strokeColor: Colors.white,
-            cornerRadius: Radius.circular(5.0),
+            barColor: Colors.amber,
+            strokeWidth: 3.0,
+            strokeColor: Colors.cyan,
+            cornerRadius: BorderRadius.only(
+              topLeft: Radius.circular(5.0),
+              topRight: Radius.circular(5.0),
+            ),
           ),
           barData: <BarGroup>[
-            // mandatory
-            MultiBar(
-              groupSpacing: 2.0,
-              orientation: BarGroupArrangement.series,
-              // series (default), stack
-              // overrides the series style and applies to all bars in the group
-              groupStyle: const BarDataStyle(
-                barWidth: 10.0,
-                barColor: Colors.green,
-                strokeWidth: 1.0,
-                strokeColor: Colors.white,
-                cornerRadius: Radius.circular(5.0),
-              ),
+            SimpleBar(
               xValue: 1,
-              // mandatory
-              label: (xValue) => 'Sunday',
-              yValues: <BarData>[
-                // mandatory
-                BarData(
-                  yValue: 25, // mandatory
-                  label: (yValue) => yValue.toString(),
-                ),
-                BarData(
-                  yValue: 15, // mandatory
-                  label: (yValue) => yValue.toString(),
-                  // overrides the group style and applies to individual bar
-                  barStyle: const BarDataStyle(
-                    barWidth: 10.0,
-                    barColor: Colors.red,
-                    strokeWidth: 1.0,
-                    strokeColor: Colors.white,
-                    cornerRadius: Radius.circular(5.0),
-                  ),
-                ),
+              yValue: const BarData(
+                yValue: 45,
+              ),
+            ),
+            SimpleBar(
+              xValue: 2,
+              yValue: const BarData(
+                yValue: 22,
+              ),
+            ),
+            MultiBar(
+              xValue: 3,
+              yValues: [
+                BarData(yValue: 57),
+                BarData(yValue: 38),
               ],
+            ),
+            SimpleBar(
+              xValue: 4,
+              yValue: const BarData(
+                yValue: 49,
+              ),
             ),
           ],
         ),

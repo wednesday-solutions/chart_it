@@ -1,4 +1,4 @@
-import 'package:example/place_holder/test_placeholder.dart';
+import 'package:example/place_holder/api_placeholder.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const TestPlaceHolder(),
+      home: const ApiPlaceHolder(),
     );
   }
 }

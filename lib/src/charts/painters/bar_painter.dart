@@ -19,9 +19,9 @@ class BarPainter implements CartesianPainter {
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
     // compute the vertical pixel value for each data point
-    vRatio = chart.graphHeight / chart.observer.maxYRange;
+    vRatio = chart.graphHeight / chart.totalYRange;
 
-    var dx = chart.graphPolygon.left; // where to start drawing bars on X-axis
+    var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
     data.barData.forEach((group) {
       if (group is SimpleBar) {
@@ -104,18 +104,22 @@ class BarPainter implements CartesianPainter {
     // The x values start from the left side of the chart and then increase by unit width!
     // Note: y values increase from the top to the bottom of the screen, so
     // we have to subtract the computed y value from the chart's bottom to invert the drawing!
-    var p1 = Offset(dxPosition + padding, chart.graphPolygon.bottom);
-    var p2 = Offset(
-      dxPosition + barWidth - padding,
-      chart.graphPolygon.bottom - y,
-    );
+    var p1 = Offset(dxPosition + padding, chart.axisOrigin.dy);
+    var p2 = Offset(dxPosition + barWidth - padding, chart.axisOrigin.dy - y);
     var rect = Rect.fromPoints(p1, p2);
+
+    var topLeft = style.cornerRadius?.topLeft ?? Radius.zero;
+    var topRight = style.cornerRadius?.topRight ?? Radius.zero;
+    var bottomLeft = style.cornerRadius?.bottomLeft ?? Radius.zero;
+    var bottomRight = style.cornerRadius?.bottomRight ?? Radius.zero;
+
     var bar = RRect.fromRectAndCorners(
       rect,
-      topLeft: style.cornerRadius?.topLeft ?? Radius.zero,
-      topRight: style.cornerRadius?.topRight ?? Radius.zero,
-      bottomLeft: style.cornerRadius?.bottomLeft ?? Radius.zero,
-      bottomRight: style.cornerRadius?.bottomRight ?? Radius.zero,
+      // We are swapping top & bottom corners for negative i.e. inverted bar
+      topLeft: yValue.isNegative ? bottomLeft : topLeft,
+      topRight: yValue.isNegative ? bottomRight : topRight,
+      bottomLeft: yValue.isNegative ? topLeft : bottomLeft,
+      bottomRight: yValue.isNegative ? topRight : bottomRight,
     );
 
     var barPaint = Paint()

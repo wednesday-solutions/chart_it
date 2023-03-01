@@ -18,11 +18,11 @@ class CartesianChartPainter extends CustomPainter {
 
   late double xUnitValue;
   late double _xUnitsCount;
-  late double _totalXRange;
+  late double totalXRange;
 
   late double yUnitValue;
   late double _yUnitsCount;
-  late double _totalYRange;
+  late double totalYRange;
 
   final CartesianChartStyle style;
   final CartesianObserver observer;
@@ -149,20 +149,20 @@ class CartesianChartPainter extends CustomPainter {
     yUnitValue = style.gridStyle!.yUnitValue.toDouble();
 
     // TODO: Consider for Negative Values along X-Axis
-    _totalXRange = observer.maxXRange;
-    if ((_totalXRange / xUnitValue) >= 1.0) {
+    totalXRange = observer.maxXRange;
+    if ((totalXRange / xUnitValue) >= 1.0) {
       // We need to ensure that our unitCount is atleast 1 or greater otherwise
       // otherwise our unitWidth & unitHeight are not calculated properly
-      _xUnitsCount = _totalXRange / xUnitValue;
+      _xUnitsCount = totalXRange / xUnitValue;
     } else {
       _xUnitsCount = xUnitValue;
     }
 
-    _totalYRange = observer.maxYRange + observer.minYRange.abs();
-    if ((_totalYRange / yUnitValue) >= 1.0) {
+    totalYRange = observer.maxYRange + observer.minYRange.abs();
+    if ((totalYRange / yUnitValue) >= 1.0) {
       // We need to ensure that our unitCount is atleast 1 or greater otherwise
       // otherwise our unitWidth & unitHeight are not calculated properly
-      _yUnitsCount = _totalYRange / yUnitValue;
+      _yUnitsCount = totalYRange / yUnitValue;
     } else {
       _yUnitsCount = yUnitValue;
     }

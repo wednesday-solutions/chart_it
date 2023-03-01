@@ -43,12 +43,17 @@ class _BarChartState extends State<BarChart> {
 
       var minV = double.infinity;
       var maxV = 0.0;
-      yValue.forEach((data) {
-        // minimum y value in this iteration
-        minV = min(minV, data.yValue.toDouble());
-        // maximum y value in this iteration
-        maxV = max(maxV, data.yValue.toDouble());
-      });
+
+      if (group is MultiBar && group.arrangement == BarGroupArrangement.stack) {
+        minV = min(minV, 0);
+        // For a stack, the y value of the bar is the total of all bars
+        maxV = max(maxV, yValue.fold(0, (a, b) => a + b.yValue));
+      } else {
+        yValue.forEach((data) {
+          minV = min(minV, data.yValue.toDouble());
+          maxV = max(maxV, data.yValue.toDouble());
+        });
+      }
 
       minYValue = min(minYValue, minV);
       maxYValue = max(maxYValue, maxV);

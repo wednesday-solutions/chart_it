@@ -7,16 +7,22 @@ import 'package:flutter_charts/src/common/cartesian_observer.dart';
 import 'package:flutter_charts/src/extensions/paint_text.dart';
 
 class CartesianChartPainter extends CustomPainter {
-  late double graphWidth;
-  late double graphHeight;
-  late Offset graphOrigin;
   late Rect graphPolygon;
+  late double graphHeight;
+  late double graphWidth;
+  late Offset graphOrigin;
+  late Offset axisOrigin;
 
   late double unitWidth;
   late double unitHeight;
 
-  late int xUnitsCount;
-  late int yUnitsCount;
+  late double xUnitValue;
+  late double _xUnitsCount;
+  late double _totalXRange;
+
+  late double yUnitValue;
+  late double _yUnitsCount;
+  late double _totalYRange;
 
   final CartesianChartStyle style;
   final CartesianObserver observer;
@@ -61,7 +67,7 @@ class CartesianChartPainter extends CustomPainter {
 
     var x = graphPolygon.left;
     // create vertical lines
-    for (var i = 0; i <= xUnitsCount; i++) {
+    for (var i = 0; i <= _xUnitsCount; i++) {
       var p1 = Offset(x, graphPolygon.bottom);
       var p2 = Offset(x, graphPolygon.top);
       canvas.drawLine(p1, p2, border);
@@ -70,7 +76,7 @@ class CartesianChartPainter extends CustomPainter {
     }
 
     // create horizontal lines
-    for (var i = 0; i <= yUnitsCount; i++) {
+    for (var i = 0; i <= _yUnitsCount; i++) {
       var y = graphPolygon.bottom - unitHeight * i;
 
       var p1 = Offset(graphPolygon.left, y);
@@ -83,27 +89,32 @@ class CartesianChartPainter extends CustomPainter {
     var axisPaint = Paint()
       ..color = style.axisStyle!.strokeColor
       ..strokeWidth = style.axisStyle!.strokeWidth
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
     // We will use a L shaped path for the Axes
     var axis = Path();
     axis.moveTo(graphPolygon.topLeft.dx, graphPolygon.topLeft.dy);
+    axis.lineTo(axisOrigin.dx, axisOrigin.dy); // +ve y axis
+    axis.lineTo(graphPolygon.right, axisOrigin.dy); // +ve x axis
 
-    axis.lineTo(
-        graphPolygon.bottomLeft.dx, graphPolygon.bottomLeft.dy); // y axis
-    axis.lineTo(
-        graphPolygon.bottomRight.dx, graphPolygon.bottomRight.dy); // x axis
+    if (observer.minYRange.isNegative) {
+      // Paint negative Y-axis if we have negative values
+      axis.moveTo(graphPolygon.bottomLeft.dx, graphPolygon.bottomLeft.dy);
+      axis.lineTo(axisOrigin.dx, axisOrigin.dy); // -ve y axis
+    }
+
     canvas.drawPath(axis, axisPaint);
 
     var x = graphPolygon.left;
-    var halfWidth = unitWidth * 0.5;
-    var maxIterations = max(xUnitsCount, yUnitsCount);
+    var maxIterations = max(_xUnitsCount, _yUnitsCount);
 
     for (var i = 0; i <= maxIterations; i++) {
       // We will plot texts and point along both X & Y axis
-      if (i <= xUnitsCount) {
+      if (i <= _xUnitsCount) {
         canvas.drawText(
-          Offset(i == 0 ? (x - 15) : x, graphPolygon.bottom + 15),
+          Offset(x, graphPolygon.bottom + 15),
           text: TextSpan(text: i.toString()),
         );
 
@@ -111,11 +122,11 @@ class CartesianChartPainter extends CustomPainter {
         x += unitWidth;
       }
 
-      if (i > 0 && i <= yUnitsCount) {
+      if (i <= _yUnitsCount) {
         canvas.drawText(
           Offset(graphPolygon.left - 15, graphPolygon.bottom - unitHeight * i),
-          text:
-              TextSpan(text: ((observer.yRange / yUnitsCount) * i).toString()),
+          text: TextSpan(
+              text: (observer.minYRange + (yUnitValue * i)).toString()),
           align: TextAlign.end,
         );
       }
@@ -134,12 +145,36 @@ class CartesianChartPainter extends CustomPainter {
       height: graphHeight,
     );
 
-    xUnitsCount = style.gridStyle!.xUnitsCount;
-    yUnitsCount = style.gridStyle!.yUnitsCount;
+    xUnitValue = style.gridStyle!.xUnitValue.toDouble();
+    yUnitValue = style.gridStyle!.yUnitValue.toDouble();
+
+    // TODO: Consider for Negative Values along X-Axis
+    _totalXRange = observer.maxXRange;
+    if ((_totalXRange / xUnitValue) >= 1.0) {
+      // We need to ensure that our unitCount is atleast 1 or greater otherwise
+      // otherwise our unitWidth & unitHeight are not calculated properly
+      _xUnitsCount = _totalXRange / xUnitValue;
+    } else {
+      _xUnitsCount = xUnitValue;
+    }
+
+    _totalYRange = observer.maxYRange + observer.minYRange.abs();
+    if ((_totalYRange / yUnitValue) >= 1.0) {
+      // We need to ensure that our unitCount is atleast 1 or greater otherwise
+      // otherwise our unitWidth & unitHeight are not calculated properly
+      _yUnitsCount = _totalYRange / yUnitValue;
+    } else {
+      _yUnitsCount = yUnitValue;
+    }
 
     // We will get unitWidth & unitHeight by dividing the
     // graphWidth & graphHeight into X parts
-    unitWidth = graphWidth / xUnitsCount;
-    unitHeight = graphHeight / yUnitsCount;
+    unitWidth = graphWidth / _xUnitsCount;
+    unitHeight = graphHeight / _yUnitsCount;
+
+    // TODO: Consider Negative X Range and Offset
+    var negativeYRange = (observer.minYRange.abs() / yUnitValue) * unitHeight;
+    var yOffset = graphPolygon.bottom - negativeYRange;
+    axisOrigin = Offset(graphPolygon.left, yOffset);
   }
 }

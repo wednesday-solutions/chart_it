@@ -63,16 +63,27 @@ class _BarChartState extends State<BarChart> {
         defaultChartStyle.gridStyle!.yUnitValue;
 
     var maxYRange = maxYValue;
+    var minYRange = minYValue;
     while (maxYRange % moderator != 0) {
       maxYRange++;
+    }
+    // We need to check for negative y values
+    if (minYValue.isNegative) {
+      while (minYRange % moderator != 0) {
+        minYRange--;
+      }
+    } else {
+      // No negative y values, so min will be zero
+      minYRange = 0.0;
     }
 
     // Now we can provide the chart details to the observer
     _observer = CartesianObserver(
       minValue: minYValue,
       maxValue: maxYValue,
-      xRange: widget.data.barData.length.toDouble(),
-      yRange: maxYRange,
+      maxXRange: widget.data.barData.length.toDouble(),
+      maxYRange: maxYRange,
+      minYRange: minYRange,
     );
   }
 

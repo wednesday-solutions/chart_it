@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class CartesianObserver extends ChangeNotifier {
   final double minValue;
   final double maxValue;
-  final double xRange;
-  final double yRange;
+  final double maxXRange;
+  final double maxYRange;
+  final double minYRange;
+
   int xUnitsCount;
   int yUnitsCount;
 
@@ -14,8 +16,9 @@ class CartesianObserver extends ChangeNotifier {
   CartesianObserver({
     required this.minValue,
     required this.maxValue,
-    required this.xRange,
-    required this.yRange,
+    required this.maxXRange,
+    required this.maxYRange,
+    this.minYRange = 0.0,
     this.xUnitsCount = 10,
     this.yUnitsCount = 10,
   });

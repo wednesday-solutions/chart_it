@@ -24,8 +24,8 @@ class _PlaceHolderChartState extends State<PlaceHolderChart> {
     observer = CartesianObserver(
       minValue: 0,
       maxValue: 150,
-      xRange: 25,
-      yRange: 150,
+      maxXRange: 25,
+      maxYRange: 150,
     );
   }
 

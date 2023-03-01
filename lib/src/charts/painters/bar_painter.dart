@@ -19,7 +19,7 @@ class BarPainter implements CartesianPainter {
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
     // compute the vertical pixel value for each data point
-    vRatio = chart.graphHeight / chart.observer.yRange;
+    vRatio = chart.graphHeight / chart.observer.maxYRange;
 
     var dx = chart.graphPolygon.left; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars

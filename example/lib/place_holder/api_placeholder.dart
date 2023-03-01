@@ -28,9 +28,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             show: true,
             strokeWidth: 1.0,
             strokeColor: Colors.white,
-            xUnitsCount: 10,
             xUnitValue: 10.0,
-            yUnitsCount: 10,
             yUnitValue: 10.0,
           ),
         ),
@@ -63,7 +61,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
               xValue: 3,
               yValues: [
                 BarData(yValue: 57),
-                BarData(yValue: 38),
+                BarData(yValue: -38),
               ],
             ),
             SimpleBar(

@@ -28,25 +28,21 @@ class CartesianChartStyle extends Equatable {
 class CartesianGridStyle extends Equatable {
   final bool show;
   final num xUnitValue;
-  final int xUnitsCount;
   final num yUnitValue;
-  final int yUnitsCount;
   final double strokeWidth;
   final Color strokeColor;
 
   const CartesianGridStyle({
     this.show = true,
-    required this.xUnitValue,
-    this.xUnitsCount = 10,
-    required this.yUnitValue,
-    this.yUnitsCount = 10,
+    this.xUnitValue = 10.0,
+    this.yUnitValue = 10.0,
     this.strokeWidth = 0.5,
     this.strokeColor = Colors.black45,
   });
 
   @override
   List<Object> get props =>
-      [show, xUnitsCount, yUnitsCount, strokeWidth, strokeColor];
+      [show, xUnitValue, yUnitValue, strokeWidth, strokeColor];
 }
 
 class CartesianAxisStyle extends Equatable {

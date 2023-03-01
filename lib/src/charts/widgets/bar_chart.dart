@@ -31,6 +31,7 @@ class BarChart extends StatefulWidget {
 
 class _BarChartState extends State<BarChart> {
   late CartesianObserver _observer;
+  var _maxBarsInGroup = 0;
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _BarChartState extends State<BarChart> {
 
       minYValue = min(minYValue, minV);
       maxYValue = max(maxYValue, maxV);
+      _maxBarsInGroup = max(_maxBarsInGroup, yValue.length);
     });
 
     var moderator = widget.chartStyle?.gridStyle?.yUnitValue ??
@@ -95,7 +97,10 @@ class _BarChartState extends State<BarChart> {
       height: widget.chartHeight,
       style: widget.chartStyle ?? defaultChartStyle,
       painters: <CartesianPainter>[
-        BarPainter(data: widget.data),
+        BarPainter(
+          data: widget.data,
+          maxBarsInGroup: _maxBarsInGroup,
+        ),
       ],
     );
   }

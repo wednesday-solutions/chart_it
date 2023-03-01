@@ -57,12 +57,13 @@ class BarPainter implements CartesianPainter {
         defaultSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
+    var barWidth = chart.unitWidth / maxBarsInGroup;
     _drawBar(
       canvas,
       chart,
       style,
-      dxOffset,
-      chart.unitWidth,
+      dxOffset + (chart.unitWidth * 0.5), // dx pos for center of the unit
+      barWidth,
       group.yValue.yValue,
     );
   }
@@ -75,6 +76,7 @@ class BarPainter implements CartesianPainter {
     MultiBar group,
   ) {
     var barWidth = chart.unitWidth / maxBarsInGroup;
+    var groupWidth = chart.unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;
     group.yValues.forEach((barData) {
@@ -84,9 +86,17 @@ class BarPainter implements CartesianPainter {
           group.groupStyle ??
           data.seriesStyle ??
           defaultSeriesStyle;
-      _drawBar(canvas, chart, style, x, barWidth, barData.yValue);
 
-      x += barWidth;
+      _drawBar(
+        canvas,
+        chart,
+        style,
+        x + (groupWidth * 0.5), // dx pos for center of each group
+        barWidth,
+        barData.yValue,
+      );
+
+      x += groupWidth;
     });
   }
 
@@ -94,7 +104,7 @@ class BarPainter implements CartesianPainter {
     Canvas canvas,
     CartesianChartPainter chart,
     BarDataStyle style,
-    double dxPosition,
+    double dxCenter,
     double barWidth,
     num yValue,
   ) {
@@ -106,9 +116,12 @@ class BarPainter implements CartesianPainter {
     // The x values start from the left side of the chart and then increase by unit width!
     // Note: y values increase from the top to the bottom of the screen, so
     // we have to subtract the computed y value from the chart's bottom to invert the drawing!
-    var p1 = Offset(dxPosition + padding, chart.axisOrigin.dy);
-    var p2 = Offset(dxPosition + barWidth - padding, chart.axisOrigin.dy - y);
-    var rect = Rect.fromPoints(p1, p2);
+    var rect = Rect.fromCenter(
+      center: Offset(dxCenter, chart.axisOrigin.dy - (y * 0.5)),
+      // center of bar
+      width: barWidth - (2 * padding),
+      height: y,
+    );
 
     var topLeft = style.cornerRadius?.topLeft ?? Radius.zero;
     var topRight = style.cornerRadius?.topRight ?? Radius.zero;

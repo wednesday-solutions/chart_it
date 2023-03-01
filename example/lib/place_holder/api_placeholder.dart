@@ -73,8 +73,16 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             MultiBar(
               xValue: 5,
               yValues: [
-                BarData(yValue: 0),
+                BarData(yValue: 8),
                 BarData(yValue: 38),
+              ],
+            ),
+            MultiBar(
+              xValue: 5,
+              yValues: [
+                BarData(yValue: 26),
+                BarData(yValue: -12),
+                BarData(yValue: 39),
               ],
             ),
           ],

@@ -48,6 +48,9 @@ class CartesianChartPainter extends CustomPainter {
     painters.forEach((painter) {
       painter.paint(canvas, size, this);
     });
+
+    // We will draw axis on top of the painted chart data.
+    _drawAxis(canvas, size);
   }
 
   void _drawGridLines(Canvas canvas, Size size) {
@@ -76,7 +79,7 @@ class CartesianChartPainter extends CustomPainter {
     }
   }
 
-  void drawAxis(Canvas canvas, Size size) {
+  void _drawAxis(Canvas canvas, Size size) {
     var axisPaint = Paint()
       ..color = style.axisStyle!.strokeColor
       ..strokeWidth = style.axisStyle!.strokeWidth

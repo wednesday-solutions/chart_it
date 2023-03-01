@@ -32,18 +32,13 @@ class BarPainter implements CartesianPainter {
         if (group.arrangement == BarGroupArrangement.stack) {
           // TODO: Paint Stacked Bars
         } else {
-          // TODO: Paint Bar Series across unit width
+          // Paint Bar Series across unit width
           _drawBarSeries(canvas, size, chart, dx, group);
         }
       }
 
       dx += chart.unitWidth;
     });
-
-    // We will draw axis on top of the painted bars.
-    // There is no 'Z-Index' property as such in canvas. the canvas objects
-    // gets stacked on top of each other in the order they were drawn
-    chart.drawAxis(canvas, size);
   }
 
   _drawSimpleBar(
@@ -61,7 +56,13 @@ class BarPainter implements CartesianPainter {
 
     // Since we have only one yValue, we only have to draw one bar
     _drawBar(
-        canvas, chart, style, dxOffset, chart.unitWidth, group.yValue.yValue);
+      canvas,
+      chart,
+      style,
+      dxOffset,
+      chart.unitWidth,
+      group.yValue.yValue,
+    );
   }
 
   _drawBarSeries(
@@ -120,7 +121,7 @@ class BarPainter implements CartesianPainter {
     var barPaint = Paint()
       ..color = (style.barColor ?? defaultSeriesStyle.barColor)!
       ..shader =
-      (style.gradient ?? defaultSeriesStyle.gradient) as ui.Gradient?;
+          (style.gradient ?? defaultSeriesStyle.gradient) as ui.Gradient?;
 
     var barStroke = Paint()
       ..style = PaintingStyle.stroke

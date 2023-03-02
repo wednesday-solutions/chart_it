@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class CartesianObserver extends ChangeNotifier {
   final double minValue;
   final double maxValue;
-  final double xRange;
-  final double yRange;
+  final double maxXRange;
+  final double minXRange;
+  final double maxYRange;
+  final double minYRange;
+
   int xUnitsCount;
   int yUnitsCount;
 
@@ -14,8 +17,10 @@ class CartesianObserver extends ChangeNotifier {
   CartesianObserver({
     required this.minValue,
     required this.maxValue,
-    required this.xRange,
-    required this.yRange,
+    required this.maxXRange,
+    this.minXRange = 0.0,
+    required this.maxYRange,
+    this.minYRange = 0.0,
     this.xUnitsCount = 10,
     this.yUnitsCount = 10,
   });
@@ -23,6 +28,10 @@ class CartesianObserver extends ChangeNotifier {
   bool shouldRepaint(CartesianObserver changedValue) {
     if (maxValue != changedValue.maxValue ||
         minValue != changedValue.minValue ||
+        minXRange != changedValue.minXRange ||
+        maxXRange != changedValue.maxXRange ||
+        minYRange != changedValue.minYRange ||
+        maxYRange != changedValue.maxYRange ||
         xUnitsCount != changedValue.xUnitsCount ||
         yUnitsCount != changedValue.yUnitsCount ||
         pointer != changedValue.pointer) return true;

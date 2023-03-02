@@ -21,13 +21,15 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
           alignment: CartesianChartAlignment.spaceEvenly,
           orientation: CartesianChartOrientation.vertical,
           axisStyle: CartesianAxisStyle(
-            strokeWidth: 3.0,
-            strokeColor: Colors.white,
+            axisWidth: 3.0,
+            showXAxisLabels: false,
+            axisColor: Colors.white,
+            tickColor: Colors.white,
           ),
           gridStyle: CartesianGridStyle(
             show: true,
-            strokeWidth: 1.0,
-            strokeColor: Colors.white,
+            gridLineWidth: 1.0,
+            gridLineColor: Colors.white,
             // xUnitValue: 10.0,
             yUnitValue: 10.0,
           ),
@@ -47,18 +49,21 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
           barData: <BarGroup>[
             SimpleBar(
               xValue: 1,
+              label: (value) => 'Sunday',
               yValue: const BarData(
                 yValue: 45,
               ),
             ),
             SimpleBar(
               xValue: 2,
+              label: (value) => 'Monday',
               yValue: const BarData(
                 yValue: -22,
               ),
             ),
             MultiBar(
               xValue: 3,
+              label: (value) => 'Tuesday',
               yValues: [
                 BarData(yValue: 57),
                 BarData(yValue: 38),
@@ -66,12 +71,14 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             ),
             SimpleBar(
               xValue: 4,
+              label: (value) => 'Wednesday',
               yValue: const BarData(
                 yValue: 49,
               ),
             ),
             MultiBar(
               xValue: 5,
+              label: (value) => 'Thursday',
               yValues: [
                 BarData(yValue: 8),
                 BarData(yValue: 38),
@@ -79,11 +86,19 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             ),
             MultiBar(
               xValue: 5,
+              label: (value) => 'Friday',
               yValues: [
                 BarData(yValue: 26),
                 BarData(yValue: -12),
                 BarData(yValue: 39),
               ],
+            ),
+            SimpleBar(
+              xValue: 4,
+              label: (value) => 'Saturday',
+              yValue: const BarData(
+                yValue: 36,
+              ),
             ),
           ],
         ),

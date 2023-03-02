@@ -61,8 +61,13 @@ class CartesianChartPainter extends CustomPainter {
 
   void _drawGridLines(Canvas canvas, Size size) {
     var border = Paint()
-      ..color = style.gridStyle!.strokeColor
-      ..strokeWidth = style.gridStyle!.strokeWidth
+      ..color = style.gridStyle!.gridLineColor
+      ..strokeWidth = style.gridStyle!.gridLineWidth
+      ..style = PaintingStyle.stroke;
+
+    var tickPaint = Paint()
+      ..color = style.axisStyle!.tickColor
+      ..strokeWidth = style.axisStyle!.tickWidth
       ..style = PaintingStyle.stroke;
 
     var x = graphPolygon.left;
@@ -71,6 +76,13 @@ class CartesianChartPainter extends CustomPainter {
       var p1 = Offset(x, graphPolygon.bottom);
       var p2 = Offset(x, graphPolygon.top);
       canvas.drawLine(p1, p2, border);
+
+      // Draw ticks along x-axis
+      canvas.drawLine(
+        p1,
+        Offset(p1.dx, p1.dy + style.axisStyle!.tickLength),
+        tickPaint,
+      );
 
       x += unitWidth;
     }
@@ -82,13 +94,20 @@ class CartesianChartPainter extends CustomPainter {
       var p1 = Offset(graphPolygon.left, y);
       var p2 = Offset(graphPolygon.right, y);
       canvas.drawLine(p1, p2, border);
+
+      // Draw ticks along y-axis
+      canvas.drawLine(
+        p1,
+        Offset(p1.dx - style.axisStyle!.tickLength, p1.dy),
+        tickPaint,
+      );
     }
   }
 
   void _drawAxis(Canvas canvas, Size size) {
     var axisPaint = Paint()
-      ..color = style.axisStyle!.strokeColor
-      ..strokeWidth = style.axisStyle!.strokeWidth
+      ..color = style.axisStyle!.axisColor
+      ..strokeWidth = style.axisStyle!.axisWidth
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
@@ -111,15 +130,20 @@ class CartesianChartPainter extends CustomPainter {
     }
 
     canvas.drawPath(axis, axisPaint);
+    drawLabels(canvas);
+  }
 
+  void drawLabels(Canvas canvas) {
     var x = graphPolygon.left;
     var maxIterations = max(_xUnitsCount, _yUnitsCount);
+    var showXLabels = style.axisStyle?.showXAxisLabels ?? true;
+    var showYLabels = style.axisStyle?.showYAxisLabels ?? true;
 
     for (var i = 0; i <= maxIterations; i++) {
       // We will plot texts and point along both X & Y axis
-      if (i <= _xUnitsCount) {
+      if (showXLabels && i <= _xUnitsCount) {
         canvas.drawText(
-          Offset(x, graphPolygon.bottom + 15),
+          Offset(x, graphPolygon.bottom + style.axisStyle!.tickLength + 15),
           text: TextSpan(text: i.toString()),
         );
 
@@ -127,9 +151,12 @@ class CartesianChartPainter extends CustomPainter {
         x += unitWidth;
       }
 
-      if (i <= _yUnitsCount) {
+      if (showYLabels && i <= _yUnitsCount) {
         canvas.drawText(
-          Offset(graphPolygon.left - 15, graphPolygon.bottom - unitHeight * i),
+          Offset(
+            graphPolygon.left - style.axisStyle!.tickLength - 15,
+            graphPolygon.bottom - unitHeight * i,
+          ),
           text: TextSpan(
               text: (observer.minYRange + (yUnitValue * i)).toString()),
           align: TextAlign.end,

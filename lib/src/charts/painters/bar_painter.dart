@@ -5,6 +5,7 @@ import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/constants/defaults.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_chart_painter.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
+import 'package:flutter_charts/src/extensions/paint_text.dart';
 
 class BarPainter implements CartesianPainter {
   late double _vRatio;
@@ -35,9 +36,11 @@ class BarPainter implements CartesianPainter {
           // TODO: Paint Stacked Bars
         } else {
           // Paint Bar Series across unit width
-          _drawBarSeries(canvas, size, chart, dx, group);
+          _drawBarSeries(canvas, chart, dx, group);
         }
       }
+
+      _drawGroupLabel(canvas, chart, dx, group);
 
       dx += chart.unitWidth;
     });
@@ -70,7 +73,6 @@ class BarPainter implements CartesianPainter {
 
   _drawBarSeries(
     Canvas canvas,
-    Size size,
     CartesianChartPainter chart,
     double dxOffset,
     MultiBar group,
@@ -151,5 +153,24 @@ class BarPainter implements CartesianPainter {
 
     canvas.drawRRect(bar, barPaint); // draw fill
     canvas.drawRRect(bar, barStroke); // draw stroke
+  }
+
+  void _drawGroupLabel(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    double dxOffset,
+    BarGroup group,
+  ) {
+    // We will draw the Label that the user had provided for our bar group
+    if (group.label != null) {
+      // TODO: rotate the text if it doesn't fit within the unitWidth
+      canvas.drawText(
+        Offset(
+          dxOffset + (chart.unitWidth * 0.5),
+          chart.graphPolygon.bottom + chart.style.axisStyle!.tickLength + 15,
+        ),
+        text: TextSpan(text: group.label!(group.xValue)),
+      );
+    }
   }
 }

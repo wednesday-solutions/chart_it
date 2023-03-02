@@ -45,34 +45,34 @@ class CartesianGridStyle extends Equatable {
   final bool show;
   final num? xUnitValue;
   final num? yUnitValue;
-  final double strokeWidth;
-  final Color strokeColor;
+  final double gridLineWidth;
+  final Color gridLineColor;
 
   const CartesianGridStyle({
     this.show = true,
     this.xUnitValue,
     this.yUnitValue,
-    this.strokeWidth = 0.5,
-    this.strokeColor = Colors.black45,
+    this.gridLineWidth = 0.5,
+    this.gridLineColor = Colors.black45,
   });
 
   @override
   List<Object?> get props =>
-      [show, xUnitValue, yUnitValue, strokeWidth, strokeColor];
+      [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
 
   CartesianGridStyle copyWith({
     bool? show,
     num? xUnitValue,
     num? yUnitValue,
-    double? strokeWidth,
-    Color? strokeColor,
+    double? gridLineWidth,
+    Color? gridLineColor,
   }) {
     return CartesianGridStyle(
       show: show ?? this.show,
       xUnitValue: xUnitValue ?? this.xUnitValue,
       yUnitValue: yUnitValue ?? this.yUnitValue,
-      strokeWidth: strokeWidth ?? this.strokeWidth,
-      strokeColor: strokeColor ?? this.strokeColor,
+      gridLineWidth: gridLineWidth ?? this.gridLineWidth,
+      gridLineColor: gridLineColor ?? this.gridLineColor,
     );
   }
 }
@@ -80,30 +80,50 @@ class CartesianGridStyle extends Equatable {
 class CartesianAxisStyle extends Equatable {
   final int? xBaseline;
   final int? yBaseline;
-  final double strokeWidth;
-  final Color strokeColor;
+  final bool showXAxisLabels;
+  final bool showYAxisLabels;
+  final double axisWidth;
+  final Color axisColor;
+  final double tickLength;
+  final double tickWidth;
+  final Color tickColor;
 
   const CartesianAxisStyle({
     this.xBaseline,
     this.yBaseline,
-    this.strokeWidth = 2.0,
-    this.strokeColor = Colors.black45,
+    this.showXAxisLabels = true,
+    this.showYAxisLabels = true,
+    this.axisWidth = 2.0,
+    this.axisColor = Colors.black45,
+    this.tickLength = 10.0,
+    this.tickWidth = 1.0,
+    this.tickColor = Colors.black45,
   });
 
   @override
-  List<Object?> get props => [xBaseline, yBaseline, strokeWidth, strokeColor];
+  List<Object?> get props => [xBaseline, yBaseline, axisWidth, axisColor];
 
   CartesianAxisStyle copyWith({
     int? xBaseline,
     int? yBaseline,
-    double? strokeWidth,
-    Color? strokeColor,
+    bool? showXAxisLabels,
+    bool? showYAxisLabels,
+    double? axisWidth,
+    Color? axisColor,
+    double? tickLength,
+    double? tickWidth,
+    Color? tickColor,
   }) {
     return CartesianAxisStyle(
       xBaseline: xBaseline ?? this.xBaseline,
       yBaseline: yBaseline ?? this.yBaseline,
-      strokeWidth: strokeWidth ?? this.strokeWidth,
-      strokeColor: strokeColor ?? this.strokeColor,
+      showXAxisLabels: showXAxisLabels ?? this.showXAxisLabels,
+      showYAxisLabels: showYAxisLabels ?? this.showYAxisLabels,
+      axisWidth: axisWidth ?? this.axisWidth,
+      axisColor: axisColor ?? this.axisColor,
+      tickLength: tickLength ?? this.tickLength,
+      tickWidth: tickWidth ?? this.tickWidth,
+      tickColor: tickColor ?? this.tickColor,
     );
   }
 }

@@ -31,6 +31,7 @@ class CartesianObserver extends ChangeNotifier {
         minXRange != changedValue.minXRange ||
         maxXRange != changedValue.maxXRange ||
         minYRange != changedValue.minYRange ||
+        maxYRange != changedValue.maxYRange ||
         xUnitsCount != changedValue.xUnitsCount ||
         yUnitsCount != changedValue.yUnitsCount ||
         pointer != changedValue.pointer) return true;

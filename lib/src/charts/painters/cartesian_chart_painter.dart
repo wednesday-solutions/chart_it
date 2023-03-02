@@ -105,6 +105,11 @@ class CartesianChartPainter extends CustomPainter {
       axis.lineTo(axisOrigin.dx, axisOrigin.dy); // -ve y axis
     }
 
+    if (observer.minXRange.isNegative) {
+      // Paint negative X-axis if we have Negative values
+      axis.lineTo(graphPolygon.left, axisOrigin.dy); // -ve x axis
+    }
+
     canvas.drawPath(axis, axisPaint);
 
     var x = graphPolygon.left;
@@ -145,12 +150,11 @@ class CartesianChartPainter extends CustomPainter {
       height: graphHeight,
     );
 
-    xUnitValue = style.gridStyle!.xUnitValue.toDouble();
-    yUnitValue = style.gridStyle!.yUnitValue.toDouble();
+    xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
+    yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
 
-    // TODO: Consider for Negative Values along X-Axis
-    totalXRange = observer.maxXRange;
-    if ((totalXRange / xUnitValue) >= 1.0) {
+    totalXRange = observer.maxXRange + observer.minXRange.abs();
+    if ((totalXRange / xUnitValue) > 1.0) {
       // We need to ensure that our unitCount is atleast 1 or greater otherwise
       // otherwise our unitWidth & unitHeight are not calculated properly
       _xUnitsCount = totalXRange / xUnitValue;
@@ -159,7 +163,7 @@ class CartesianChartPainter extends CustomPainter {
     }
 
     totalYRange = observer.maxYRange + observer.minYRange.abs();
-    if ((totalYRange / yUnitValue) >= 1.0) {
+    if ((totalYRange / yUnitValue) > 1.0) {
       // We need to ensure that our unitCount is atleast 1 or greater otherwise
       // otherwise our unitWidth & unitHeight are not calculated properly
       _yUnitsCount = totalYRange / yUnitValue;
@@ -172,9 +176,11 @@ class CartesianChartPainter extends CustomPainter {
     unitWidth = graphWidth / _xUnitsCount;
     unitHeight = graphHeight / _yUnitsCount;
 
-    // TODO: Consider Negative X Range and Offset
+    // Calculate the Offset for Axis Origin
+    var negativeXRange = (observer.minXRange.abs() / xUnitValue) * unitWidth;
     var negativeYRange = (observer.minYRange.abs() / yUnitValue) * unitHeight;
+    var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
-    axisOrigin = Offset(graphPolygon.left, yOffset);
+    axisOrigin = Offset(xOffset, yOffset);
   }
 }

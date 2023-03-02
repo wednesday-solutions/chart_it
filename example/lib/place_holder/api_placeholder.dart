@@ -28,7 +28,7 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             show: true,
             strokeWidth: 1.0,
             strokeColor: Colors.white,
-            xUnitValue: 10.0,
+            // xUnitValue: 10.0,
             yUnitValue: 10.0,
           ),
         ),

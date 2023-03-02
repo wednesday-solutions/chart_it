@@ -23,26 +23,58 @@ class CartesianChartStyle extends Equatable {
   @override
   List<Object?> get props =>
       [backgroundColor, alignment, orientation, gridStyle, axisStyle];
+
+  CartesianChartStyle copyWith({
+    Color? backgroundColor,
+    CartesianChartAlignment? alignment,
+    CartesianChartOrientation? orientation,
+    CartesianGridStyle? gridStyle,
+    CartesianAxisStyle? axisStyle,
+  }) {
+    return CartesianChartStyle(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      alignment: alignment ?? this.alignment,
+      orientation: orientation ?? this.orientation,
+      gridStyle: gridStyle ?? this.gridStyle,
+      axisStyle: axisStyle ?? this.axisStyle,
+    );
+  }
 }
 
 class CartesianGridStyle extends Equatable {
   final bool show;
-  final num xUnitValue;
-  final num yUnitValue;
+  final num? xUnitValue;
+  final num? yUnitValue;
   final double strokeWidth;
   final Color strokeColor;
 
   const CartesianGridStyle({
     this.show = true,
-    this.xUnitValue = 10.0,
-    this.yUnitValue = 10.0,
+    this.xUnitValue,
+    this.yUnitValue,
     this.strokeWidth = 0.5,
     this.strokeColor = Colors.black45,
   });
 
   @override
-  List<Object> get props =>
+  List<Object?> get props =>
       [show, xUnitValue, yUnitValue, strokeWidth, strokeColor];
+
+  CartesianGridStyle copyWith({
+    bool? show,
+    num? xUnitValue,
+    num? yUnitValue,
+    double? strokeWidth,
+    Color? strokeColor,
+  }) {
+    return CartesianGridStyle(
+      show: show ?? this.show,
+      xUnitValue: xUnitValue ?? this.xUnitValue,
+      yUnitValue: yUnitValue ?? this.yUnitValue,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      strokeColor: strokeColor ?? this.strokeColor,
+    );
+  }
 }
 
 class CartesianAxisStyle extends Equatable {
@@ -60,6 +92,20 @@ class CartesianAxisStyle extends Equatable {
 
   @override
   List<Object?> get props => [xBaseline, yBaseline, strokeWidth, strokeColor];
+
+  CartesianAxisStyle copyWith({
+    int? xBaseline,
+    int? yBaseline,
+    double? strokeWidth,
+    Color? strokeColor,
+  }) {
+    return CartesianAxisStyle(
+      xBaseline: xBaseline ?? this.xBaseline,
+      yBaseline: yBaseline ?? this.yBaseline,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      strokeColor: strokeColor ?? this.strokeColor,
+    );
+  }
 }
 
 enum CartesianChartAlignment {

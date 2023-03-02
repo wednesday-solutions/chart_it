@@ -4,6 +4,7 @@ class CartesianObserver extends ChangeNotifier {
   final double minValue;
   final double maxValue;
   final double maxXRange;
+  final double minXRange;
   final double maxYRange;
   final double minYRange;
 
@@ -17,6 +18,7 @@ class CartesianObserver extends ChangeNotifier {
     required this.minValue,
     required this.maxValue,
     required this.maxXRange,
+    this.minXRange = 0.0,
     required this.maxYRange,
     this.minYRange = 0.0,
     this.xUnitsCount = 10,
@@ -26,6 +28,9 @@ class CartesianObserver extends ChangeNotifier {
   bool shouldRepaint(CartesianObserver changedValue) {
     if (maxValue != changedValue.maxValue ||
         minValue != changedValue.minValue ||
+        minXRange != changedValue.minXRange ||
+        maxXRange != changedValue.maxXRange ||
+        minYRange != changedValue.minYRange ||
         xUnitsCount != changedValue.xUnitsCount ||
         yUnitsCount != changedValue.yUnitsCount ||
         pointer != changedValue.pointer) return true;

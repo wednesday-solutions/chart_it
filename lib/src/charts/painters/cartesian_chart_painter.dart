@@ -177,8 +177,8 @@ class CartesianChartPainter extends CustomPainter {
       height: graphHeight,
     );
 
-    xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
-    yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
+    xUnitValue = observer.xUnitValue.toDouble();
+    yUnitValue = observer.yUnitValue.toDouble();
 
     totalXRange = observer.maxXRange + observer.minXRange.abs();
     if ((totalXRange / xUnitValue) > 1.0) {

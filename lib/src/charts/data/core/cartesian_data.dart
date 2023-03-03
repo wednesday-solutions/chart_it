@@ -43,34 +43,25 @@ class CartesianChartStyle extends Equatable {
 
 class CartesianGridStyle extends Equatable {
   final bool show;
-  final num? xUnitValue;
-  final num? yUnitValue;
   final double gridLineWidth;
   final Color gridLineColor;
 
   const CartesianGridStyle({
     this.show = true,
-    this.xUnitValue,
-    this.yUnitValue,
     this.gridLineWidth = 0.5,
     this.gridLineColor = Colors.black45,
   });
 
   @override
-  List<Object?> get props =>
-      [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
+  List<Object?> get props => [show, gridLineWidth, gridLineColor];
 
   CartesianGridStyle copyWith({
     bool? show,
-    num? xUnitValue,
-    num? yUnitValue,
     double? gridLineWidth,
     Color? gridLineColor,
   }) {
     return CartesianGridStyle(
       show: show ?? this.show,
-      xUnitValue: xUnitValue ?? this.xUnitValue,
-      yUnitValue: yUnitValue ?? this.yUnitValue,
       gridLineWidth: gridLineWidth ?? this.gridLineWidth,
       gridLineColor: gridLineColor ?? this.gridLineColor,
     );

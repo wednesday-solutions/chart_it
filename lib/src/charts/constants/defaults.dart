@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 
 const defaultChartStyle = CartesianChartStyle(
-  gridStyle: CartesianGridStyle(
-    show: true,
-    xUnitValue: 10.0,
-    yUnitValue: 10.0,
-  ),
+  gridStyle: CartesianGridStyle(show: true),
   axisStyle: CartesianAxisStyle(),
 );
 

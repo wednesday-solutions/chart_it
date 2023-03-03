@@ -22,6 +22,8 @@ class _PlaceHolderChartState extends State<PlaceHolderChart> {
     super.initState();
 
     observer = CartesianObserver(
+      xUnitValue: 10,
+      yUnitValue: 10,
       minValue: 0,
       maxValue: 150,
       maxXRange: 25,

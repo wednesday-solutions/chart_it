@@ -73,6 +73,8 @@ class BarPainter implements CartesianPainter {
       barWidth,
       group.yValue.yValue,
     );
+    // Finally paint the y-labels for this bar
+    _drawBarValues(canvas, chart, group.yValue);
   }
 
   _drawBarSeries(
@@ -101,6 +103,8 @@ class BarPainter implements CartesianPainter {
         barWidth,
         barData.yValue,
       );
+      // Finally paint the y-labels for this bar
+      _drawBarValues(canvas, chart, barData);
 
       x += groupWidth;
     });
@@ -174,6 +178,23 @@ class BarPainter implements CartesianPainter {
           chart.graphPolygon.bottom + chart.style.axisStyle!.tickLength + 15,
         ),
         text: TextSpan(text: group.label!(group.xValue)),
+      );
+    }
+  }
+
+  void _drawBarValues(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    BarData data,
+  ) {
+    if (data.label != null) {
+      canvas.drawText(
+        Offset(
+          chart.graphPolygon.left - chart.style.axisStyle!.tickLength - 15,
+          chart.axisOrigin.dy - (data.yValue * _vRatio),
+        ),
+        text: TextSpan(text: data.label!(data.yValue)),
+        align: TextAlign.end,
       );
     }
   }

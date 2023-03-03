@@ -30,12 +30,10 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             show: true,
             gridLineWidth: 1.0,
             gridLineColor: Colors.white,
-            // xUnitValue: 10.0,
             yUnitValue: 10.0,
           ),
         ),
         data: BarSeries(
-          // mandatory
           seriesStyle: const BarDataStyle(
             barWidth: 10.0,
             barColor: Colors.amber,

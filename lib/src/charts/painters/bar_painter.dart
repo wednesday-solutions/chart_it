@@ -9,16 +9,20 @@ import 'package:flutter_charts/src/extensions/paint_text.dart';
 
 class BarPainter implements CartesianPainter {
   late double _vRatio;
+  late double _unitWidth;
   final BarSeries data;
+  final bool useGraphUnits;
   final int maxBarsInGroup;
 
   BarPainter({
     required this.data,
+    required this.useGraphUnits,
     this.maxBarsInGroup = 1,
   });
 
   @override
   void paint(Canvas canvas, Size size, CartesianChartPainter chart) {
+    _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
     // compute the vertical pixel value for each data point
@@ -42,7 +46,7 @@ class BarPainter implements CartesianPainter {
 
       _drawGroupLabel(canvas, chart, dx, group);
 
-      dx += chart.unitWidth;
+      dx += _unitWidth;
     });
   }
 
@@ -60,12 +64,12 @@ class BarPainter implements CartesianPainter {
         defaultSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
-    var barWidth = chart.unitWidth / maxBarsInGroup;
+    var barWidth = _unitWidth / maxBarsInGroup;
     _drawBar(
       canvas,
       chart,
       style,
-      dxOffset + (chart.unitWidth * 0.5), // dx pos for center of the unit
+      dxOffset + (_unitWidth * 0.5), // dx pos for center of the unit
       barWidth,
       group.yValue.yValue,
     );
@@ -77,8 +81,8 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     MultiBar group,
   ) {
-    var barWidth = chart.unitWidth / maxBarsInGroup;
-    var groupWidth = chart.unitWidth / group.yValues.length;
+    var barWidth = _unitWidth / maxBarsInGroup;
+    var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;
     group.yValues.forEach((barData) {
@@ -166,7 +170,7 @@ class BarPainter implements CartesianPainter {
       // TODO: rotate the text if it doesn't fit within the unitWidth
       canvas.drawText(
         Offset(
-          dxOffset + (chart.unitWidth * 0.5),
+          dxOffset + (_unitWidth * 0.5),
           chart.graphPolygon.bottom + chart.style.axisStyle!.tickLength + 15,
         ),
         text: TextSpan(text: group.label!(group.xValue)),

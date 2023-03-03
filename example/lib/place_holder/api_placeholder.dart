@@ -16,7 +16,6 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
         title: const Text('Demo Chart'),
         chartWidth: 500,
         chartHeight: 500,
-        yUnitValue: 10.0,
         chartStyle: const CartesianChartStyle(
           backgroundColor: Colors.blueGrey,
           alignment: CartesianChartAlignment.spaceEvenly,
@@ -31,10 +30,10 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
             show: true,
             gridLineWidth: 1.0,
             gridLineColor: Colors.white,
+            yUnitValue: 10.0,
           ),
         ),
         data: BarSeries(
-          // mandatory
           seriesStyle: const BarDataStyle(
             barWidth: 10.0,
             barColor: Colors.amber,
@@ -47,58 +46,58 @@ class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
           ),
           barData: <BarGroup>[
             SimpleBar(
-              xValue: 10,
+              xValue: 1,
               label: (value) => 'Sunday',
               yValue: const BarData(
-                yValue: 10,
+                yValue: 45,
               ),
             ),
             SimpleBar(
-              xValue: 30,
+              xValue: 2,
               label: (value) => 'Monday',
               yValue: const BarData(
-                yValue: 30,
+                yValue: -22,
               ),
             ),
-            // MultiBar(
-            //   xValue: 3,
-            //   label: (value) => 'Tuesday',
-            //   yValues: [
-            //     BarData(yValue: 57),
-            //     BarData(yValue: 38),
-            //   ],
-            // ),
+            MultiBar(
+              xValue: 3,
+              label: (value) => 'Tuesday',
+              yValues: [
+                BarData(yValue: 57),
+                BarData(yValue: 38),
+              ],
+            ),
             SimpleBar(
-              xValue: 20,
+              xValue: 4,
               label: (value) => 'Wednesday',
               yValue: const BarData(
-                yValue: 20,
+                yValue: 49,
               ),
             ),
-            // MultiBar(
-            //   xValue: 5,
-            //   label: (value) => 'Thursday',
-            //   yValues: [
-            //     BarData(yValue: 8),
-            //     BarData(yValue: 38),
-            //   ],
-            // ),
-            // MultiBar(
-            //   xValue: 5,
-            //   label: (value) => 'Friday',
-            //   yValues: [
-            //     BarData(yValue: 26),
-            //     BarData(yValue: -12),
-            //     BarData(yValue: 39),
-            //   ],
-            // ),
-            // SimpleBar(
-            //   xValue: 4,
-            //   label: (value) => 'Saturday',
-            //   yValue: const BarData(
-            //     yValue: 36,
-            //   ),
-            // ),
+            MultiBar(
+              xValue: 5,
+              label: (value) => 'Thursday',
+              yValues: [
+                BarData(yValue: 8),
+                BarData(yValue: 38),
+              ],
+            ),
+            MultiBar(
+              xValue: 5,
+              label: (value) => 'Friday',
+              yValues: [
+                BarData(yValue: 26),
+                BarData(yValue: -12),
+                BarData(yValue: 39),
+              ],
+            ),
+            SimpleBar(
+              xValue: 4,
+              label: (value) => 'Saturday',
+              yValue: const BarData(
+                yValue: 36,
+              ),
+            ),
           ],
         ),
       ),

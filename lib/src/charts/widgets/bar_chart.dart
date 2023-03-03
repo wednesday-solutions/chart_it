@@ -13,9 +13,7 @@ class BarChart extends StatefulWidget {
   final Text? title;
   final double? chartWidth;
   final double? chartHeight;
-  final double? minYValue;
   final double? maxYValue;
-  final double yUnitValue;
   final CartesianChartStyle? chartStyle;
   final BarSeries data;
 
@@ -24,9 +22,7 @@ class BarChart extends StatefulWidget {
     this.title,
     this.chartWidth,
     this.chartHeight,
-    this.minYValue,
     this.maxYValue,
-    this.yUnitValue = 10.0,
     this.chartStyle,
     required this.data,
   }) : super(key: key);
@@ -43,11 +39,11 @@ class _BarChartState extends State<BarChart> {
   void initState() {
     super.initState();
     // For Bar charts, we normally don't consider x values, be it +ve or -ve
-    var cMinXValue = 0.0;
-    var cMaxXValue = widget.data.barData.length.toDouble();
+    var calculatedMinXValue = 0.0;
+    var calculatedMaxXValue = widget.data.barData.length.toDouble();
 
-    var cMinYValue = double.infinity;
-    var cMaxYValue = 0.0;
+    var calculatedMinYValue = double.infinity;
+    var calculatedMaxYValue = 0.0;
     // We need to find the min & max y value across every bar series
     // In case, the user hasn't provided these values, we need to calculate them
     widget.data.barData.forEach((group) {
@@ -67,26 +63,26 @@ class _BarChartState extends State<BarChart> {
         });
       }
 
-      cMinYValue = min(cMinYValue, minV);
-      cMaxYValue = max(cMaxYValue, maxV);
+      calculatedMinYValue = min(calculatedMinYValue, minV);
+      calculatedMaxYValue = max(calculatedMaxYValue, maxV);
       _maxBarsInGroup = max(_maxBarsInGroup, yValue.length);
     });
 
     // Finally we will collect our user provided min/max values
     // and the ones that we have calculated
-    var minYValue = widget.minYValue ?? cMinYValue;
-    var maxYValue = widget.maxYValue ?? cMaxXValue;
+    var maxYValue = widget.maxYValue ?? calculatedMaxYValue;
+    var minYValue = calculatedMinYValue;
 
-    var moderator = widget.yUnitValue;
+    var unit = (widget.chartStyle ?? defaultChartStyle).gridStyle!.yUnitValue!;
     var maxYRange = maxYValue;
-    while (maxYRange % moderator != 0) {
+    while (maxYRange % unit != 0) {
       maxYRange++;
     }
 
     // We need to check for negative y values
     var minYRange = minYValue;
     if (minYValue.isNegative) {
-      while (minYRange % moderator != 0) {
+      while (minYRange % unit != 0) {
         minYRange--;
       }
     } else {
@@ -98,10 +94,8 @@ class _BarChartState extends State<BarChart> {
     _observer = CartesianObserver(
       minValue: minYValue,
       maxValue: maxYValue,
-      xUnitValue: cMaxXValue,
-      yUnitValue: widget.yUnitValue,
-      maxXRange: cMaxXValue,
-      minXRange: cMinXValue,
+      maxXRange: calculatedMaxXValue,
+      minXRange: calculatedMinXValue,
       maxYRange: maxYRange,
       minYRange: minYRange,
     );
@@ -109,14 +103,22 @@ class _BarChartState extends State<BarChart> {
 
   @override
   Widget build(BuildContext context) {
+    var style = widget.chartStyle ?? defaultChartStyle;
     return CartesianCharts(
       observer: _observer,
       width: widget.chartWidth,
       height: widget.chartHeight,
-      style: widget.chartStyle ?? defaultChartStyle,
+      style: style.copyWith(
+        gridStyle: style.gridStyle!.copyWith(
+          // Unless the user is trying to play around with the xUnitValue,
+          // we will default it to the length of bar groups
+          xUnitValue: style.gridStyle?.xUnitValue ?? _observer.maxXRange,
+        ),
+      ),
       painters: <CartesianPainter>[
         BarPainter(
           data: widget.data,
+          useGraphUnits: false,
           maxBarsInGroup: _maxBarsInGroup,
         ),
       ],

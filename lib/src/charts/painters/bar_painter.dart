@@ -30,7 +30,7 @@ class BarPainter implements CartesianPainter {
 
     var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
-    data.barData.forEach((group) {
+    for (final group in data.barData) {
       if (group is SimpleBar) {
         // We have to paint a single bar
         _drawSimpleBar(canvas, chart, dx, group);
@@ -47,7 +47,7 @@ class BarPainter implements CartesianPainter {
       _drawGroupLabel(canvas, chart, dx, group);
 
       dx += _unitWidth;
-    });
+    }
   }
 
   _drawSimpleBar(
@@ -87,7 +87,7 @@ class BarPainter implements CartesianPainter {
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;
-    group.yValues.forEach((barData) {
+    for (final barData in group.yValues) {
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
       var style = barData.barStyle ??
@@ -107,7 +107,7 @@ class BarPainter implements CartesianPainter {
       _drawBarValues(canvas, chart, barData);
 
       x += groupWidth;
-    });
+    }
   }
 
   _drawBar(

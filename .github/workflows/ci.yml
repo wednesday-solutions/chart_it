@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint:
-    name: Lint, Test And Build Android
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

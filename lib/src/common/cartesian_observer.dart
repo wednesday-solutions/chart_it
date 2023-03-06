@@ -8,9 +8,6 @@ class CartesianObserver extends ChangeNotifier {
   final double maxYRange;
   final double minYRange;
 
-  int xUnitsCount;
-  int yUnitsCount;
-
   // Values to keep updating when scrolling
   Offset? pointer;
 
@@ -21,8 +18,6 @@ class CartesianObserver extends ChangeNotifier {
     this.minXRange = 0.0,
     required this.maxYRange,
     this.minYRange = 0.0,
-    this.xUnitsCount = 10,
-    this.yUnitsCount = 10,
   });
 
   bool shouldRepaint(CartesianObserver changedValue) {
@@ -32,8 +27,6 @@ class CartesianObserver extends ChangeNotifier {
         maxXRange != changedValue.maxXRange ||
         minYRange != changedValue.minYRange ||
         maxYRange != changedValue.maxYRange ||
-        xUnitsCount != changedValue.xUnitsCount ||
-        yUnitsCount != changedValue.yUnitsCount ||
         pointer != changedValue.pointer) return true;
 
     return false;

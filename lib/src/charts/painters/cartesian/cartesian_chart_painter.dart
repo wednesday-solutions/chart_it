@@ -13,8 +13,11 @@ class CartesianChartPainter extends CustomPainter {
   late Offset graphOrigin;
   late Offset axisOrigin;
 
-  late double unitWidth;
-  late double unitHeight;
+  late double graphUnitWidth;
+  late double graphUnitHeight;
+
+  late double valueUnitWidth;
+  late double valueUnitHeight;
 
   late double xUnitValue;
   late double _xUnitsCount;
@@ -51,9 +54,9 @@ class CartesianChartPainter extends CustomPainter {
 
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
-    painters.forEach((painter) {
+    for (final painter in painters) {
       painter.paint(canvas, size, this);
-    });
+    }
 
     // We will draw axis on top of the painted chart data.
     _drawAxis(canvas, size);
@@ -84,12 +87,12 @@ class CartesianChartPainter extends CustomPainter {
         tickPaint,
       );
 
-      x += unitWidth;
+      x += graphUnitWidth;
     }
 
     // create horizontal lines
     for (var i = 0; i <= _yUnitsCount; i++) {
-      var y = graphPolygon.bottom - unitHeight * i;
+      var y = graphPolygon.bottom - graphUnitHeight * i;
 
       var p1 = Offset(graphPolygon.left, y);
       var p2 = Offset(graphPolygon.right, y);
@@ -148,14 +151,14 @@ class CartesianChartPainter extends CustomPainter {
         );
 
         // increment by unitWidth every iteration along x
-        x += unitWidth;
+        x += graphUnitWidth;
       }
 
       if (showYLabels && i <= _yUnitsCount) {
         canvas.drawText(
           Offset(
             graphPolygon.left - style.axisStyle!.tickLength - 15,
-            graphPolygon.bottom - unitHeight * i,
+            graphPolygon.bottom - graphUnitHeight * i,
           ),
           text: TextSpan(
               text: (observer.minYRange + (yUnitValue * i)).toString()),
@@ -180,32 +183,26 @@ class CartesianChartPainter extends CustomPainter {
     xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
     yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
 
-    totalXRange = observer.maxXRange + observer.minXRange.abs();
-    if ((totalXRange / xUnitValue) > 1.0) {
-      // We need to ensure that our unitCount is atleast 1 or greater otherwise
-      // otherwise our unitWidth & unitHeight are not calculated properly
-      _xUnitsCount = totalXRange / xUnitValue;
-    } else {
-      _xUnitsCount = xUnitValue;
-    }
+    totalXRange = observer.maxXRange.abs() + observer.minXRange.abs();
+    _xUnitsCount = totalXRange / xUnitValue;
 
-    totalYRange = observer.maxYRange + observer.minYRange.abs();
-    if ((totalYRange / yUnitValue) > 1.0) {
-      // We need to ensure that our unitCount is atleast 1 or greater otherwise
-      // otherwise our unitWidth & unitHeight are not calculated properly
-      _yUnitsCount = totalYRange / yUnitValue;
-    } else {
-      _yUnitsCount = yUnitValue;
-    }
+    totalYRange = observer.maxYRange.abs() + observer.minYRange.abs();
+    _yUnitsCount = totalYRange / yUnitValue;
 
     // We will get unitWidth & unitHeight by dividing the
     // graphWidth & graphHeight into X parts
-    unitWidth = graphWidth / _xUnitsCount;
-    unitHeight = graphHeight / _yUnitsCount;
+    graphUnitWidth = graphWidth / _xUnitsCount;
+    graphUnitHeight = graphHeight / _yUnitsCount;
+
+    // Get the unitValue if the data range was within the graph's constraints
+    valueUnitWidth = graphWidth / totalXRange;
+    valueUnitHeight = graphHeight / totalYRange;
 
     // Calculate the Offset for Axis Origin
-    var negativeXRange = (observer.minXRange.abs() / xUnitValue) * unitWidth;
-    var negativeYRange = (observer.minYRange.abs() / yUnitValue) * unitHeight;
+    var negativeXRange =
+        (observer.minXRange.abs() / xUnitValue) * graphUnitWidth;
+    var negativeYRange =
+        (observer.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     axisOrigin = Offset(xOffset, yOffset);

@@ -39,10 +39,10 @@ class _PieChartState extends State<PieChart> {
     var minValue = 0.0;
     var maxValue = double.infinity;
 
-    widget.data.slices.forEach((slice) {
+    for (var slice in widget.data.slices) {
       minValue = min(minValue, slice.value.toDouble());
       maxValue = max(maxValue, slice.value.toDouble());
-    });
+    }
 
     if (minValue.isNegative) {
       throw ArgumentError("All data values must be positive!");

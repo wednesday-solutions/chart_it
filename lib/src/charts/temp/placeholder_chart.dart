@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_charts/src/charts/common/cartesian_observer.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian_chart_painter.dart';
+import 'package:flutter_charts/src/charts/constants/defaults.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:flutter_charts/src/charts/painters/demo_painter.dart';
+import 'package:flutter_charts/src/common/cartesian_observer.dart';
 
 class PlaceHolderChart extends StatefulWidget {
   const PlaceHolderChart({Key? key}) : super(key: key);
@@ -23,8 +24,8 @@ class _PlaceHolderChartState extends State<PlaceHolderChart> {
     observer = CartesianObserver(
       minValue: 0,
       maxValue: 150,
-      xRange: 25,
-      yRange: 150,
+      maxXRange: 25,
+      maxYRange: 150,
     );
   }
 
@@ -35,6 +36,7 @@ class _PlaceHolderChartState extends State<PlaceHolderChart> {
       return GestureDetector(
         child: CustomPaint(
           painter: CartesianChartPainter(
+            style: defaultCartesianChartStyle,
             observer: observer,
             painters: [
               DemoPainter(),

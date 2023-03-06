@@ -46,7 +46,7 @@ class _BarChartState extends State<BarChart> {
     var calculatedMaxYValue = 0.0;
     // We need to find the min & max y value across every bar series
     // In case, the user hasn't provided these values, we need to calculate them
-    widget.data.barData.forEach((group) {
+    for (final group in widget.data.barData) {
       var yValue = group.yValues();
 
       var minV = double.infinity;
@@ -57,16 +57,16 @@ class _BarChartState extends State<BarChart> {
         // For a stack, the y value of the bar is the total of all bars
         maxV = max(maxV, yValue.fold(0, (a, b) => a + b.yValue));
       } else {
-        yValue.forEach((data) {
+        for (final data in yValue) {
           minV = min(minV, data.yValue.toDouble());
           maxV = max(maxV, data.yValue.toDouble());
-        });
+        }
       }
 
       calculatedMinYValue = min(calculatedMinYValue, minV);
       calculatedMaxYValue = max(calculatedMaxYValue, maxV);
       _maxBarsInGroup = max(_maxBarsInGroup, yValue.length);
-    });
+    }
 
     // Finally we will collect our user provided min/max values
     // and the ones that we have calculated

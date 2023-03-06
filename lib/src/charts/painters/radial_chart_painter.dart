@@ -30,9 +30,9 @@ class RadialChartPainter extends CustomPainter {
 
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
-    painters.forEach((painter) {
+    for (final painter in painters) {
       painter.paint(canvas, size);
-    });
+    }
   }
 
   _calculateGraphConstraints(Size widgetSize) {

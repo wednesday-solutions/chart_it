@@ -19,12 +19,15 @@ class _TestPieChartState extends State<TestPieChart> {
         backgroundColor: Colors.blueGrey,
       ),
       data: PieSeries(
+        donutRadius: 100.0,
+        donutSpaceColor: Colors.white,
+        donutLabel: () => 'Crypto Shares',
         slices: <SliceData>[
           SliceData(
             value: 5,
             label: (percent, value) => 'Doge',
             style: const SliceDataStyle(
-              radius: 75,
+              radius: 125,
               color: Colors.deepOrange,
             ),
           ),

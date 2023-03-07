@@ -17,12 +17,11 @@ class PiePainter implements RadialPainter {
 
   @override
   void paint(Canvas canvas, Size size, RadialChartPainter chart) {
+    // Here: We will save the canvas layer and perform the XOR operations first
+    canvas.saveLayer(chart.graphConstraints, Paint());
+
     var defaultStyle = defaultPieSeriesStyle;
     var seriesRadius = data.seriesStyle?.radius ?? defaultStyle.radius;
-
-    // final innerCirclePaint = Paint()
-    //   ..style = PaintingStyle.fill
-    //   ..color = Colors.transparent;
 
     var total = data.slices.fold(0.0, (prev, data) => (prev + data.value));
 
@@ -85,17 +84,31 @@ class PiePainter implements RadialPainter {
         );
       }
 
-      // TODO: Draw a clipping Circle or a Fill to convert into donut chart
-      // if (2 * sliceRadius > width) {
-      //   canvas.drawCircle(
-      //     Offset((size.width / 2), (size.height / 2)),
-      //     (2 * sliceRadius - width) / 2,
-      //     innerCirclePaint,
-      //   );
-      // }
-
       startAngle += pointDegrees;
     }
+
+    // Draw a clipping Circle or a Fill to convert into donut chart
+    if (data.donutRadius > 0.0) {
+      var donutRadius = min(data.donutRadius, chart.maxRadius);
+      // We have to draw a circle that will clip the slices to create a donut
+      var clipper = Paint()
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.clear;
+      canvas.drawCircle(chart.graphOrigin, donutRadius, clipper);
+
+      var donutSpace = Paint()
+        ..color = data.donutSpaceColor
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(chart.graphOrigin, donutRadius, donutSpace);
+
+      if (data.donutLabel != null) {
+        canvas.drawText(
+          chart.graphOrigin,
+          text: TextSpan(text: data.donutLabel!()),
+        );
+      }
+    }
+    canvas.restore();
   }
 
   void _drawArcWithCenter(

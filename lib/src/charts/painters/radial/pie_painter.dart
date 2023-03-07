@@ -37,10 +37,10 @@ class PiePainter implements RadialPainter {
 
       // Styling for Slices
       var sliceFill = slice.style?.color ?? defaultStyle.color;
-      var sliceStrokeWidth = slice.style?.strokeWidth ??
-          defaultStyle.strokeWidth;
-      var sliceStrokeColor = slice.style?.strokeColor ??
-          defaultStyle.strokeColor;
+      var sliceStrokeWidth =
+          slice.style?.strokeWidth ?? defaultStyle.strokeWidth;
+      var sliceStrokeColor =
+          slice.style?.strokeColor ?? defaultStyle.strokeColor;
 
       // Draw slice with color fill
       var arcPaint = Paint()
@@ -104,8 +104,8 @@ class PiePainter implements RadialPainter {
     required Offset center,
     required double radius,
     startAngle = 0.0,
-        sweepDegrees = 360,
-      }) {
+    sweepDegrees = 360,
+  }) {
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       vm.radians(startAngle),
@@ -115,7 +115,8 @@ class PiePainter implements RadialPainter {
     );
   }
 
-  void _drawSliceLabels(Canvas canvas, {
+  void _drawSliceLabels(
+    Canvas canvas, {
     required Offset center,
     required double length,
     required double sweepAngle,

@@ -10,6 +10,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
   final double donutRadius;
   final Color donutSpaceColor;
   final DonutLabel? donutLabel;
+  final TextStyle? donutLabelStyle;
   final SliceDataStyle? seriesStyle;
   final List<SliceData> slices;
 
@@ -17,11 +18,18 @@ class PieSeries extends RadialSeries with EquatableMixin {
     this.donutRadius = 0.0,
     this.donutSpaceColor = Colors.transparent,
     this.donutLabel,
+    this.donutLabelStyle,
     this.seriesStyle,
     required this.slices,
   });
 
   @override
-  List<Object?> get props =>
-      [donutRadius, donutSpaceColor, donutLabel, seriesStyle, slices];
+  List<Object?> get props => [
+        donutRadius,
+        donutSpaceColor,
+        donutLabel,
+        donutLabelStyle,
+        seriesStyle,
+        slices,
+      ];
 }

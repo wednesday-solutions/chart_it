@@ -9,10 +9,11 @@ class SimpleBar extends BarGroup with EquatableMixin {
     required super.xValue,
     required this.yValue,
     super.label,
+    super.labelStyle,
     super.groupStyle,
   });
 
   @override
   List<Object?> get props =>
-      [super.xValue, yValue, super.label, super.groupStyle];
+      [super.xValue, yValue, super.label, super.labelStyle, super.groupStyle];
 }

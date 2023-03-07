@@ -81,6 +81,7 @@ class PiePainter implements RadialPainter {
           length: sliceRadius + 50,
           sweepAngle: startAngle + (pointDegrees * 0.5),
           text: slice.label!(slice.value / total, slice.value),
+          style: slice.labelStyle,
         );
       }
 
@@ -104,7 +105,10 @@ class PiePainter implements RadialPainter {
       if (data.donutLabel != null) {
         canvas.drawText(
           chart.graphOrigin,
-          text: TextSpan(text: data.donutLabel!()),
+          text: TextSpan(
+            text: data.donutLabel!(),
+            style: data.donutLabelStyle,
+          ),
         );
       }
     }

@@ -87,6 +87,7 @@ class CartesianAxisStyle extends Equatable {
   final double tickLength;
   final double tickWidth;
   final Color tickColor;
+  final TextStyle? tickLabelStyle;
 
   const CartesianAxisStyle({
     this.xBaseline,
@@ -98,10 +99,22 @@ class CartesianAxisStyle extends Equatable {
     this.tickLength = 10.0,
     this.tickWidth = 1.0,
     this.tickColor = Colors.black45,
+    this.tickLabelStyle,
   });
 
   @override
-  List<Object?> get props => [xBaseline, yBaseline, axisWidth, axisColor];
+  List<Object?> get props => [
+        xBaseline,
+        yBaseline,
+        showXAxisLabels,
+        showYAxisLabels,
+        axisWidth,
+        axisColor,
+        tickLength,
+        tickWidth,
+        tickColor,
+        tickLabelStyle,
+      ];
 
   CartesianAxisStyle copyWith({
     int? xBaseline,
@@ -113,6 +126,7 @@ class CartesianAxisStyle extends Equatable {
     double? tickLength,
     double? tickWidth,
     Color? tickColor,
+    TextStyle? tickLabelStyle,
   }) {
     return CartesianAxisStyle(
       xBaseline: xBaseline ?? this.xBaseline,
@@ -124,6 +138,7 @@ class CartesianAxisStyle extends Equatable {
       tickLength: tickLength ?? this.tickLength,
       tickWidth: tickWidth ?? this.tickWidth,
       tickColor: tickColor ?? this.tickColor,
+      tickLabelStyle: tickLabelStyle ?? this.tickLabelStyle,
     );
   }
 }

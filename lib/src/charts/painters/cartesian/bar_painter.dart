@@ -177,7 +177,10 @@ class BarPainter implements CartesianPainter {
           dxOffset + (_unitWidth * 0.5),
           chart.graphPolygon.bottom + chart.style.axisStyle!.tickLength + 15,
         ),
-        text: TextSpan(text: group.label!(group.xValue)),
+        text: TextSpan(
+          text: group.label!(group.xValue),
+          style: group.labelStyle ?? data.labelStyle,
+        ),
       );
     }
   }
@@ -193,7 +196,10 @@ class BarPainter implements CartesianPainter {
           chart.graphPolygon.left - chart.style.axisStyle!.tickLength - 15,
           chart.axisOrigin.dy - (data.yValue * _vRatio),
         ),
-        text: TextSpan(text: data.label!(data.yValue)),
+        text: TextSpan(
+          text: data.label!(data.yValue),
+          style: data.labelStyle,
+        ),
         align: TextAlign.end,
       );
     }

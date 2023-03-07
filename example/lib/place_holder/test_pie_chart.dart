@@ -45,7 +45,7 @@ class _TestPieChartState extends State<TestPieChart> {
             style: const SliceDataStyle(
               radius: 150,
               color: Colors.amber,
-              strokeWidth: 2.0,
+              strokeWidth: 5.0,
               strokeColor: Colors.white,
             ),
           ),

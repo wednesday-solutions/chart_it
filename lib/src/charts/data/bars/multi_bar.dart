@@ -14,6 +14,7 @@ class MultiBar extends BarGroup with EquatableMixin {
     this.arrangement = BarGroupArrangement.series,
     this.groupSpacing = 0.0,
     super.label,
+    super.labelStyle,
     super.groupStyle,
   })  : assert(yValues.isNotEmpty, "At least one yValue is required!"),
         // Ensure that groupSpacing is not applied when arrangement is stack
@@ -26,5 +27,5 @@ class MultiBar extends BarGroup with EquatableMixin {
         assert(groupSpacing >= 0.0, "groupSpacing cannot be Negative!");
 
   @override
-  List<Object?> get props => [xValue, yValues, label, groupStyle];
+  List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
 }

@@ -147,7 +147,10 @@ class CartesianChartPainter extends CustomPainter {
       if (showXLabels && i <= _xUnitsCount) {
         canvas.drawText(
           Offset(x, graphPolygon.bottom + style.axisStyle!.tickLength + 15),
-          text: TextSpan(text: i.toString()),
+          text: TextSpan(
+            text: i.toString(),
+            style: style.axisStyle?.tickLabelStyle,
+          ),
         );
 
         // increment by unitWidth every iteration along x
@@ -161,7 +164,9 @@ class CartesianChartPainter extends CustomPainter {
             graphPolygon.bottom - graphUnitHeight * i,
           ),
           text: TextSpan(
-              text: (observer.minYRange + (yUnitValue * i)).toString()),
+            text: (observer.minYRange + (yUnitValue * i)).toString(),
+            style: style.axisStyle?.tickLabelStyle,
+          ),
           align: TextAlign.end,
         );
       }

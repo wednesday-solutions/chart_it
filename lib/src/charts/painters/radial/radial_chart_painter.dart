@@ -56,7 +56,7 @@ class RadialChartPainter extends CustomPainter {
     );
 
     // Get the shortest side with 20% margin
-    var shortestSide = graphConstraints.shortestSide * 0.8;
+    var shortestSide = graphConstraints.shortestSide;
     // Our Largest Radius cannot escape this length
     maxRadius = shortestSide * 0.5;
 

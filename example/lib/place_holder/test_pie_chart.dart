@@ -19,20 +19,42 @@ class _TestPieChartState extends State<TestPieChart> {
         backgroundColor: Colors.blueGrey,
       ),
       data: PieSeries(
-        seriesStyle:
-            const SliceDataStyle(radius: 150, color: Colors.cyanAccent),
         slices: <SliceData>[
-          const SliceData(
+          SliceData(
             value: 5,
-            style: SliceDataStyle(radius: 150, color: Colors.deepOrange),
+            label: (percent, value) => 'Doge',
+            style: const SliceDataStyle(
+              radius: 75,
+              color: Colors.deepOrange,
+            ),
           ),
-          const SliceData(
+          SliceData(
+            value: 15,
+            label: (percent, value) => 'Tether',
+            style: const SliceDataStyle(
+              radius: 200,
+              color: Colors.green,
+            ),
+          ),
+          SliceData(
             value: 25,
-            style: SliceDataStyle(radius: 150, color: Colors.lightGreenAccent),
+            label: (percent, value) => 'Etherium',
+            style: const SliceDataStyle(
+              radius: 150,
+              color: Colors.amber,
+              strokeWidth: 2.0,
+              strokeColor: Colors.white,
+            ),
           ),
-          const SliceData(
+          SliceData(
             value: 30,
-            style: SliceDataStyle(radius: 150, color: Colors.cyan),
+            label: (percent, value) => 'Bitcoin',
+            style: const SliceDataStyle(
+              radius: 250,
+              color: Colors.cyan,
+              strokeWidth: 2.0,
+              strokeColor: Colors.white,
+            ),
           ),
         ],
       ),

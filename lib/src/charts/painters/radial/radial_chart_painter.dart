@@ -9,6 +9,8 @@ class RadialChartPainter extends CustomPainter {
   late Offset graphOrigin;
   late Rect graphConstraints;
 
+  late double maxRadius;
+
   late double unitStep;
 
   final RadialChartStyle style;
@@ -30,6 +32,9 @@ class RadialChartPainter extends CustomPainter {
     // Calculate constraints for the graph
     _calculateGraphConstraints(size);
     // TODO: Construct a radial grid for polar or radar charts if required
+    // Paint the background
+    var bg = Paint()..color = style.backgroundColor;
+    canvas.drawPaint(bg);
 
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
@@ -49,6 +54,11 @@ class RadialChartPainter extends CustomPainter {
       width: graphWidth,
       height: graphHeight,
     );
+
+    // Get the shortest side with 20% margin
+    var shortestSide = graphConstraints.shortestSide * 0.8;
+    // Our Largest Radius cannot escape this length
+    maxRadius = shortestSide * 0.5;
 
     // TODO: Calculate Unit Step by bounding the max value's Circle within graph
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
-import 'package:flutter_charts/src/charts/data/pie/slice_data_style.dart';
 
 const defaultCartesianChartStyle = CartesianChartStyle(
   gridStyle: CartesianGridStyle(
@@ -24,4 +23,4 @@ const defaultBarSeriesStyle = BarDataStyle(
   ),
 );
 
-const defaultPieSeriesStyle = SliceDataStyle(radius: 10.0);
+const defaultPieSeriesStyle = SliceDataStyle(radius: 150.0);

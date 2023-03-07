@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 
-class ApiPlaceHolder extends StatefulWidget {
-  const ApiPlaceHolder({Key? key}) : super(key: key);
+class TestBarChart extends StatefulWidget {
+  const TestBarChart({Key? key}) : super(key: key);
 
   @override
-  State<ApiPlaceHolder> createState() => _ApiPlaceHolderState();
+  State<TestBarChart> createState() => _TestBarChartState();
 }
 
-class _ApiPlaceHolderState extends State<ApiPlaceHolder> {
+class _TestBarChartState extends State<TestBarChart> {
   @override
   Widget build(BuildContext context) {
     return BarChart(

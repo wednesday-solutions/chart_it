@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_charts/src/charts/constants/defaults.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian_chart_painter.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:flutter_charts/src/charts/painters/demo_painter.dart';
 import 'package:flutter_charts/src/common/cartesian_observer.dart';
 
@@ -36,7 +36,7 @@ class _PlaceHolderChartState extends State<PlaceHolderChart> {
       return GestureDetector(
         child: CustomPaint(
           painter: CartesianChartPainter(
-            style: defaultChartStyle,
+            style: defaultCartesianChartStyle,
             observer: observer,
             painters: [
               DemoPainter(),

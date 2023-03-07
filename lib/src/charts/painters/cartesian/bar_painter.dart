@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/constants/defaults.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian_chart_painter.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:flutter_charts/src/extensions/paint_text.dart';
 
 class BarPainter implements CartesianPainter {
@@ -61,7 +61,7 @@ class BarPainter implements CartesianPainter {
     var style = group.yValue.barStyle ??
         group.groupStyle ??
         data.seriesStyle ??
-        defaultSeriesStyle;
+        defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     var barWidth = _unitWidth / maxBarsInGroup;
@@ -93,7 +93,7 @@ class BarPainter implements CartesianPainter {
       var style = barData.barStyle ??
           group.groupStyle ??
           data.seriesStyle ??
-          defaultSeriesStyle;
+          defaultBarSeriesStyle;
 
       _drawBar(
         canvas,
@@ -148,16 +148,16 @@ class BarPainter implements CartesianPainter {
     );
 
     var barPaint = Paint()
-      ..color = (style.barColor ?? defaultSeriesStyle.barColor)!
+      ..color = (style.barColor ?? defaultBarSeriesStyle.barColor)!
       ..shader =
-          (style.gradient ?? defaultSeriesStyle.gradient) as ui.Gradient?;
+          (style.gradient ?? defaultBarSeriesStyle.gradient) as ui.Gradient?;
 
     var barStroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = (style.strokeWidth ?? defaultSeriesStyle.strokeWidth)!
-      ..color = (style.strokeColor ?? defaultSeriesStyle.strokeColor)!;
+      ..strokeWidth = (style.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
+      ..color = (style.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
 
     canvas.drawRRect(bar, barPaint); // draw fill
     canvas.drawRRect(bar, barStroke); // draw stroke

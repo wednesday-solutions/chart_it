@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 
-const defaultChartStyle = CartesianChartStyle(
+const defaultCartesianChartStyle = CartesianChartStyle(
   gridStyle: CartesianGridStyle(
     show: true,
     xUnitValue: 10.0,
@@ -10,7 +10,9 @@ const defaultChartStyle = CartesianChartStyle(
   axisStyle: CartesianAxisStyle(),
 );
 
-const defaultSeriesStyle = BarDataStyle(
+const defaultRadialChartStyle = RadialChartStyle();
+
+const defaultBarSeriesStyle = BarDataStyle(
   barWidth: 1.0,
   barColor: Colors.amber,
   strokeWidth: 0.0,
@@ -20,3 +22,5 @@ const defaultSeriesStyle = BarDataStyle(
     topRight: Radius.circular(5.0),
   ),
 );
+
+const defaultPieSeriesStyle = SliceDataStyle(radius: 150.0);

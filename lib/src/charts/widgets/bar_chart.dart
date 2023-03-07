@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/constants/defaults.dart';
-import 'package:flutter_charts/src/charts/painters/bar_painter.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian_painter.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian/bar_painter.dart';
+import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:flutter_charts/src/charts/widgets/core/cartesian_charts.dart';
 import 'package:flutter_charts/src/common/cartesian_observer.dart';
 import 'package:flutter_charts/src/extensions/data_conversions.dart';
@@ -73,7 +73,9 @@ class _BarChartState extends State<BarChart> {
     var maxYValue = widget.maxYValue ?? calculatedMaxYValue;
     var minYValue = calculatedMinYValue;
 
-    var unit = (widget.chartStyle ?? defaultChartStyle).gridStyle!.yUnitValue!;
+    var unit = (widget.chartStyle ?? defaultCartesianChartStyle)
+        .gridStyle!
+        .yUnitValue!;
     var maxYRange = maxYValue;
     while (maxYRange % unit != 0) {
       maxYRange++;
@@ -103,7 +105,7 @@ class _BarChartState extends State<BarChart> {
 
   @override
   Widget build(BuildContext context) {
-    var style = widget.chartStyle ?? defaultChartStyle;
+    var style = widget.chartStyle ?? defaultCartesianChartStyle;
     return CartesianCharts(
       observer: _observer,
       width: widget.chartWidth,

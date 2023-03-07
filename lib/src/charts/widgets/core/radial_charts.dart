@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
-import 'package:flutter_charts/src/common/cartesian_observer.dart';
+import 'package:flutter_charts/src/charts/data/core/radial_data.dart';
+import 'package:flutter_charts/src/charts/painters/radial/radial_chart_painter.dart';
+import 'package:flutter_charts/src/charts/painters/radial/radial_painter.dart';
+import 'package:flutter_charts/src/common/radial_observer.dart';
 
-class CartesianCharts extends StatefulWidget {
+class RadialCharts extends StatefulWidget {
   final double? width;
   final double? height;
-  final CartesianChartStyle style;
+  final RadialChartStyle style;
 
   // Mandatory Fields
-  final List<CartesianPainter> painters;
-  final CartesianObserver observer;
+  final List<RadialPainter> painters;
+  final RadialObserver observer;
 
-  const CartesianCharts({
+  const RadialCharts({
     Key? key,
     this.width,
     this.height,
@@ -23,10 +23,10 @@ class CartesianCharts extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CartesianCharts> createState() => _CartesianChartsState();
+  State<RadialCharts> createState() => _RadialChartsState();
 }
 
-class _CartesianChartsState extends State<CartesianCharts> {
+class _RadialChartsState extends State<RadialCharts> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -40,7 +40,7 @@ class _CartesianChartsState extends State<CartesianCharts> {
           onScaleEnd: (details) {},
           child: CustomPaint(
             isComplex: true,
-            painter: CartesianChartPainter(
+            painter: RadialChartPainter(
               style: widget.style,
               observer: widget.observer,
               painters: widget.painters,

@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:flutter_charts/src/charts/painters/text/chart_text_painter.dart';
 import 'package:flutter_charts/src/common/cartesian_observer.dart';
-import 'package:flutter_charts/src/extensions/paint_text.dart';
 
 class CartesianChartPainter extends CustomPainter {
   late Rect graphPolygon;
@@ -145,12 +145,14 @@ class CartesianChartPainter extends CustomPainter {
     for (var i = 0; i <= maxIterations; i++) {
       // We will plot texts and point along both X & Y axis
       if (showXLabels && i <= _xUnitsCount) {
-        canvas.drawText(
-          Offset(x, graphPolygon.bottom + style.axisStyle!.tickLength + 15),
-          text: TextSpan(
-            text: i.toString(),
-            style: style.axisStyle?.tickLabelStyle,
-          ),
+        ChartTextPainter.fromChartTextStyle(
+          text: i.toString(),
+          chartTextStyle:
+              style.axisStyle?.tickLabelStyle ?? const ChartTextStyle(),
+        ).paint(
+          canvas: canvas,
+          offset:
+              Offset(x, graphPolygon.bottom + style.axisStyle!.tickLength + 15),
         );
 
         // increment by unitWidth every iteration along x
@@ -158,16 +160,17 @@ class CartesianChartPainter extends CustomPainter {
       }
 
       if (showYLabels && i <= _yUnitsCount) {
-        canvas.drawText(
-          Offset(
+        final textStyle =
+            style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
+        ChartTextPainter.fromChartTextStyle(
+          text: (observer.minYRange + (yUnitValue * i)).toString(),
+          chartTextStyle: textStyle.copyWith(align: TextAlign.end),
+        ).paint(
+          canvas: canvas,
+          offset: Offset(
             graphPolygon.left - style.axisStyle!.tickLength - 15,
             graphPolygon.bottom - graphUnitHeight * i,
           ),
-          text: TextSpan(
-            text: (observer.minYRange + (yUnitValue * i)).toString(),
-            style: style.axisStyle?.tickLabelStyle,
-          ),
-          align: TextAlign.end,
         );
       }
     }

@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 import 'package:flutter_charts/src/charts/data/core/radial_data.dart';
 import 'package:flutter_charts/src/charts/data/pie/slice_data_style.dart';
 
 class SliceData extends Equatable {
   final SliceDataStyle? style;
-  final TextStyle? labelStyle;
+  final ChartTextStyle? labelStyle;
   final SliceMapper? label;
   final num value;
 

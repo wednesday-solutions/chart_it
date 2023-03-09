@@ -5,7 +5,7 @@ import 'package:flutter_charts/flutter_charts.dart';
 import 'package:flutter_charts/src/charts/constants/defaults.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
-import 'package:flutter_charts/src/extensions/paint_text.dart';
+import 'package:flutter_charts/src/charts/painters/text/chart_text_painter.dart';
 
 class BarPainter implements CartesianPainter {
   late double _vRatio;
@@ -172,14 +172,17 @@ class BarPainter implements CartesianPainter {
     // We will draw the Label that the user had provided for our bar group
     if (group.label != null) {
       // TODO: rotate the text if it doesn't fit within the unitWidth
-      canvas.drawText(
-        Offset(
+      final textPainter = ChartTextPainter.fromChartTextStyle(
+        text: group.label!(group.xValue),
+        maxWidth: _unitWidth,
+        chartTextStyle: group.labelStyle ?? data.labelStyle,
+      );
+
+      textPainter.paint(
+        canvas: canvas,
+        offset: Offset(
           dxOffset + (_unitWidth * 0.5),
           chart.graphPolygon.bottom + chart.style.axisStyle!.tickLength + 15,
-        ),
-        text: TextSpan(
-          text: group.label!(group.xValue),
-          style: group.labelStyle ?? data.labelStyle,
         ),
       );
     }
@@ -191,16 +194,17 @@ class BarPainter implements CartesianPainter {
     BarData data,
   ) {
     if (data.label != null) {
-      canvas.drawText(
-        Offset(
+      final textPainter = ChartTextPainter.fromChartTextStyle(
+        text: data.label!(data.yValue),
+        chartTextStyle: data.labelStyle,
+      );
+
+      textPainter.paint(
+        canvas: canvas,
+        offset: Offset(
           chart.graphPolygon.left - chart.style.axisStyle!.tickLength - 15,
           chart.axisOrigin.dy - (data.yValue * _vRatio),
         ),
-        text: TextSpan(
-          text: data.label!(data.yValue),
-          style: data.labelStyle,
-        ),
-        align: TextAlign.end,
       );
     }
   }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 
 typedef LabelMapper = String Function(num value);
 
@@ -87,7 +88,7 @@ class CartesianAxisStyle extends Equatable {
   final double tickLength;
   final double tickWidth;
   final Color tickColor;
-  final TextStyle? tickLabelStyle;
+  final ChartTextStyle? tickLabelStyle;
 
   const CartesianAxisStyle({
     this.xBaseline,
@@ -126,7 +127,7 @@ class CartesianAxisStyle extends Equatable {
     double? tickLength,
     double? tickWidth,
     Color? tickColor,
-    TextStyle? tickLabelStyle,
+    ChartTextStyle? tickLabelStyle,
   }) {
     return CartesianAxisStyle(
       xBaseline: xBaseline ?? this.xBaseline,

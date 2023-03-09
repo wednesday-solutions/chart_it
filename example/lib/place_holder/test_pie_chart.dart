@@ -19,15 +19,17 @@ class _TestPieChartState extends State<TestPieChart> {
         backgroundColor: Colors.blueGrey,
       ),
       data: PieSeries(
-        donutRadius: 100.0,
+        donutRadius: 40.0,
         donutSpaceColor: Colors.white,
-        donutLabel: () => 'Crypto Shares',
+        donutLabelStyle:
+            const ChartTextStyle(textStyle: TextStyle(color: Colors.black45)),
+        donutLabel: () => 'Crypto',
         slices: <SliceData>[
           SliceData(
             value: 5,
             label: (percent, value) => 'Doge',
             style: const SliceDataStyle(
-              radius: 125,
+              radius: 90,
               color: Colors.deepOrange,
             ),
           ),
@@ -35,7 +37,7 @@ class _TestPieChartState extends State<TestPieChart> {
             value: 15,
             label: (percent, value) => 'Tether',
             style: const SliceDataStyle(
-              radius: 200,
+              radius: 100,
               color: Colors.green,
             ),
           ),
@@ -43,7 +45,7 @@ class _TestPieChartState extends State<TestPieChart> {
             value: 25,
             label: (percent, value) => 'Etherium',
             style: const SliceDataStyle(
-              radius: 150,
+              radius: 100,
               color: Colors.amber,
               strokeWidth: 5.0,
               strokeColor: Colors.white,
@@ -53,7 +55,7 @@ class _TestPieChartState extends State<TestPieChart> {
             value: 30,
             label: (percent, value) => 'Bitcoin',
             style: const SliceDataStyle(
-              radius: 250,
+              radius: 80,
               color: Colors.cyan,
               strokeWidth: 2.0,
               strokeColor: Colors.white,

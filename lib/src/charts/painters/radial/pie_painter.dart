@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/src/charts/constants/defaults.dart';
+import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 import 'package:flutter_charts/src/charts/data/pie/pie_series.dart';
 import 'package:flutter_charts/src/charts/painters/radial/radial_chart_painter.dart';
 import 'package:flutter_charts/src/charts/painters/radial/radial_painter.dart';
-import 'package:flutter_charts/src/extensions/paint_text.dart';
+import 'package:flutter_charts/src/charts/painters/text/chart_text_painter.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 class PiePainter implements RadialPainter {
@@ -78,10 +79,10 @@ class PiePainter implements RadialPainter {
         _drawSliceLabels(
           canvas,
           center: chart.graphOrigin,
-          length: sliceRadius + 50,
+          length: sliceRadius + 25,
           sweepAngle: startAngle + (pointDegrees * 0.5),
           text: slice.label!(slice.value / total, slice.value),
-          style: slice.labelStyle,
+          style: slice.labelStyle ?? data.labelStyle,
         );
       }
 
@@ -103,12 +104,11 @@ class PiePainter implements RadialPainter {
       canvas.drawCircle(chart.graphOrigin, donutRadius, donutSpace);
 
       if (data.donutLabel != null) {
-        canvas.drawText(
-          chart.graphOrigin,
-          text: TextSpan(
-            text: data.donutLabel!(),
-            style: data.donutLabelStyle,
-          ),
+        _drawDonutLabel(
+          canvas: canvas,
+          text: data.donutLabel!(),
+          style: data.donutLabelStyle,
+          offset: chart.graphOrigin,
         );
       }
     }
@@ -138,7 +138,7 @@ class PiePainter implements RadialPainter {
     required double length,
     required double sweepAngle,
     required String text,
-    TextStyle? style,
+    required ChartTextStyle style,
   }) {
     // We will calculate the label offset
     // radius * cos(angle) gives you the x-coordinate
@@ -147,6 +147,20 @@ class PiePainter implements RadialPainter {
     final dy = length * sin(vm.radians(sweepAngle));
     final labelOffset = center + Offset(dx, dy);
 
-    canvas.drawText(labelOffset, text: TextSpan(text: text, style: style));
+    final textPainter =
+        ChartTextPainter.fromChartTextStyle(text: text, chartTextStyle: style);
+
+    textPainter.paint(canvas: canvas, offset: labelOffset);
+  }
+
+  void _drawDonutLabel({
+    required Canvas canvas,
+    required String text,
+    required ChartTextStyle style,
+    required Offset offset,
+  }) {
+    final textPainter =
+        ChartTextPainter.fromChartTextStyle(text: text, chartTextStyle: style);
+    textPainter.paint(canvas: canvas, offset: offset);
   }
 }

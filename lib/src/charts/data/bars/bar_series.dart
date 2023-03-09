@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_data_style.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
 import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
+import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 
 class BarSeries extends CartesianSeries with EquatableMixin {
   final BarDataStyle? seriesStyle;
-  final TextStyle? labelStyle;
+  final ChartTextStyle labelStyle;
   final List<BarGroup> barData;
 
   BarSeries({
-    this.labelStyle,
+    this.labelStyle = const ChartTextStyle(),
     this.seriesStyle,
     required this.barData,
   });

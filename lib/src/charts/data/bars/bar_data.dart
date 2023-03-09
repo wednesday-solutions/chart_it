@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_data_style.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
 import 'package:flutter_charts/src/charts/data/bars/multi_bar.dart';
 import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
 import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
@@ -26,9 +25,7 @@ class BarData extends Equatable {
 
   /// Styling for the Individual Bar in this [BarData].
   ///
-  /// * Providing styling here will override the defined groupStyle in [BarGroup].
-  /// * Sets uniform styling for the individual bar in this set.
-  /// * overrides the styling provided by groupStyle & seriesStyle
+  /// {@macro styling_order}
   final BarDataStyle? barStyle;
 
   const BarData({

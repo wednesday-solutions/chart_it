@@ -22,7 +22,7 @@ class MultiBar extends BarGroup with EquatableMixin {
   ///
   /// **Note:** If you've chosen [arrangement] as stack, then do not use
   /// groupSpacing. Providing a value higher than zero in the case
-  /// will throw an Assertion.
+  /// will throw an Exception.
   final double groupSpacing;
 
   MultiBar({

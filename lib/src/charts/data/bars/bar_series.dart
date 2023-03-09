@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_data_style.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
 import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
@@ -15,9 +14,7 @@ import 'package:flutter_charts/src/charts/widgets/bar_chart.dart';
 class BarSeries extends CartesianSeries with EquatableMixin {
   /// Sets uniform styling for All the Bars in this [BarSeries].
   ///
-  /// This styling can be overridden by:
-  /// * groupStyle in any [BarGroup]
-  /// * barStyle in any [BarData]
+  /// {@macro styling_order}
   final BarDataStyle? seriesStyle;
 
   /// Sets uniform styling for All the Group Labels in this [BarSeries].

@@ -1,8 +1,18 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
+import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
+import 'package:flutter_charts/src/charts/data/bars/bar_series.dart';
 import 'package:flutter_charts/src/charts/widgets/bar_chart.dart';
 
 /// Encapsulates all the Styling options required for a [BarChart]
+/// {@template styling_order}
+/// The order of priority in styling is
+/// 1. barStyle in [BarData]
+/// 2. groupStyle in [BarGroup]
+/// 3. seriesStyle in [BarSeries]
+/// 4. Default [BarDataStyle] Style
+/// {@endtemplate}
 class BarDataStyle extends Equatable {
   /// The Width of the Bar. This value should range between 0.0 & 1.0.
   final double? barWidth;

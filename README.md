@@ -1,45 +1,32 @@
 <!-- TODO: Add Banners Above Here -->
-
 # Flutter Charts
 
-Flutter Charts is a fully written in dart, highly performant Charts Library with Beautifully
-Customizable and Animated Charts.
+Flutter Charts is a fully written in dart, strongly customizable Collection of Charts.
 
 ## Installation
-
 Add the `flutter_charts` package to your project's `pubspec.yaml` file:
-
 ```yaml
 dependencies:
   flutter_charts: ^0.0.1
 ```
-
 Alternatively, you can also run the following command in your Flutter Project:
-
 ```shell
 $ flutter pub add flutter_charts
 ```
 
 ## Let's Get Started
-
 All Charts in `flutter_charts` are categorized in two:
 
 1. Cartesian Charts
-    * Line Chart (Coming Soon)
-    * Bar Chart
-    * Candle Stick Chart (Coming Soon)
-    * Bubble Chart (Coming Soon)
-    * Scatter Chart (Coming Soon)
+   * Bar Chart
+   * Multi-Bar Chart
 2. Radial Charts
-    * Pie and Donut Chart
-    * Radial Bars (Coming Soon)
-    * Polar Chart (Coming Soon)
-    * Radar Chart (Coming Soon)
+   * Pie Chart
+   * Donut Chart
 
 Pick a Chart Widget for the type of Chart you want to draw and provide the necessary data for them.
 
 ### Quick Examples:
-
 1. **Bar Charts**
    ```dart
    ...
@@ -107,3 +94,9 @@ Pick a Chart Widget for the type of Chart you want to draw and provide the neces
    ),
    ```
    For Advanced usecases, Check out our Docs [here]().
+
+# License
+
+Flutter Charts is licensed under the BSD-3-Clause license. Check
+the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for
+details.

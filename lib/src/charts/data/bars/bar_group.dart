@@ -29,7 +29,7 @@ abstract class BarGroup {
 
   /// Styling for the Bars in this [BarGroup].
   ///
-  /// {@macro styling_order}
+  /// {@macro bar_styling_order}
   final BarDataStyle? groupStyle;
 
   BarGroup({

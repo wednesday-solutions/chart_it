@@ -6,7 +6,7 @@ import 'package:flutter_charts/src/charts/data/bars/bar_series.dart';
 import 'package:flutter_charts/src/charts/widgets/bar_chart.dart';
 
 /// Encapsulates all the Styling options required for a [BarChart]
-/// {@template styling_order}
+/// {@template bar_styling_order}
 /// The order of priority in styling is
 /// 1. barStyle in [BarData]
 /// 2. groupStyle in [BarGroup]

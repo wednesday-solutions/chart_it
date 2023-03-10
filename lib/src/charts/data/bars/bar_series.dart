@@ -5,8 +5,8 @@ import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
 import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 import 'package:flutter_charts/src/charts/widgets/bar_chart.dart';
 
-/// This class defines that the Data Set provided to this class
-/// should be drawn only as a BarChart.
+/// This class defines the Data Set to be provided to the BarChart
+/// and the Global Styling options
 ///
 /// The BarSeries is **mandatory** to be provided to the [BarChart] widget.
 ///
@@ -14,7 +14,7 @@ import 'package:flutter_charts/src/charts/widgets/bar_chart.dart';
 class BarSeries extends CartesianSeries with EquatableMixin {
   /// Sets uniform styling for All the Bars in this [BarSeries].
   ///
-  /// {@macro styling_order}
+  /// {@macro bar_styling_order}
   final BarDataStyle? seriesStyle;
 
   /// Sets uniform styling for All the Group Labels in this [BarSeries].

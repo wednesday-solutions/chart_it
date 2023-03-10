@@ -25,7 +25,7 @@ class BarData extends Equatable {
 
   /// Styling for the Individual Bar in this [BarData].
   ///
-  /// {@macro styling_order}
+  /// {@macro bar_styling_order}
   final BarDataStyle? barStyle;
 
   const BarData({

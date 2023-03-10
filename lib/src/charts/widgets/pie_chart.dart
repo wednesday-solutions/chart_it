@@ -9,11 +9,22 @@ import 'package:flutter_charts/src/charts/painters/radial/radial_painter.dart';
 import 'package:flutter_charts/src/charts/widgets/core/radial_charts.dart';
 import 'package:flutter_charts/src/common/radial_observer.dart';
 
+/// Draws a PieChart or Donut Chart for the Provided Data
 class PieChart extends StatefulWidget {
+  /// Title of the Chart
   final Text? title;
+
+  /// Width of the Chart
   final double? chartWidth;
+
+  /// Height of the Chart
   final double? chartHeight;
+
+  /// Styling for the Chart. Includes options like
+  /// Background, StartAngle, etc.
   final RadialChartStyle? chartStyle;
+
+  /// The Data which will be Drawn as Pieces of Pie
   final PieSeries data;
 
   const PieChart({

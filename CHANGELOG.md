@@ -1,3 +1,5 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial release.
+* Add Simple and Multi Bar Chart
+* Add Pie and Donut Chart

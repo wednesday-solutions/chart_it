@@ -2,15 +2,29 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 
+/// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
 
 abstract class CartesianSeries {}
 
+/// Provides the Styling options for any Cartesian Chart.
+///
+/// Customization Options include BackgroundColor, Chart Alignment,
+/// Orientation, Grid Styling and Axis Styling.
 class CartesianChartStyle extends Equatable {
+  /// The Background Color of the Chart.
   final Color backgroundColor;
+
+  /// The Alignment for Cartesian Data Points.
   final CartesianChartAlignment alignment;
+
+  /// The Orientation of the Chart. Defaults to Vertical.
   final CartesianChartOrientation orientation;
+
+  /// Styling for the Grid Lines.
   final CartesianGridStyle? gridStyle;
+
+  /// Styling for the Axis Lines.
   final CartesianAxisStyle? axisStyle;
 
   const CartesianChartStyle({
@@ -42,11 +56,24 @@ class CartesianChartStyle extends Equatable {
   }
 }
 
+/// Provides the Styling options for a Cartesian Grid.
+///
+/// Customization Options include Show/Hide, Line Color,
+/// Line Width and Unit Values for a Graph Unit formed by Grid Intersections.
 class CartesianGridStyle extends Equatable {
+  /// Hides or Shows the Grid Lines. Visible by Default.
   final bool show;
+
+  /// Value of a Unit Distance along X-Axis
   final num? xUnitValue;
+
+  /// Value of a Unit Distance along Y-Axis
   final num? yUnitValue;
+
+  /// The Width/Thickness of the Grid Lines
   final double gridLineWidth;
+
+  /// The Color of the Grid Lines
   final Color gridLineColor;
 
   const CartesianGridStyle({
@@ -78,16 +105,37 @@ class CartesianGridStyle extends Equatable {
   }
 }
 
+/// Provides the Styling options for a Cartesian Axis.
+///
+/// Customization Options for Axis Lines, Ticks and Labels
 class CartesianAxisStyle extends Equatable {
   final int? xBaseline;
   final int? yBaseline;
+
+  /// Hides or Shows the Unit Labels along X-Axis.
+  /// Visible by Default.
   final bool showXAxisLabels;
+
+  /// Hides or Shows the Unit Labels along Y-Axis.
+  /// Visible by Default.
   final bool showYAxisLabels;
+
+  /// The Width of the Axis Lines
   final double axisWidth;
+
+  /// The Color of the Axis Lines
   final Color axisColor;
+
+  /// The Length of the Tick drawn along Axes
   final double tickLength;
+
+  /// The Width/Thickness of the Tick drawn along Axes
   final double tickWidth;
+
+  /// The Color of the Tick drawn along Axes
   final Color tickColor;
+
+  /// Styling for the Tick Labels
   final ChartTextStyle? tickLabelStyle;
 
   const CartesianAxisStyle({
@@ -144,6 +192,7 @@ class CartesianAxisStyle extends Equatable {
   }
 }
 
+/// Alignment of the Data Points for any Cartesian Charts
 enum CartesianChartAlignment {
   start,
   end,
@@ -153,4 +202,5 @@ enum CartesianChartAlignment {
   spaceBetween,
 }
 
+/// Orientation of the Chart
 enum CartesianChartOrientation { vertical, horizontal }

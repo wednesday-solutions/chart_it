@@ -1,10 +1,19 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
+/// Provides Uniform Text Styling across All Charts
 class ChartTextStyle extends Equatable {
+  /// Styling for the Text
   final TextStyle? textStyle;
+
+  /// Max Lines to Show for a Text.
+  /// Defaults to 1
   final int maxLines;
+
+  /// Show/Hide Ellipses on TextOverflow
   final bool ellipsize;
+
+  /// Alignment of the Text
   final TextAlign align;
 
   const ChartTextStyle({

@@ -9,12 +9,26 @@ import 'package:flutter_charts/src/charts/widgets/core/cartesian_charts.dart';
 import 'package:flutter_charts/src/common/cartesian_observer.dart';
 import 'package:flutter_charts/src/extensions/data_conversions.dart';
 
+/// Draws a BarChart for the Provided Data
 class BarChart extends StatefulWidget {
+  /// Title of the Chart
   final Text? title;
+
+  /// Width of the Chart
   final double? chartWidth;
+
+  /// Height of the Chart
   final double? chartHeight;
+
+  /// Maximum Value along Y-Axis
+  /// Draws the Highest Value point along Positive Y-Axis
   final double? maxYValue;
+
+  /// Styling for the Chart. Includes options like
+  /// Background, Alignment, Orientation, Grid & Axis Styling, etc.
   final CartesianChartStyle? chartStyle;
+
+  /// The Data which will be Drawn as Bars
   final BarSeries data;
 
   const BarChart({

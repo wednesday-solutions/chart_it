@@ -147,8 +147,10 @@ class PiePainter implements RadialPainter {
     final dy = length * sin(vm.radians(sweepAngle));
     final labelOffset = center + Offset(dx, dy);
 
-    final textPainter =
-        ChartTextPainter.fromChartTextStyle(text: text, chartTextStyle: style);
+    final textPainter = ChartTextPainter.fromChartTextStyle(
+      chartTextStyle: style,
+      text: text,
+    );
 
     textPainter.paint(canvas: canvas, offset: labelOffset);
   }
@@ -159,8 +161,10 @@ class PiePainter implements RadialPainter {
     required ChartTextStyle style,
     required Offset offset,
   }) {
-    final textPainter =
-        ChartTextPainter.fromChartTextStyle(text: text, chartTextStyle: style);
+    final textPainter = ChartTextPainter.fromChartTextStyle(
+      chartTextStyle: style,
+      text: text,
+    );
     textPainter.paint(canvas: canvas, offset: offset);
   }
 }

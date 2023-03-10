@@ -1,13 +1,24 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
 
+/// Callback for Mapping a String Value to a Label
 typedef SliceMapper = String Function(num percentage, num value);
 
 abstract class RadialSeries {}
 
+/// Provides the Styling options for any Radial Chart.
+///
+/// Customization Options include BackgroundColor, Start Angle and Axis Styling.
 class RadialChartStyle extends Equatable {
+  /// The Background Color of the Chart.
   final Color backgroundColor;
+
+  /// The Angle from which the Initial Data Should begin.
+  /// Defaults to zero and starts Vertically Upright.
   final double initAngle;
+
+  /// Styling for the Axis Lines.
   final RadialAxis? axis;
 
   const RadialChartStyle({
@@ -33,6 +44,10 @@ class RadialChartStyle extends Equatable {
   }
 }
 
+/// Defines that the Axis Type is for a [PolarChart], and
+/// provides Styling for Elements only for PolarChart Axis Type
+///
+/// See Also: [RadialAxis]
 class PolarAxis extends RadialAxis with EquatableMixin {
   PolarAxis({
     required super.tickStyle,
@@ -48,7 +63,7 @@ class PolarAxis extends RadialAxis with EquatableMixin {
       ];
 
   PolarAxis copyWith(
-    TextStyle? tickStyle,
+    ChartTextStyle? tickStyle,
     Color? gridLineStrokeColor,
     double? gridLineStrokeWidth,
   ) {
@@ -60,10 +75,19 @@ class PolarAxis extends RadialAxis with EquatableMixin {
   }
 }
 
+/// Defines that the Axis Type is for a [RadarChart], and
+/// provides Styling for Elements only for RadarChart Axis Type
+///
+/// See Also: [RadialAxis]
 class RadarAxis extends RadialAxis with EquatableMixin {
+  /// The Color of the Angled Axis Line
   Color angleLineStrokeColor;
+
+  /// The Width/Thickness of the Angled Axis Line
   double angleLineStrokeWidth;
-  TextStyle angleLabelStyle;
+
+  /// Styling for the Label for the Angled Axes
+  ChartTextStyle angleLabelStyle;
 
   RadarAxis({
     required super.tickStyle,
@@ -85,12 +109,12 @@ class RadarAxis extends RadialAxis with EquatableMixin {
       ];
 
   RadarAxis copyWith({
-    TextStyle? tickStyle,
+    ChartTextStyle? tickStyle,
     Color? gridLineStrokeColor,
     double? gridLineStrokeWidth,
     Color? angleLineStrokeColor,
     double? angleLineStrokeWidth,
-    TextStyle? angleLabelStyle,
+    ChartTextStyle? angleLabelStyle,
   }) {
     return RadarAxis(
       tickStyle: tickStyle ?? super.tickStyle,
@@ -103,9 +127,16 @@ class RadarAxis extends RadialAxis with EquatableMixin {
   }
 }
 
+/// Defines the Structure for any type of Axis
+/// which are Applicable for a Radial Type Chart
 abstract class RadialAxis {
-  final TextStyle tickStyle;
+  /// Styling for the Tick Labels
+  final ChartTextStyle tickStyle;
+
+  /// The Color of the Grid Lines
   final Color gridLineStrokeColor;
+
+  /// The Width/Thickness of the Grid Lines
   final double gridLineStrokeWidth;
 
   RadialAxis({

@@ -6,42 +6,57 @@ const String _ellipsis = '\u2026';
 class ChartTextPainter {
   final String text;
   final TextStyle? style;
-  final TextDirection direction;
-  final double? maxWidth;
-  final int maxLines;
   final bool showEllipsis;
+  final TextDirection direction;
   final TextAlign align;
+  final int maxLines;
+  final double? maxWidth;
 
-  ChartTextPainter(
-      {required this.text,
-      required this.style,
-      this.direction = TextDirection.ltr,
-      this.maxWidth,
-      this.maxLines = 1,
-      required this.showEllipsis,
-      this.align = TextAlign.center});
+  late TextPainter _painter;
+  late Size textConstraints;
+
+  ChartTextPainter({
+    required this.text,
+    required this.style,
+    required this.showEllipsis,
+    this.direction = TextDirection.ltr,
+    this.align = TextAlign.center,
+    this.maxLines = 1,
+    this.maxWidth,
+  }) {
+    // We will initialize our textPainter on instance
+    _painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: direction,
+      maxLines: maxLines,
+    );
+    textConstraints = _painter.size;
+  }
 
   ChartTextPainter.fromChartTextStyle({
     required this.text,
-    this.maxWidth,
     required ChartTextStyle chartTextStyle,
+    this.maxWidth,
   })  : style = chartTextStyle.textStyle,
         direction = TextDirection.ltr,
         maxLines = chartTextStyle.maxLines,
         showEllipsis = chartTextStyle.ellipsize,
-        align = chartTextStyle.align;
+        align = chartTextStyle.align {
+    // We will initialize our textPainter on instance
+    _painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: direction,
+      maxLines: maxLines,
+    );
+    textConstraints = _painter.size;
+  }
 
   void paint({required Canvas canvas, required Offset offset}) {
-    var painter = TextPainter(
-        text: TextSpan(text: text, style: style),
-        textDirection: direction,
-        maxLines: maxLines);
-
     if (showEllipsis) {
-      painter.ellipsis = _ellipsis;
+      _painter.ellipsis = _ellipsis;
     }
 
-    painter.layout(maxWidth: maxWidth ?? double.infinity);
+    _painter.layout(maxWidth: maxWidth ?? double.infinity);
 
     var alignOffset = 0.5;
     switch (align) {
@@ -59,10 +74,10 @@ class ChartTextPainter {
     }
 
     final position = Offset(
-      offset.dx - (painter.width * alignOffset),
-      offset.dy - (painter.height * 0.5),
+      offset.dx - (_painter.width * alignOffset),
+      offset.dy - (_painter.height * 0.5),
     );
 
-    painter.paint(canvas, position);
+    _painter.paint(canvas, position);
   }
 }

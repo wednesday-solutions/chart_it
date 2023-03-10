@@ -2,9 +2,27 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
 import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
 
+/// Defines a Group of Multiple Bars
+///
+/// A list of [BarData] needs to be provided which will
+/// provide us the Y-Value for each individual bar in the group.
+///
+/// See Also: [BarGroup]
 class MultiBar extends BarGroup with EquatableMixin {
+  /// The list of [BarData] which gives us the Y-Value and
+  /// the styling for each individual bars in this group.
   final List<BarData> yValues;
+
+  /// Defines how all the bars in this group should be arranged
+  /// * Use [BarGroupArrangement.series] to arrange in series
+  /// * Use [BarGroupArrangement.stack] to arrange in stack
   final BarGroupArrangement arrangement;
+
+  /// The space between consecutive bars in a series arrangement.
+  ///
+  /// **Note:** If you've chosen [arrangement] as stack, then do not use
+  /// groupSpacing. Providing a value higher than zero in the case
+  /// will throw an Exception.
   final double groupSpacing;
 
   MultiBar({

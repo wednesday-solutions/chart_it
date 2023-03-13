@@ -12,7 +12,6 @@ export 'src/charts/data/core/radial_data.dart';
 export 'src/charts/data/pie/pie_series.dart';
 export 'src/charts/data/pie/slice_data.dart';
 export 'src/charts/data/pie/slice_data_style.dart';
-export 'src/charts/temp/placeholder_chart.dart';
 export 'src/charts/widgets/bar_chart.dart';
 export 'src/charts/widgets/line_chart.dart';
 export 'src/charts/widgets/pie_chart.dart';

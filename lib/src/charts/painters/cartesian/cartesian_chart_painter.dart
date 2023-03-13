@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/flutter_charts.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
-import 'package:flutter_charts/src/charts/painters/text/chart_text_painter.dart';
-import 'package:flutter_charts/src/common/cartesian_observer.dart';
+import 'package:chart_it/chart_it.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/src/common/cartesian_observer.dart';
 
 class CartesianChartPainter extends CustomPainter {
   late Rect graphPolygon;

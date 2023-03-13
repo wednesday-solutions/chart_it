@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_series.dart';
-import 'package:flutter_charts/src/charts/widgets/bar_chart.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data.dart';
+import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/bar_series.dart';
+import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 
 /// Encapsulates all the Styling options required for a [BarChart]
 /// {@template bar_styling_order}

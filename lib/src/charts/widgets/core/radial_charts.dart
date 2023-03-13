@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/core/radial_data.dart';
-import 'package:flutter_charts/src/charts/painters/radial/radial_chart_painter.dart';
-import 'package:flutter_charts/src/charts/painters/radial/radial_painter.dart';
-import 'package:flutter_charts/src/common/radial_observer.dart';
+import 'package:chart_it/src/charts/data/core/radial_data.dart';
+import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
+import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
+import 'package:chart_it/src/common/radial_observer.dart';
 
 class RadialCharts extends StatefulWidget {
   final double? width;

@@ -9,9 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_charts:
+  chart_it:
     path: ../
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.5
   google_fonts: ^4.0.3
   universal_platform: ^1.0.0+1
   responsive_sizer: ^3.1.1
@@ -20,7 +20,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
 
 
 flutter:

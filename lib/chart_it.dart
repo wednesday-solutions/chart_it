@@ -1,4 +1,4 @@
-library flutter_charts;
+library chart_it;
 
 export 'src/charts/data/bars/bar_data.dart';
 export 'src/charts/data/bars/bar_data_style.dart';

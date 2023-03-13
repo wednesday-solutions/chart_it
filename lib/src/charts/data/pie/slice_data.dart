@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
-import 'package:flutter_charts/src/charts/data/core/radial_data.dart';
-import 'package:flutter_charts/src/charts/data/pie/slice_data_style.dart';
+import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/radial_data.dart';
+import 'package:chart_it/src/charts/data/pie/slice_data_style.dart';
 
 /// Defines the Data of a Pie Slice in the Pie/Donut chart
 ///

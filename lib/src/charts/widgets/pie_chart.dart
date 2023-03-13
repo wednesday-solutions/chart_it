@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/constants/defaults.dart';
-import 'package:flutter_charts/src/charts/data/core/radial_data.dart';
-import 'package:flutter_charts/src/charts/data/pie/pie_series.dart';
-import 'package:flutter_charts/src/charts/painters/radial/pie_painter.dart';
-import 'package:flutter_charts/src/charts/painters/radial/radial_painter.dart';
-import 'package:flutter_charts/src/charts/widgets/core/radial_charts.dart';
-import 'package:flutter_charts/src/common/radial_observer.dart';
+import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/data/core/radial_data.dart';
+import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/painters/radial/pie_painter.dart';
+import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
+import 'package:chart_it/src/charts/widgets/core/radial_charts.dart';
+import 'package:chart_it/src/common/radial_observer.dart';
 
 /// Draws a PieChart or Donut Chart for the Provided Data
 class PieChart extends StatefulWidget {

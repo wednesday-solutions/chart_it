@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/constants/defaults.dart';
-import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
-import 'package:flutter_charts/src/charts/data/pie/pie_series.dart';
-import 'package:flutter_charts/src/charts/painters/radial/radial_chart_painter.dart';
-import 'package:flutter_charts/src/charts/painters/radial/radial_painter.dart';
-import 'package:flutter_charts/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
+import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
+import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 class PiePainter implements RadialPainter {

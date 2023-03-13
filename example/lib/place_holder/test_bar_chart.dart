@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/flutter_charts.dart';
+import 'package:chart_it/chart_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TestBarChart extends StatefulWidget {

@@ -1,11 +1,11 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/flutter_charts.dart';
-import 'package:flutter_charts/src/charts/constants/defaults.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
-import 'package:flutter_charts/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/chart_it.dart';
+import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 
 class BarPainter implements CartesianPainter {
   late double _vRatio;

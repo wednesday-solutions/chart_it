@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 
 const String _ellipsis = '\u2026';
 

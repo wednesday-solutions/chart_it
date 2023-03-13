@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_chart_painter.dart';
-import 'package:flutter_charts/src/charts/painters/cartesian/cartesian_painter.dart';
-import 'package:flutter_charts/src/common/cartesian_observer.dart';
+import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/common/cartesian_observer.dart';
 
 class CartesianCharts extends StatefulWidget {
   final double? width;

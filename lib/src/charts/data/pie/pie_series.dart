@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
-import 'package:flutter_charts/src/charts/data/core/radial_data.dart';
-import 'package:flutter_charts/src/charts/data/pie/slice_data.dart';
-import 'package:flutter_charts/src/charts/data/pie/slice_data_style.dart';
-import 'package:flutter_charts/src/charts/widgets/pie_chart.dart';
+import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/radial_data.dart';
+import 'package:chart_it/src/charts/data/pie/slice_data.dart';
+import 'package:chart_it/src/charts/data/pie/slice_data_style.dart';
+import 'package:chart_it/src/charts/widgets/pie_chart.dart';
 
 /// Callback for Label in the Donut Area
 typedef DonutLabel = String Function();

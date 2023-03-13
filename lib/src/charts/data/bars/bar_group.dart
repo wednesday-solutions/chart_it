@@ -1,6 +1,6 @@
-import 'package:flutter_charts/src/charts/data/bars/bar_data_style.dart';
-import 'package:flutter_charts/src/charts/data/core/cartesian_data.dart';
-import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
+import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 
 /// Sets the Arrangement for all the bars in a [BarGroup].
 ///

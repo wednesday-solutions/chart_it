@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data.dart';
+import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 
 /// Defines a Simple singular Bar with a Single Y-Value
 ///

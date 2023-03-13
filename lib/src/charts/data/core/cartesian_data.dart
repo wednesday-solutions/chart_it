@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);

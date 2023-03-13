@@ -4,18 +4,18 @@
 Flutter Charts is a fully written in dart, strongly customizable Collection of Charts.
 
 ## Installation
-Add the `flutter_charts` package to your project's `pubspec.yaml` file:
+Add the `chart_it` package to your project's `pubspec.yaml` file:
 ```yaml
 dependencies:
-  flutter_charts: ^0.0.1
+  chart_it: ^0.0.1
 ```
 Alternatively, you can also run the following command in your Flutter Project:
 ```shell
-$ flutter pub add flutter_charts
+$ flutter pub add chart_it
 ```
 
 ## Supported Charts
-All Charts in `flutter_charts` are categorized in two:
+All Charts in `chart_it` are categorized in two:
 
 1. Cartesian Charts
    * Bar Chart
@@ -30,7 +30,7 @@ Pick a Chart Widget for the type of Chart you want to draw and provide the neces
 1. **Bar Charts**
    ```dart
    ...
-   import 'package:flutter_charts/flutter_charts.dart';
+   import 'package:chart_it/chart_it.dart';
    
    ...
    child: BarChart(
@@ -60,7 +60,7 @@ Pick a Chart Widget for the type of Chart you want to draw and provide the neces
 2. **Donut Charts**
    ```dart
    ...
-   import 'package:flutter_charts/flutter_charts.dart';
+   import 'package:chart_it/chart_it.dart';
    
    ...
    child: PieChart(

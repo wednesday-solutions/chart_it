@@ -1,7 +1,7 @@
-import 'package:flutter_charts/src/charts/data/bars/bar_data.dart';
-import 'package:flutter_charts/src/charts/data/bars/bar_group.dart';
-import 'package:flutter_charts/src/charts/data/bars/multi_bar.dart';
-import 'package:flutter_charts/src/charts/data/bars/simple_bar.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data.dart';
+import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
+import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
 
 extension YValueGetter on BarGroup {
   // Helper method to strip group data into data object with raw values

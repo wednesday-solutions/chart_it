@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_charts/src/charts/data/pie/pie_series.dart';
-import 'package:flutter_charts/src/charts/data/pie/slice_data.dart';
-import 'package:flutter_charts/src/charts/widgets/pie_chart.dart';
+import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/data/pie/slice_data.dart';
+import 'package:chart_it/src/charts/widgets/pie_chart.dart';
 
 /// Encapsulates all the Styling options required for a [PieChart]
 /// {@template slice_styling_order}

@@ -13,7 +13,7 @@ class ChartTextPainter {
   final double? maxWidth;
 
   late TextPainter _painter;
-  late Size textConstraints;
+  Size? textConstraints;
 
   ChartTextPainter({
     required this.text,
@@ -30,7 +30,6 @@ class ChartTextPainter {
       textDirection: direction,
       maxLines: maxLines,
     );
-    textConstraints = _painter.size;
   }
 
   ChartTextPainter.fromChartTextStyle({
@@ -48,14 +47,12 @@ class ChartTextPainter {
       textDirection: direction,
       maxLines: maxLines,
     );
-    textConstraints = _painter.size;
   }
 
   void paint({required Canvas canvas, required Offset offset}) {
     if (showEllipsis) {
       _painter.ellipsis = _ellipsis;
     }
-
     _painter.layout(maxWidth: maxWidth ?? double.infinity);
 
     var alignOffset = 0.5;
@@ -79,5 +76,6 @@ class ChartTextPainter {
     );
 
     _painter.paint(canvas, position);
+    textConstraints = _painter.size;
   }
 }

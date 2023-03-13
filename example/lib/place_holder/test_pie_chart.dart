@@ -13,8 +13,6 @@ class _TestPieChartState extends State<TestPieChart> {
   Widget build(BuildContext context) {
     return PieChart(
       title: const Text('Demo Chart'),
-      chartWidth: 500,
-      chartHeight: 500,
       chartStyle: const RadialChartStyle(
         backgroundColor: Colors.blueGrey,
       ),

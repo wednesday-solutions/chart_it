@@ -13,8 +13,6 @@ class _TestBarChartState extends State<TestBarChart> {
   Widget build(BuildContext context) {
     return BarChart(
       title: const Text('Demo Chart'),
-      chartWidth: 500,
-      chartHeight: 500,
       chartStyle: const CartesianChartStyle(
         backgroundColor: Colors.blueGrey,
         alignment: CartesianChartAlignment.spaceEvenly,
@@ -34,7 +32,7 @@ class _TestBarChartState extends State<TestBarChart> {
       ),
       data: BarSeries(
         seriesStyle: const BarDataStyle(
-          barWidth: 10.0,
+          barWidth: 1.0,
           barColor: Colors.amber,
           strokeWidth: 3.0,
           strokeColor: Colors.cyan,

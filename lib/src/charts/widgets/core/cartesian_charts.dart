@@ -45,9 +45,11 @@ class _CartesianChartsState extends State<CartesianCharts> {
               observer: widget.observer,
               painters: widget.painters,
             ),
-            child: SizedBox(
-              width: widget.width,
-              height: widget.height,
+            child: ConstrainedBox(
+              constraints: BoxConstraints.expand(
+                width: widget.width,
+                height: widget.height,
+              ),
             ),
           ),
         );

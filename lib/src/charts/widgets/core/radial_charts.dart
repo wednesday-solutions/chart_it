@@ -45,9 +45,11 @@ class _RadialChartsState extends State<RadialCharts> {
               observer: widget.observer,
               painters: widget.painters,
             ),
-            child: SizedBox(
-              width: widget.width,
-              height: widget.height,
+            child: ConstrainedBox(
+              constraints: BoxConstraints.expand(
+                width: widget.width,
+                height: widget.height,
+              ),
             ),
           ),
         );

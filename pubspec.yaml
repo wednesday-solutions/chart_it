@@ -1,8 +1,8 @@
 name: chart_it
 description: A customisable charts library for flutter.
 version: 0.0.1
-homepage: https://flutter.wednesday.is/charts/flutter-charts
-repository: https://github.com/wednesday-solutions/flutter-charts
+homepage: https://flutter.wednesday.is/charts/chart-it
+repository: https://github.com/wednesday-solutions/chart_it
 
 environment:
   sdk: ">=2.19.2 <3.0.0"

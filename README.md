@@ -14,7 +14,7 @@ Alternatively, you can also run the following command in your Flutter Project:
 $ flutter pub add flutter_charts
 ```
 
-## Getting Started
+## Supported Charts
 All Charts in `flutter_charts` are categorized in two:
 
 1. Cartesian Charts

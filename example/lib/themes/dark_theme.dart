@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 var darkTheme = ThemeData(
@@ -29,275 +30,245 @@ var darkTheme = ThemeData(
   primaryIconTheme: const IconThemeData(color: Color(0xFFFFFFFF)),
   iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)),
   primaryTextTheme: TextTheme(
-    bodyLarge: TextStyle(
+    bodyLarge: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 16.dp,
-      inherit: false,
       letterSpacing: 0.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    bodyMedium: TextStyle(
+    bodyMedium: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 14.dp,
-      inherit: false,
       letterSpacing: 0.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    bodySmall: TextStyle(
+    bodySmall: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 12.dp,
-      inherit: false,
       letterSpacing: 0.4,
       textBaseline: TextBaseline.alphabetic,
     ),
-    displayLarge: TextStyle(
+    displayLarge: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w300,
       fontSize: 96.dp,
-      inherit: false,
       letterSpacing: -1.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    displayMedium: TextStyle(
+    displayMedium: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w300,
       fontSize: 60.dp,
-      inherit: false,
       letterSpacing: -0.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    displaySmall: TextStyle(
+    displaySmall: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 48.dp,
-      inherit: false,
       letterSpacing: 0,
       textBaseline: TextBaseline.alphabetic,
     ),
-    headlineLarge: TextStyle(
+    headlineLarge: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 40.dp,
-      inherit: false,
       letterSpacing: 0.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    headlineMedium: TextStyle(
+    headlineMedium: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 34.dp,
-      inherit: false,
       letterSpacing: 0.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    headlineSmall: TextStyle(
+    headlineSmall: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 24.dp,
-      inherit: false,
       letterSpacing: 0,
       textBaseline: TextBaseline.alphabetic,
     ),
-    labelLarge: TextStyle(
+    labelLarge: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w500,
       fontSize: 14.dp,
-      inherit: false,
       letterSpacing: 1.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    labelMedium: TextStyle(
+    labelMedium: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 11.dp,
-      inherit: false,
       letterSpacing: 1.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    labelSmall: TextStyle(
+    labelSmall: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 10.dp,
-      inherit: false,
       letterSpacing: 1.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    titleLarge: TextStyle(
+    titleLarge: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w500,
       fontSize: 20.dp,
-      inherit: false,
       letterSpacing: 0.15,
       textBaseline: TextBaseline.alphabetic,
     ),
-    titleMedium: TextStyle(
+    titleMedium: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 16.dp,
-      inherit: false,
       letterSpacing: 0.15,
       textBaseline: TextBaseline.alphabetic,
     ),
-    titleSmall: TextStyle(
+    titleSmall: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w500,
       fontSize: 14.dp,
-      inherit: false,
       letterSpacing: 0.1,
       textBaseline: TextBaseline.alphabetic,
     ),
   ),
   textTheme: TextTheme(
-    bodyLarge: TextStyle(
+    bodyLarge: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 16.dp,
-      inherit: false,
       letterSpacing: 0.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    bodyMedium: TextStyle(
+    bodyMedium: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 14.dp,
-      inherit: false,
       letterSpacing: 0.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    bodySmall: TextStyle(
+    bodySmall: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 12.dp,
-      inherit: false,
       letterSpacing: 0.4,
       textBaseline: TextBaseline.alphabetic,
     ),
-    displayLarge: TextStyle(
+    displayLarge: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w300,
       fontSize: 96.dp,
-      inherit: false,
       letterSpacing: -1.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    displayMedium: TextStyle(
+    displayMedium: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w300,
       fontSize: 60.dp,
-      inherit: false,
       letterSpacing: -0.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    displaySmall: TextStyle(
+    displaySmall: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 48.dp,
-      inherit: false,
       letterSpacing: 0,
       textBaseline: TextBaseline.alphabetic,
     ),
-    headlineLarge: TextStyle(
+    headlineLarge: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 40.dp,
-      inherit: false,
       letterSpacing: 0.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    headlineMedium: TextStyle(
+    headlineMedium: GoogleFonts.poppins(
       color: const Color(0xB3FFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 34.dp,
-      inherit: false,
       letterSpacing: 0.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    headlineSmall: TextStyle(
+    headlineSmall: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 24.dp,
-      inherit: false,
       letterSpacing: 0,
       textBaseline: TextBaseline.alphabetic,
     ),
-    labelLarge: TextStyle(
+    labelLarge: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w500,
       fontSize: 14.dp,
-      inherit: false,
       letterSpacing: 1.25,
       textBaseline: TextBaseline.alphabetic,
     ),
-    labelMedium: TextStyle(
+    labelMedium: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 11.dp,
-      inherit: false,
       letterSpacing: 1.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    labelSmall: TextStyle(
+    labelSmall: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 10.dp,
-      inherit: false,
       letterSpacing: 1.5,
       textBaseline: TextBaseline.alphabetic,
     ),
-    titleLarge: TextStyle(
+    titleLarge: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w500,
       fontSize: 20.dp,
-      inherit: false,
       letterSpacing: 0.15,
       textBaseline: TextBaseline.alphabetic,
     ),
-    titleMedium: TextStyle(
+    titleMedium: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w400,
       fontSize: 16.dp,
-      inherit: false,
       letterSpacing: 0.15,
       textBaseline: TextBaseline.alphabetic,
     ),
-    titleSmall: TextStyle(
+    titleSmall: GoogleFonts.poppins(
       color: const Color(0xFFFFFFFF),
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w500,
       fontSize: 14.dp,
-      inherit: false,
       letterSpacing: 0.1,
       textBaseline: TextBaseline.alphabetic,
     ),

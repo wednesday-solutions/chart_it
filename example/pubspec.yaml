@@ -12,6 +12,7 @@ dependencies:
   flutter_charts:
     path: ../
   cupertino_icons: ^1.0.2
+  google_fonts: ^4.0.3
   universal_platform: ^1.0.0+1
   responsive_sizer: ^3.1.1
   salomon_bottom_bar: ^3.3.1

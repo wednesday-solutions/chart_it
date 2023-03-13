@@ -40,14 +40,14 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.bar_chart_rounded),
             title: const Text("Bar Chart"),
-            selectedColor: Colors.cyan,
+            selectedColor: const Color(0xFF191FC8),
           ),
 
           /// Likes
           SalomonBottomBarItem(
             icon: const Icon(Icons.pie_chart_outline),
             title: const Text("Pie Chart"),
-            selectedColor: Colors.amber,
+            selectedColor: const Color(0xFF191FC8),
           ),
         ],
       ),

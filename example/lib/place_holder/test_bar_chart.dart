@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:chart_it/chart_it.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TestBarChart extends StatefulWidget {
@@ -44,14 +44,14 @@ class _TestBarChartState extends State<TestBarChart> {
         seriesStyle: const BarDataStyle(
           barWidth: 10.0,
           barColor: Color(0xFF6D71EE),
-          // gradient: LinearGradient(
-          //   begin: Alignment.topCenter,
-          //   end: Alignment.bottomCenter,
-          //   colors: [
-          //     Color(0xFF191FC8),
-          //     Color(0xFF4247E8),
-          //   ],
-          // ),
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              Color(0xFF191FC8),
+              Color(0xFF4247E8),
+            ],
+          ),
           strokeWidth: 3.0,
           strokeColor: Color(0xFF6D71EE),
           cornerRadius: BorderRadius.only(

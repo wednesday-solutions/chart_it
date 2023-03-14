@@ -13,6 +13,8 @@ class RadialObserver extends ChangeNotifier {
   });
 
   bool shouldRepaint(RadialObserver changedValue) {
+    final c = AnimationController();
+    Tween().animate(c);
     if (maxValue != changedValue.maxValue ||
         minValue != changedValue.minValue ||
         pointer != changedValue.pointer) return true;

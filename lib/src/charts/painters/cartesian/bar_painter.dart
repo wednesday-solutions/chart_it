@@ -7,21 +7,23 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.d
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 
-class BarPainter implements CartesianPainter {
+class BarPainter implements CartesianPainter<BarSeries> {
   late double _vRatio;
   late double _unitWidth;
-  final BarSeries data;
+  late BarSeries data;
   final bool useGraphUnits;
   final int maxBarsInGroup;
+  final BarSeries Function(dynamic) dataPicker;
 
   BarPainter({
-    required this.data,
     required this.useGraphUnits,
     this.maxBarsInGroup = 1,
+    required this.dataPicker
   });
 
   @override
   void paint(Canvas canvas, Size size, CartesianChartPainter chart) {
+    data = dataPicker(chart.observer.data);
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to

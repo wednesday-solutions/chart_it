@@ -45,13 +45,15 @@ class BarChart extends StatefulWidget {
   State<BarChart> createState() => _BarChartState();
 }
 
-class _BarChartState extends State<BarChart> {
-  late CartesianObserver _observer;
+class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
+  late CartesianObserver<BarSeries> _observer;
+  late AnimationController _animationController;
   var _maxBarsInGroup = 0;
 
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(vsync: this);
     // For Bar charts, we normally don't consider x values, be it +ve or -ve
     var calculatedMinXValue = 0.0;
     var calculatedMaxXValue = widget.data.barData.length.toDouble();
@@ -114,12 +116,16 @@ class _BarChartState extends State<BarChart> {
       minXRange: calculatedMinXValue,
       maxYRange: maxYRange,
       minYRange: minYRange,
+      tweenBuilder: (old, newData) {
+
+      }
     );
   }
 
   @override
   Widget build(BuildContext context) {
     var style = widget.chartStyle ?? defaultCartesianChartStyle;
+    _observer.update(widget.data);
     return CartesianCharts(
       observer: _observer,
       width: widget.chartWidth,
@@ -133,11 +139,28 @@ class _BarChartState extends State<BarChart> {
       ),
       painters: <CartesianPainter>[
         BarPainter(
-          data: widget.data,
+          dataPicker: (data) {
+            return (data as List<CartesianSeries>).first as BarSeries;
+          },
+          useGraphUnits: false,
+          maxBarsInGroup: _maxBarsInGroup,
+        ),
+        BarPainter(
+          dataPicker: (data) {
+            return data as BarSeries;
+          },
           useGraphUnits: false,
           maxBarsInGroup: _maxBarsInGroup,
         ),
       ],
     );
+  }
+}
+
+class BarSeriesTween extends Tween<BarSeries> {
+  @override
+  BarSeries lerp(double t) {
+    return BarSeries(barData: lerpDouble(10, 100, t));
+    return super.lerp(t);
   }
 }

@@ -25,8 +25,11 @@ class CartesianObserver<T> extends ChangeNotifier {
     required this.maxYRange,
     this.minYRange = 0.0,
     required AnimationController controller,
-    required this.tweenBuilder
+    required this.tweenBuilder,
+    T targetData,
+    required bool animateOnStart
   }) : _animationController = controller {
+    tween = tweenBuilder(animateOnStart ? null : targetData, targetData);
     _animationController.addListener(() {
       // Get the current anim value
       data = tween.evaluate(_animationController);

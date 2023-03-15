@@ -117,15 +117,23 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       maxYRange: maxYRange,
       minYRange: minYRange,
       tweenBuilder: (old, newData) {
-
+        if (old == null) {
+          Tween(data.zeroValues())
+        }
       }
     );
   }
 
   @override
+  void didUpdateWidget(covariant BarChart oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    _observer.update(widget.data);
+  }
+
+  @override
   Widget build(BuildContext context) {
     var style = widget.chartStyle ?? defaultCartesianChartStyle;
-    _observer.update(widget.data);
     return CartesianCharts(
       observer: _observer,
       width: widget.chartWidth,

@@ -4,6 +4,7 @@ import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
+import 'package:flutter/animation.dart';
 
 /// This class defines the Data Set to be provided to the BarChart
 /// and the Global Styling options
@@ -34,6 +35,21 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     required this.barData,
   });
 
+  zeroValues() {
+    return copyWith(
+
+    )
+  }
+
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
+}
+
+class BarSeriesTween extends Tween<BarSeries> {
+  @override
+  BarSeries lerp(double t) {
+    return BarSeries(barData: []
+
+    )
+  }
 }

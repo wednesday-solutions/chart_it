@@ -38,4 +38,6 @@ abstract class BarGroup {
     this.labelStyle,
     this.groupStyle,
   });
+
+
 }

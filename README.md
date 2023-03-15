@@ -1,7 +1,7 @@
 <!-- TODO: Add Banners Above Here -->
-# Flutter Charts
+# Chart It
 
-Flutter Charts is a fully written in dart, strongly customizable Collection of Charts.
+Chart_It is a fully written in dart, strongly customizable Collection of Charts.
 
 ## Installation
 Add the `chart_it` package to your project's `pubspec.yaml` file:

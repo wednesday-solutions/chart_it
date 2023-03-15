@@ -1,12 +1,13 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 class PiePainter implements RadialPainter {
@@ -45,7 +46,14 @@ class PiePainter implements RadialPainter {
       // Draw slice with color fill
       var arcPaint = Paint()
         ..style = PaintingStyle.fill
-        ..color = sliceFill;
+        ..color = sliceFill
+        ..shader =
+            (slice.style?.gradient ?? defaultPieSeriesStyle.gradient)?.toShader(
+          Rect.fromCircle(
+            center: chart.graphOrigin,
+            radius: sliceRadius,
+          ),
+        );
 
       _drawArcWithCenter(
         canvas,

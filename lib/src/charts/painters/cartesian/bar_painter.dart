@@ -1,11 +1,10 @@
-import 'dart:ui' as ui;
-
-import 'package:flutter/material.dart';
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter {
   late double _vRatio;
@@ -149,8 +148,8 @@ class BarPainter implements CartesianPainter {
 
     var barPaint = Paint()
       ..color = (style.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader =
-          (style.gradient ?? defaultBarSeriesStyle.gradient) as ui.Gradient?;
+      ..shader = (style.gradient ?? defaultBarSeriesStyle.gradient)
+          ?.toShader(bar.outerRect);
 
     var barStroke = Paint()
       ..style = PaintingStyle.stroke

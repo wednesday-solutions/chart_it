@@ -159,17 +159,17 @@ class CartesianAxisStyle extends Equatable {
 
   @override
   List<Object?> get props => [
-    xBaseline,
-    yBaseline,
-    showXAxisLabels,
-    showYAxisLabels,
-    axisWidth,
-    axisColor,
-    tickLength,
-    tickWidth,
-    tickColor,
-    tickLabelStyle,
-  ];
+        xBaseline,
+        yBaseline,
+        showXAxisLabels,
+        showYAxisLabels,
+        axisWidth,
+        axisColor,
+        tickLength,
+        tickWidth,
+        tickColor,
+        tickLabelStyle,
+      ];
 
   CartesianAxisStyle copyWith({
     int? xBaseline,

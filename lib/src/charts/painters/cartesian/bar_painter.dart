@@ -72,10 +72,12 @@ class BarPainter implements CartesianPainter {
     }
   }
 
-  _drawSimpleBar(Canvas canvas,
-      CartesianChartPainter chart,
-      double dxOffset,
-      SimpleBar group,) {
+  _drawSimpleBar(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    double dxOffset,
+    SimpleBar group,
+  ) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var style = group.yValue.barStyle ??
@@ -97,10 +99,12 @@ class BarPainter implements CartesianPainter {
     _drawBarValues(canvas, chart, group.yValue);
   }
 
-  _drawBarSeries(Canvas canvas,
-      CartesianChartPainter chart,
-      double dxOffset,
-      MultiBar group,) {
+  _drawBarSeries(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    double dxOffset,
+    MultiBar group,
+  ) {
     var barWidth = _unitWidth / maxBarsInGroup;
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
@@ -128,12 +132,14 @@ class BarPainter implements CartesianPainter {
     }
   }
 
-  _drawBar(Canvas canvas,
-      CartesianChartPainter chart,
-      BarDataStyle style,
-      double dxCenter,
-      double barWidth,
-      num yValue,) {
+  _drawBar(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    BarDataStyle style,
+    double dxCenter,
+    double barWidth,
+    num yValue,
+  ) {
     var padding = 5.0;
     // The first thing to do is to get the data point into the range!
     // This is because we don't want our bar to exceed the min/max values
@@ -179,10 +185,12 @@ class BarPainter implements CartesianPainter {
     canvas.drawRRect(bar, barStroke); // draw stroke
   }
 
-  void _drawGroupLabel(Canvas canvas,
-      CartesianChartPainter chart,
-      double dxOffset,
-      BarGroup group,) {
+  void _drawGroupLabel(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    double dxOffset,
+    BarGroup group,
+  ) {
     // We will draw the Label that the user had provided for our bar group
     if (group.label != null) {
       // TODO: rotate the text if it doesn't fit within the unitWidth
@@ -202,9 +210,11 @@ class BarPainter implements CartesianPainter {
     }
   }
 
-  void _drawBarValues(Canvas canvas,
-      CartesianChartPainter chart,
-      BarData data,) {
+  void _drawBarValues(
+    Canvas canvas,
+    CartesianChartPainter chart,
+    BarData data,
+  ) {
     if (data.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: data.label!(data.yValue),

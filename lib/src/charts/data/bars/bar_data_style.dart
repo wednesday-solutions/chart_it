@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
@@ -41,6 +43,21 @@ class BarDataStyle extends Equatable {
     this.strokeColor,
     this.cornerRadius,
   });
+
+  static BarDataStyle lerp(
+    BarDataStyle? a,
+    BarDataStyle? b,
+    double t,
+  ) {
+    return BarDataStyle(
+      barWidth: lerpDouble(a?.barWidth, b?.barWidth, t),
+      barColor: Color.lerp(a?.barColor, b?.barColor, t),
+      gradient: Gradient.lerp(a?.gradient, b?.gradient, t),
+      strokeWidth: lerpDouble(a?.strokeWidth, b?.strokeWidth, t),
+      strokeColor: Color.lerp(a?.strokeColor, b?.strokeColor, t),
+      cornerRadius: BorderRadius.lerp(a?.cornerRadius, b?.cornerRadius, t),
+    );
+  }
 
   @override
   List<Object?> get props =>

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/widgets/core/cartesian_charts.dart';
 import 'package:chart_it/src/common/cartesian_observer.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
@@ -156,7 +155,7 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
         // BarChart, but in Multi-Chart we will have to type assert and
         // return the appropriate painter for the type of data series
         return BarPainter(
-          data: series as BarSeries,
+          // data: series as BarSeries,
           useGraphUnits: false,
           maxBarsInGroup: _maxBarsInGroup,
         );

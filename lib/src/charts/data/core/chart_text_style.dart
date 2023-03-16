@@ -1,3 +1,4 @@
+import 'package:chart_it/src/common/animations/lerps.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -22,6 +23,15 @@ class ChartTextStyle extends Equatable {
     this.maxLines = 1,
     this.ellipsize = true,
   });
+
+  static ChartTextStyle lerp(ChartTextStyle? a, ChartTextStyle? b, double t) {
+    return ChartTextStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      maxLines: lerpInt(a?.maxLines, b?.maxLines, t) ?? 1,
+      align: b?.align ?? TextAlign.center,
+      ellipsize: b?.ellipsize ?? true,
+    );
+  }
 
   @override
   List<Object?> get props => [textStyle, maxLines, ellipsize, align];

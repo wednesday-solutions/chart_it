@@ -1,4 +1,5 @@
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
+import 'package:chart_it/src/common/animations/tweens.dart';
 import 'package:flutter/material.dart';
 
 class CartesianObserver extends ChangeNotifier {
@@ -42,7 +43,7 @@ class CartesianObserver extends ChangeNotifier {
 
   void updateDataSeries(List<CartesianSeries> newSeries) {
     // Tween a List of Tweens for CartesianSeries
-    _tweenSeries = mapToCartesianSeriesTweens(data, newSeries) ?? List.empty();
+    _tweenSeries = toCartesianTweens(data, newSeries) ?? List.empty();
     // Update the Target Data to the newest value
     data = newSeries;
     // Finally animate the differences

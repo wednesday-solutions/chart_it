@@ -1,9 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
+import 'package:chart_it/src/common/animations/lerps.dart';
+import 'package:equatable/equatable.dart';
 
 /// This class defines the Data Set to be provided to the BarChart
 /// and the Global Styling options
@@ -36,4 +37,17 @@ class BarSeries extends CartesianSeries with EquatableMixin {
 
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
+
+  @override
+  BarSeries lerp(CartesianSeries a, CartesianSeries b, double t) {
+    if (a is BarSeries && b is BarSeries) {
+      return BarSeries(
+        labelStyle: ChartTextStyle.lerp(a.labelStyle, b.labelStyle, t),
+        seriesStyle: BarDataStyle.lerp(a.seriesStyle, b.seriesStyle, t),
+        barData: lerpBarGroupList(a.barData, b.barData, t) ?? List.empty(),
+      );
+    } else {
+      throw Exception('Both current & target data should be of same series!');
+    }
+  }
 }

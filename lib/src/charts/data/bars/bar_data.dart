@@ -1,8 +1,10 @@
-import 'package:equatable/equatable.dart';
+import 'dart:ui';
+
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:equatable/equatable.dart';
 
 /// Defines the Data of Each Individual Bar in a [MultiBar] group
 ///
@@ -35,6 +37,16 @@ class BarData extends Equatable {
     this.labelStyle = const ChartTextStyle(),
     this.barStyle,
   });
+
+  static BarData lerp(BarData? a, BarData? b, double t) {
+    return BarData(
+      startYFrom: lerpDouble(a?.startYFrom, b?.startYFrom, t) as num,
+      yValue: lerpDouble(a?.yValue, b?.yValue, t) as num,
+      label: b?.label,
+      labelStyle: ChartTextStyle.lerp(a?.labelStyle, b?.labelStyle, t),
+      barStyle: BarDataStyle.lerp(a?.barStyle, b?.barStyle, t),
+    );
+  }
 
   @override
   List<Object?> get props => [startYFrom, yValue, label, labelStyle, barStyle];

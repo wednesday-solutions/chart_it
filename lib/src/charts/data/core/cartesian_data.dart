@@ -9,7 +9,9 @@ typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
 
-abstract class CartesianSeries {}
+abstract class CartesianSeries {
+  CartesianSeries lerp(CartesianSeries a, CartesianSeries b, double t);
+}
 
 /// Provides the Styling options for any Cartesian Chart.
 ///

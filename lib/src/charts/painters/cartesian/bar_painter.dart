@@ -13,14 +13,35 @@ class BarPainter implements CartesianPainter {
   final bool useGraphUnits;
   final int maxBarsInGroup;
 
-  BarPainter({
-    required this.data,
-    required this.useGraphUnits,
-    this.maxBarsInGroup = 1,
-  });
+  /// get the instance of our painter
+  static final BarPainter? _instance;
+
+  BarPainter._(this.data, this.useGraphUnits, this.maxBarsInGroup);
+
+  factory BarPainter({
+    required BarSeries data,
+    required bool useGraphUnits,
+    maxBarsInGroup = 1,
+  }) {
+    if (_instance != null) {
+      // If fields have been updated then
+      if (maxBarsInGroup != _instance!.maxBarsInGroup ||
+          useGraphUnits != _instance!.useGraphUnits) {
+        // provide a new factory instance
+        return BarPainter._(data, useGraphUnits, maxBarsInGroup);
+      } else {
+        // or return the same instance
+        return _instance!;
+      }
+    } else {
+      return BarPainter._(data, useGraphUnits, maxBarsInGroup);
+    }
+  }
 
   @override
-  void paint(Canvas canvas, Size size, CartesianChartPainter chart) {
+  void paint(CartesianSeries series, Canvas canvas,
+      CartesianChartPainter chart) {
+    var data = series as BarSeries;
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to

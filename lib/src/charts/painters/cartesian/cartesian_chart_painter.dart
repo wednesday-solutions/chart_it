@@ -1,10 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:chart_it/chart_it.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/common/cartesian_observer.dart';
+import 'package:flutter/material.dart';
 
 class CartesianChartPainter extends CustomPainter {
   late Rect graphPolygon;
@@ -29,12 +28,15 @@ class CartesianChartPainter extends CustomPainter {
 
   final CartesianChartStyle style;
   final CartesianObserver observer;
-  final List<CartesianPainter> painters;
+  final CartesianPaintConstructor paintBuilder;
+
+  // final List<CartesianPainter> painters;
 
   CartesianChartPainter({
     required this.style,
     required this.observer,
-    required this.painters,
+    // required this.painters,
+    required this.paintBuilder,
   }) : super(repaint: observer);
 
   @override
@@ -54,8 +56,14 @@ class CartesianChartPainter extends CustomPainter {
 
     // Finally we will handover canvas to the implementing painter
     // to draw plot and draw the chart data
-    for (final painter in painters) {
-      painter.paint(canvas, size, this);
+    // for (final painter in painters) {
+    //   painter.paint(canvas, size, this);
+    // }
+    for (var series in observer.currentData) {
+      // construct the painter for this data
+      var painter = paintBuilder(series.runtimeType);
+      // and paint the chart for given series
+      painter.paint(series, canvas, this);
     }
 
     // We will draw axis on top of the painted chart data.

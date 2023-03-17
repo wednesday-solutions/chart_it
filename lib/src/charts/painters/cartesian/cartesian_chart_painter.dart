@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
-import 'package:chart_it/src/common/cartesian_observer.dart';
+import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
 
 class CartesianChartPainter extends CustomPainter {
@@ -27,21 +27,21 @@ class CartesianChartPainter extends CustomPainter {
   late double totalYRange;
 
   final CartesianChartStyle style;
-  final CartesianObserver observer;
+  final CartesianController controller;
   final CartesianPaintConstructor paintBuilder;
 
   // final List<CartesianPainter> painters;
 
   CartesianChartPainter({
     required this.style,
-    required this.observer,
+    required this.controller,
     // required this.painters,
     required this.paintBuilder,
-  }) : super(repaint: observer);
+  }) : super(repaint: controller);
 
   @override
   bool shouldRepaint(CartesianChartPainter oldDelegate) =>
-      observer.shouldRepaint(oldDelegate.observer);
+      controller.shouldRepaint(oldDelegate.controller);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -59,7 +59,7 @@ class CartesianChartPainter extends CustomPainter {
     // for (final painter in painters) {
     //   painter.paint(canvas, size, this);
     // }
-    for (var series in observer.currentData) {
+    for (var series in controller.currentData) {
       // construct the painter for this data
       var painter = paintBuilder(series.runtimeType);
       // and paint the chart for given series
@@ -129,13 +129,13 @@ class CartesianChartPainter extends CustomPainter {
     axis.lineTo(axisOrigin.dx, axisOrigin.dy); // +ve y axis
     axis.lineTo(graphPolygon.right, axisOrigin.dy); // +ve x axis
 
-    if (observer.minYRange.isNegative) {
+    if (controller.minYRange.isNegative) {
       // Paint negative Y-axis if we have negative values
       axis.moveTo(graphPolygon.bottomLeft.dx, graphPolygon.bottomLeft.dy);
       axis.lineTo(axisOrigin.dx, axisOrigin.dy); // -ve y axis
     }
 
-    if (observer.minXRange.isNegative) {
+    if (controller.minXRange.isNegative) {
       // Paint negative X-axis if we have Negative values
       axis.lineTo(graphPolygon.left, axisOrigin.dy); // -ve x axis
     }
@@ -171,7 +171,7 @@ class CartesianChartPainter extends CustomPainter {
         final textStyle =
             style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
         ChartTextPainter.fromChartTextStyle(
-          text: (observer.minYRange + (yUnitValue * i)).toString(),
+          text: (controller.minYRange + (yUnitValue * i)).toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
         ).paint(
           canvas: canvas,
@@ -199,10 +199,10 @@ class CartesianChartPainter extends CustomPainter {
     xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
     yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
 
-    totalXRange = observer.maxXRange.abs() + observer.minXRange.abs();
+    totalXRange = controller.maxXRange.abs() + controller.minXRange.abs();
     _xUnitsCount = totalXRange / xUnitValue;
 
-    totalYRange = observer.maxYRange.abs() + observer.minYRange.abs();
+    totalYRange = controller.maxYRange.abs() + controller.minYRange.abs();
     _yUnitsCount = totalYRange / yUnitValue;
 
     // We will get unitWidth & unitHeight by dividing the
@@ -216,9 +216,9 @@ class CartesianChartPainter extends CustomPainter {
 
     // Calculate the Offset for Axis Origin
     var negativeXRange =
-        (observer.minXRange.abs() / xUnitValue) * graphUnitWidth;
+        (controller.minXRange.abs() / xUnitValue) * graphUnitWidth;
     var negativeYRange =
-        (observer.minYRange.abs() / yUnitValue) * graphUnitHeight;
+        (controller.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     axisOrigin = Offset(xOffset, yOffset);

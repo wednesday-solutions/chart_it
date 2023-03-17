@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
-import 'package:chart_it/src/common/cartesian_observer.dart';
+import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
 
 class CartesianCharts extends StatefulWidget {
@@ -12,14 +12,14 @@ class CartesianCharts extends StatefulWidget {
   final CartesianPaintConstructor constructPainters;
 
   // final List<CartesianPainter> painters;
-  final CartesianObserver observer;
+  final CartesianController controller;
 
   const CartesianCharts({
     Key? key,
     this.width,
     this.height,
     required this.style,
-    required this.observer,
+    required this.controller,
     required this.constructPainters,
     // required this.painters,
   }) : super(key: key);
@@ -44,7 +44,7 @@ class _CartesianChartsState extends State<CartesianCharts> {
             isComplex: true,
             painter: CartesianChartPainter(
               style: widget.style,
-              observer: widget.observer,
+              controller: widget.controller,
               // painters: widget.painters,
               paintBuilder: widget.constructPainters,
             ),

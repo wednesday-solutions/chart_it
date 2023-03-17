@@ -1,8 +1,8 @@
+import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
-import 'package:chart_it/src/common/animations/tweens.dart';
 import 'package:flutter/material.dart';
 
-class CartesianObserver extends ChangeNotifier {
+class CartesianController extends ChangeNotifier {
   List<CartesianSeries> currentData = List.empty();
   List<CartesianSeries> data;
 
@@ -21,7 +21,7 @@ class CartesianObserver extends ChangeNotifier {
   // Values to keep updating when scrolling
   Offset? pointer;
 
-  CartesianObserver({
+  CartesianController({
     required this.animation,
     this.onLoadAnimate = true,
     required this.data,
@@ -47,9 +47,9 @@ class CartesianObserver extends ChangeNotifier {
       {bool isInitPhase = false}) {
     // Tween a List of Tweens for CartesianSeries
     _tweenSeries = toCartesianTweens(
-          isInitPhase ? List.empty() : currentData,
-          newSeries,
-        ) ??
+      isInitPhase ? List.empty() : currentData,
+      newSeries,
+    ) ??
         List.empty();
     // Update the Target Data to the newest value
     data = newSeries;
@@ -57,7 +57,7 @@ class CartesianObserver extends ChangeNotifier {
     animation.forward();
   }
 
-  bool shouldRepaint(CartesianObserver changedValue) {
+  bool shouldRepaint(CartesianController changedValue) {
     if (maxValue != changedValue.maxValue ||
         minValue != changedValue.minValue ||
         minXRange != changedValue.minXRange ||

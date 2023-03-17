@@ -4,7 +4,7 @@ import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/widgets/core/cartesian_charts.dart';
-import 'package:chart_it/src/common/cartesian_observer.dart';
+import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +52,7 @@ class BarChart extends StatefulWidget {
 }
 
 class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
-  late CartesianObserver _observer;
+  late CartesianController _controller;
   var _maxBarsInGroup = 0;
 
   @override
@@ -113,7 +113,7 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
     }
 
     // Now we can provide the chart details to the observer
-    _observer = CartesianObserver(
+    _controller = CartesianController(
       data: [widget.data],
       onLoadAnimate: widget.onLoadAnimate,
       animation: AnimationController(
@@ -133,21 +133,21 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
   void didUpdateWidget(covariant BarChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
-    _observer.updateDataSeries([widget.data]);
+    _controller.updateDataSeries([widget.data]);
   }
 
   @override
   Widget build(BuildContext context) {
     var style = widget.chartStyle ?? defaultCartesianChartStyle;
     return CartesianCharts(
-      observer: _observer,
+      controller: _controller,
       width: widget.chartWidth,
       height: widget.chartHeight,
       style: style.copyWith(
         gridStyle: style.gridStyle!.copyWith(
           // Unless the user is trying to play around with the xUnitValue,
           // we will default it to the length of bar groups
-          xUnitValue: style.gridStyle?.xUnitValue ?? _observer.maxXRange,
+          xUnitValue: style.gridStyle?.xUnitValue ?? _controller.maxXRange,
         ),
       ),
       constructPainters: (data) {

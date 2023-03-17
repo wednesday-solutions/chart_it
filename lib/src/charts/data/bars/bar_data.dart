@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
@@ -52,6 +53,10 @@ class BarData extends Equatable {
       labelStyle: ChartTextStyle.lerp(a?.labelStyle, b?.labelStyle, t),
       barStyle: BarDataStyle.lerp(a?.barStyle, b?.barStyle, t),
     );
+  }
+
+  static List<BarData> llerp(List<BarData>? a, List<BarData> b, double t) {
+    return lerpList(a, b, t, lerp: lerp);
   }
 
   @override

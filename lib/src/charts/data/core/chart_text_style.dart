@@ -27,7 +27,7 @@ class ChartTextStyle extends Equatable {
   static ChartTextStyle lerp(ChartTextStyle? a, ChartTextStyle? b, double t) {
     return ChartTextStyle(
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
-      maxLines: lerpInt(a?.maxLines, b?.maxLines, t) ?? 1,
+      maxLines: b?.maxLines ?? 1,
       align: b?.align ?? TextAlign.center,
       ellipsize: b?.ellipsize ?? true,
     );

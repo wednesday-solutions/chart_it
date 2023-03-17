@@ -1,3 +1,4 @@
+import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
@@ -14,7 +15,7 @@ enum BarGroupArrangement { series, stack }
 ///
 /// Holds the X-Value, Labels and Styling.
 /// {@endtemplate}
-abstract class BarGroup with Interpolatable<BarGroup> {
+abstract class BarGroup with ZeroValueProvider<BarGroup> {
   /// The Value along X-Axis for this [BarGroup].
   ///
   /// This value is not used for plotting on X-Axis.
@@ -40,9 +41,39 @@ abstract class BarGroup with Interpolatable<BarGroup> {
     this.groupStyle,
   });
 
-  @override
-  BarGroup lerp(BarGroup a, BarGroup b, double t);
+  factory BarGroup.zero(Type type) {
+    if (type == SimpleBar) {
+      return SimpleBar.zero();
+    }
+
+    if (type == MultiBar) {
+      return MultiBar.zero();
+    }
+
+    throw TypeError();
+  }
+
+  static T when<T>(
+      {required BarGroup value, required T Function() simpleBar, required T Function() multiBar}) {
+    switch (value.runtimeType) {
+      case SimpleBar:
+        return simpleBar();
+      case MultiBar:
+        return multiBar();
+      default:
+        throw TypeError();
+    }
+  }
 
   @override
   BarGroup get zeroValue;
+
+  static BarGroup lerp(BarGroup? a, BarGroup b, double t) {
+    final aValue = a == null || a.runtimeType != b.runtimeType ? null : a;
+    return BarGroup.when(
+      value: b,
+      simpleBar: () => SimpleBar.lerp(aValue, b, t),
+      multiBar: () => MultiBar.lerp(aValue, b, t),
+    );
+  }
 }

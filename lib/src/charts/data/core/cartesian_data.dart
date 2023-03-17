@@ -1,5 +1,5 @@
+import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/lerps.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +10,17 @@ typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
 
-abstract class CartesianSeries with Interpolatable<CartesianSeries> {
-  @override
-  CartesianSeries lerp(CartesianSeries a, CartesianSeries b, double t);
+abstract class CartesianSeries with ZeroValueProvider<CartesianSeries> {
+
+  static T when<T>(
+      {required CartesianSeries value, required T Function() barSeries}) {
+    switch (value.runtimeType) {
+      case BarSeries:
+        return barSeries();
+      default:
+        throw TypeError();
+    }
+  }
 
   @override
   CartesianSeries get zeroValue;
@@ -47,8 +55,7 @@ class CartesianChartStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [backgroundColor, alignment, orientation, gridStyle, axisStyle];
+  List<Object?> get props => [backgroundColor, alignment, orientation, gridStyle, axisStyle];
 
   CartesianChartStyle copyWith({
     Color? backgroundColor,
@@ -96,8 +103,7 @@ class CartesianGridStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
+  List<Object?> get props => [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
 
   CartesianGridStyle copyWith({
     bool? show,
@@ -164,17 +170,17 @@ class CartesianAxisStyle extends Equatable {
 
   @override
   List<Object?> get props => [
-    xBaseline,
-    yBaseline,
-    showXAxisLabels,
-    showYAxisLabels,
-    axisWidth,
-    axisColor,
-    tickLength,
-    tickWidth,
-    tickColor,
-    tickLabelStyle,
-  ];
+        xBaseline,
+        yBaseline,
+        showXAxisLabels,
+        showYAxisLabels,
+        axisWidth,
+        axisColor,
+        tickLength,
+        tickWidth,
+        tickColor,
+        tickLabelStyle,
+      ];
 
   CartesianAxisStyle copyWith({
     int? xBaseline,

@@ -40,7 +40,7 @@ class BarData extends Equatable {
 
   static BarData lerp(BarData? a, BarData? b, double t) {
     return BarData(
-      startYFrom: lerpDouble(a?.startYFrom, b?.startYFrom, t) as num,
+      startYFrom: lerpDouble(a?.startYFrom, b?.startYFrom, t),
       yValue: lerpDouble(a?.yValue, b?.yValue, t) as num,
       label: b?.label,
       labelStyle: ChartTextStyle.lerp(a?.labelStyle, b?.labelStyle, t),

@@ -14,7 +14,7 @@ class BarPainter implements CartesianPainter {
   final int maxBarsInGroup;
 
   /// get the instance of our painter
-  static final BarPainter? _instance;
+  static BarPainter? _instance;
 
   BarPainter._(this.useGraphUnits, this.maxBarsInGroup);
 

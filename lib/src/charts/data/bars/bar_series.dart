@@ -35,6 +35,12 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     required this.barData,
   });
 
+  factory BarSeries.zero() {
+    return BarSeries(
+      barData: List.empty(),
+    );
+  }
+
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
 

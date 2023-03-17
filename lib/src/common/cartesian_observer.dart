@@ -39,11 +39,18 @@ class CartesianObserver extends ChangeNotifier {
       // Finally trigger a rebuild for all the painters
       notifyListeners();
     });
+    // On Initialization, we need to animate our chart if necessary
+    updateDataSeries(data, isInitPhase: true);
   }
 
-  void updateDataSeries(List<CartesianSeries> newSeries) {
+  void updateDataSeries(List<CartesianSeries> newSeries,
+      {bool isInitPhase = false}) {
     // Tween a List of Tweens for CartesianSeries
-    _tweenSeries = toCartesianTweens(data, newSeries) ?? List.empty();
+    _tweenSeries = toCartesianTweens(
+          isInitPhase ? List.empty() : currentData,
+          newSeries,
+        ) ??
+        List.empty();
     // Update the Target Data to the newest value
     data = newSeries;
     // Finally animate the differences

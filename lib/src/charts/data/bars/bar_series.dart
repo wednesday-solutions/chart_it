@@ -56,4 +56,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
       throw Exception('Both current & target data should be of same series!');
     }
   }
+
+  @override
+  CartesianSeries get zeroValue => BarSeries.zero();
 }

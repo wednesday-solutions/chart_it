@@ -21,6 +21,13 @@ class SimpleBar extends BarGroup with EquatableMixin {
     super.groupStyle,
   });
 
+  factory SimpleBar.zero() {
+    return SimpleBar(
+      xValue: 0,
+      yValue: BarData.zero(),
+    );
+  }
+
   @override
   List<Object?> get props =>
       [super.xValue, yValue, super.label, super.labelStyle, super.groupStyle];
@@ -39,4 +46,7 @@ class SimpleBar extends BarGroup with EquatableMixin {
       throw Exception('Both current & target data should be of same series!');
     }
   }
+
+  @override
+  BarGroup get zeroValue => SimpleBar.zero();
 }

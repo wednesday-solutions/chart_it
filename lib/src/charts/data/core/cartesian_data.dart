@@ -1,3 +1,4 @@
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:equatable/equatable.dart';
@@ -9,8 +10,12 @@ typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
 
-abstract class CartesianSeries {
+abstract class CartesianSeries with Interpolatable<CartesianSeries> {
+  @override
   CartesianSeries lerp(CartesianSeries a, CartesianSeries b, double t);
+
+  @override
+  CartesianSeries get zeroValue;
 }
 
 /// Provides the Styling options for any Cartesian Chart.
@@ -159,17 +164,17 @@ class CartesianAxisStyle extends Equatable {
 
   @override
   List<Object?> get props => [
-        xBaseline,
-        yBaseline,
-        showXAxisLabels,
-        showYAxisLabels,
-        axisWidth,
-        axisColor,
-        tickLength,
-        tickWidth,
-        tickColor,
-        tickLabelStyle,
-      ];
+    xBaseline,
+    yBaseline,
+    showXAxisLabels,
+    showYAxisLabels,
+    axisWidth,
+    axisColor,
+    tickLength,
+    tickWidth,
+    tickColor,
+    tickLabelStyle,
+  ];
 
   CartesianAxisStyle copyWith({
     int? xBaseline,

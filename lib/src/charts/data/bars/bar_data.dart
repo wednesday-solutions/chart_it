@@ -38,6 +38,12 @@ class BarData extends Equatable {
     this.barStyle,
   });
 
+  factory BarData.zero() {
+    return const BarData(
+      yValue: 0,
+    );
+  }
+
   static BarData lerp(BarData? a, BarData? b, double t) {
     return BarData(
       startYFrom: lerpDouble(a?.startYFrom, b?.startYFrom, t),

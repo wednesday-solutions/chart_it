@@ -46,6 +46,13 @@ class MultiBar extends BarGroup with EquatableMixin {
         ),
         assert(groupSpacing >= 0.0, "groupSpacing cannot be Negative!");
 
+  factory MultiBar.zero() {
+    return MultiBar(
+      xValue: 0,
+      yValues: [BarData.zero()],
+    );
+  }
+
   @override
   List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
 
@@ -61,4 +68,7 @@ class MultiBar extends BarGroup with EquatableMixin {
       throw Exception('Both current & target data should be of same series!');
     }
   }
+
+  @override
+  BarGroup get zeroValue => MultiBar.zero();
 }

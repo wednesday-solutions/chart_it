@@ -47,9 +47,9 @@ class CartesianController extends ChangeNotifier {
       {bool isInitPhase = false}) {
     // Tween a List of Tweens for CartesianSeries
     _tweenSeries = toCartesianTweens(
-      isInitPhase ? List.empty() : currentData,
-      newSeries,
-    ) ??
+          isInitPhase ? List.empty() : currentData,
+          newSeries,
+        ) ??
         List.empty();
     // Update the Target Data to the newest value
     data = newSeries;

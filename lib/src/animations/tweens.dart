@@ -33,9 +33,7 @@ List<Tween<T>>? _buildTweens<T>(
   List<T> target, {
   required TweenBuilder<T> builder,
 }) {
-  if (current != null && current.length == target.length) {
-    return List.generate(current.length, (i) => builder(current[i], target[i]));
-  } else if (current != null) {
+  if (current != null) {
     return List.generate(
       target.length,
       (i) => builder(i >= current.length ? target[i] : current[i], target[i]),

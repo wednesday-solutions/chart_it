@@ -1,3 +1,4 @@
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
@@ -13,7 +14,7 @@ enum BarGroupArrangement { series, stack }
 ///
 /// Holds the X-Value, Labels and Styling.
 /// {@endtemplate}
-abstract class BarGroup {
+abstract class BarGroup with Interpolatable<BarGroup> {
   /// The Value along X-Axis for this [BarGroup].
   ///
   /// This value is not used for plotting on X-Axis.
@@ -39,5 +40,9 @@ abstract class BarGroup {
     this.groupStyle,
   });
 
+  @override
   BarGroup lerp(BarGroup a, BarGroup b, double t);
+
+  @override
+  BarGroup get zeroValue;
 }

@@ -14,7 +14,7 @@ class RadialChartPainter extends CustomPainter {
   late double unitStep;
 
   final RadialChartStyle style;
-  final RadialObserver observer;
+  final RadialController observer;
   final List<RadialPainter> painters;
 
   RadialChartPainter({

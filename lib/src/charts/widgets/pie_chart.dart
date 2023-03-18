@@ -41,7 +41,7 @@ class PieChart extends StatefulWidget {
 }
 
 class _PieChartState extends State<PieChart> {
-  late RadialObserver _observer;
+  late RadialController _observer;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _PieChartState extends State<PieChart> {
     }
 
     // Now we can provide the chart details to the observer
-    _observer = RadialObserver(
+    _observer = RadialController(
       minValue: minValue,
       maxValue: maxValue,
     );

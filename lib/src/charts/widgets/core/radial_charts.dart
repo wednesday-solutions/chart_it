@@ -11,7 +11,7 @@ class RadialCharts extends StatefulWidget {
 
   // Mandatory Fields
   final List<RadialPainter> painters;
-  final RadialObserver observer;
+  final RadialController observer;
 
   const RadialCharts({
     Key? key,

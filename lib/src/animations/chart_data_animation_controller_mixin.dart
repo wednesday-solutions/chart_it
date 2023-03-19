@@ -22,7 +22,8 @@ mixin ChartDataAnimationControllerMixin<T> on ChangeNotifier {
 
   void setCurrentData(List<T> data);
 
-  List<Tween<T>> generateTween({required List<T> newSeries, required bool isInitPhase});
+  List<Tween<T>> generateTween(
+      {required List<T> newSeries, required bool isInitPhase});
 
   /// **Should be called in the constructor of the class using [ChartDataAnimationControllerMixin].**
   ///
@@ -33,7 +34,8 @@ mixin ChartDataAnimationControllerMixin<T> on ChangeNotifier {
   /// 2. [notifyListeners] so that [CustomPainter.paint] is called on the painters registered with this controller.
   void listenAnimationValueAndUpdate() {
     animation.addListener(() {
-      setCurrentData(tweenSeries.map((series) => series.evaluate(animation)).toList());
+      setCurrentData(
+          tweenSeries.map((series) => series.evaluate(animation)).toList());
       // Finally trigger a rebuild for all the painters
       notifyListeners();
     });
@@ -46,9 +48,9 @@ mixin ChartDataAnimationControllerMixin<T> on ChangeNotifier {
   /// 2. [setData] with the [newSeries].
   /// 3. Starts the [animation] if applicable.
   void updateDataSeries(
-      List<T> newSeries, {
-        bool isInitPhase = false,
-      }) {
+    List<T> newSeries, {
+    bool isInitPhase = false,
+  }) {
     // Tween a List of Tweens for CartesianSeries
     tweenSeries = generateTween(newSeries: newSeries, isInitPhase: isInitPhase);
     // Update the Target Data to the newest value

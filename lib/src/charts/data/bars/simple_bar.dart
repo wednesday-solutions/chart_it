@@ -38,8 +38,10 @@ class SimpleBar extends BarGroup with EquatableMixin {
         xValue: lerpDouble(current?.xValue, target.xValue, t) as num,
         yValue: BarData.lerp(current?.yValue, target.yValue, t),
         label: target.label,
-        labelStyle: ChartTextStyle.lerp(current?.labelStyle, target.labelStyle, t),
-        groupStyle: BarDataStyle.lerp(current?.groupStyle, target.groupStyle, t),
+        labelStyle:
+            ChartTextStyle.lerp(current?.labelStyle, target.labelStyle, t),
+        groupStyle:
+            BarDataStyle.lerp(current?.groupStyle, target.groupStyle, t),
       );
     } else {
       throw Exception('Both current & target data should be of same series!');

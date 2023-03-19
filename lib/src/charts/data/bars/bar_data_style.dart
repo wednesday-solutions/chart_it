@@ -55,7 +55,8 @@ class BarDataStyle extends Equatable {
       gradient: Gradient.lerp(current?.gradient, target?.gradient, t),
       strokeWidth: lerpDouble(current?.strokeWidth, target?.strokeWidth, t),
       strokeColor: Color.lerp(current?.strokeColor, target?.strokeColor, t),
-      cornerRadius: BorderRadius.lerp(current?.cornerRadius, target?.cornerRadius, t),
+      cornerRadius:
+          BorderRadius.lerp(current?.cornerRadius, target?.cornerRadius, t),
     );
   }
 

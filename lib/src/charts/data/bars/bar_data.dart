@@ -50,12 +50,14 @@ class BarData extends Equatable {
       startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
       yValue: lerpDouble(current?.yValue, target?.yValue, t) as num,
       label: target?.label,
-      labelStyle: ChartTextStyle.lerp(current?.labelStyle, target?.labelStyle, t),
+      labelStyle:
+          ChartTextStyle.lerp(current?.labelStyle, target?.labelStyle, t),
       barStyle: BarDataStyle.lerp(current?.barStyle, target?.barStyle, t),
     );
   }
 
-  static List<BarData> lerpBarDataList(List<BarData>? current, List<BarData> target, double t) {
+  static List<BarData> lerpBarDataList(
+      List<BarData>? current, List<BarData> target, double t) {
     return lerpList(current, target, t, lerp: lerp);
   }
 

@@ -20,9 +20,13 @@ List<Tween<CartesianSeries>>? toCartesianTweens(
   List<CartesianSeries> target,
 ) {
   return _buildTweens(current, target, builder: (current, target) {
-    final currentValue = current == null || current.runtimeType != target.runtimeType ? BarSeries.zero() : current;
+    final currentValue =
+        current == null || current.runtimeType != target.runtimeType
+            ? BarSeries.zero()
+            : current;
     return target.when(
-      barSeries: () => BarSeriesTween(begin: currentValue as BarSeries, end: target as BarSeries),
+      barSeries: () => BarSeriesTween(
+          begin: currentValue as BarSeries, end: target as BarSeries),
     );
   });
 }

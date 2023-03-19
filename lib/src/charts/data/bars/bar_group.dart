@@ -68,7 +68,10 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
   BarGroup get zeroValue;
 
   static BarGroup lerp(BarGroup? current, BarGroup target, double t) {
-    final currentValue = current == null || current.runtimeType != target.runtimeType ? null : current;
+    final currentValue =
+        current == null || current.runtimeType != target.runtimeType
+            ? null
+            : current;
     return target.when(
       simpleBar: () => SimpleBar.lerp(currentValue, target, t),
       multiBar: () => MultiBar.lerp(currentValue, target, t),

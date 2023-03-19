@@ -43,11 +43,14 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
 
-  static BarSeries lerp(CartesianSeries? current, CartesianSeries target, double t) {
+  static BarSeries lerp(
+      CartesianSeries? current, CartesianSeries target, double t) {
     if ((current is BarSeries?) && target is BarSeries) {
       return BarSeries(
-        labelStyle: ChartTextStyle.lerp(current?.labelStyle, target.labelStyle, t),
-        seriesStyle: BarDataStyle.lerp(current?.seriesStyle, target.seriesStyle, t),
+        labelStyle:
+            ChartTextStyle.lerp(current?.labelStyle, target.labelStyle, t),
+        seriesStyle:
+            BarDataStyle.lerp(current?.seriesStyle, target.seriesStyle, t),
         barData: BarGroup.lerpBarGroupList(current?.barData, target.barData, t),
       );
     } else {

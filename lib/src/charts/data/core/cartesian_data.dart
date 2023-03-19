@@ -55,7 +55,8 @@ class CartesianChartStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props => [backgroundColor, alignment, orientation, gridStyle, axisStyle];
+  List<Object?> get props =>
+      [backgroundColor, alignment, orientation, gridStyle, axisStyle];
 
   CartesianChartStyle copyWith({
     Color? backgroundColor,
@@ -103,7 +104,8 @@ class CartesianGridStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props => [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
+  List<Object?> get props =>
+      [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
 
   CartesianGridStyle copyWith({
     bool? show,

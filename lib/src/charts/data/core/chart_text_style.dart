@@ -1,4 +1,3 @@
-import 'package:chart_it/src/animations/lerps.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -24,12 +23,12 @@ class ChartTextStyle extends Equatable {
     this.ellipsize = true,
   });
 
-  static ChartTextStyle lerp(ChartTextStyle? a, ChartTextStyle? b, double t) {
+  static ChartTextStyle lerp(ChartTextStyle? current, ChartTextStyle? target, double t) {
     return ChartTextStyle(
-      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
-      maxLines: b?.maxLines ?? 1,
-      align: b?.align ?? TextAlign.center,
-      ellipsize: b?.ellipsize ?? true,
+      textStyle: TextStyle.lerp(current?.textStyle, target?.textStyle, t),
+      maxLines: target?.maxLines ?? 1,
+      align: target?.align ?? TextAlign.center,
+      ellipsize: target?.ellipsize ?? true,
     );
   }
 

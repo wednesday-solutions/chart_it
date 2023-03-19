@@ -1,8 +1,5 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/lerps.dart';
-import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
-import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 
 /// Sets the Arrangement for all the bars in a [BarGroup].
 ///
@@ -53,9 +50,11 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
     throw TypeError();
   }
 
-  static T when<T>(
-      {required BarGroup value, required T Function() simpleBar, required T Function() multiBar}) {
-    switch (value.runtimeType) {
+  T when<T>({
+    required T Function() simpleBar,
+    required T Function() multiBar,
+  }) {
+    switch (runtimeType) {
       case SimpleBar:
         return simpleBar();
       case MultiBar:
@@ -68,12 +67,23 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
   @override
   BarGroup get zeroValue;
 
-  static BarGroup lerp(BarGroup? a, BarGroup b, double t) {
-    final aValue = a == null || a.runtimeType != b.runtimeType ? null : a;
-    return BarGroup.when(
-      value: b,
-      simpleBar: () => SimpleBar.lerp(aValue, b, t),
-      multiBar: () => MultiBar.lerp(aValue, b, t),
+  static BarGroup lerp(BarGroup? current, BarGroup target, double t) {
+    final currentValue = current == null || current.runtimeType != target.runtimeType ? null : current;
+    return target.when(
+      simpleBar: () => SimpleBar.lerp(currentValue, target, t),
+      multiBar: () => MultiBar.lerp(currentValue, target, t),
     );
   }
+
+  static List<BarGroup> lerpBarGroupList(
+    List<BarGroup>? current,
+    List<BarGroup> target,
+    double t,
+  ) =>
+      lerpList(
+        current,
+        target,
+        t,
+        lerp: lerp,
+      );
 }

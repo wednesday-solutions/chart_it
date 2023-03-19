@@ -45,18 +45,18 @@ class BarData extends Equatable {
     );
   }
 
-  static BarData lerp(BarData? a, BarData? b, double t) {
+  static BarData lerp(BarData? current, BarData? target, double t) {
     return BarData(
-      startYFrom: lerpDouble(a?.startYFrom, b?.startYFrom, t),
-      yValue: lerpDouble(a?.yValue, b?.yValue, t) as num,
-      label: b?.label,
-      labelStyle: ChartTextStyle.lerp(a?.labelStyle, b?.labelStyle, t),
-      barStyle: BarDataStyle.lerp(a?.barStyle, b?.barStyle, t),
+      startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
+      yValue: lerpDouble(current?.yValue, target?.yValue, t) as num,
+      label: target?.label,
+      labelStyle: ChartTextStyle.lerp(current?.labelStyle, target?.labelStyle, t),
+      barStyle: BarDataStyle.lerp(current?.barStyle, target?.barStyle, t),
     );
   }
 
-  static List<BarData> llerp(List<BarData>? a, List<BarData> b, double t) {
-    return lerpList(a, b, t, lerp: lerp);
+  static List<BarData> lerpBarDataList(List<BarData>? current, List<BarData> target, double t) {
+    return lerpList(current, target, t, lerp: lerp);
   }
 
   @override

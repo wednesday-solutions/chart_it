@@ -11,10 +11,10 @@ typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
 typedef LabelMapper = String Function(num value);
 
 abstract class CartesianSeries with ZeroValueProvider<CartesianSeries> {
-
-  static T when<T>(
-      {required CartesianSeries value, required T Function() barSeries}) {
-    switch (value.runtimeType) {
+  T when<T>({
+    required T Function() barSeries,
+  }) {
+    switch (runtimeType) {
       case BarSeries:
         return barSeries();
       default:

@@ -45,17 +45,17 @@ class BarDataStyle extends Equatable {
   });
 
   static BarDataStyle lerp(
-    BarDataStyle? a,
-    BarDataStyle? b,
+    BarDataStyle? current,
+    BarDataStyle? target,
     double t,
   ) {
     return BarDataStyle(
-      barWidth: lerpDouble(a?.barWidth, b?.barWidth, t),
-      barColor: Color.lerp(a?.barColor, b?.barColor, t),
-      gradient: Gradient.lerp(a?.gradient, b?.gradient, t),
-      strokeWidth: lerpDouble(a?.strokeWidth, b?.strokeWidth, t),
-      strokeColor: Color.lerp(a?.strokeColor, b?.strokeColor, t),
-      cornerRadius: BorderRadius.lerp(a?.cornerRadius, b?.cornerRadius, t),
+      barWidth: lerpDouble(current?.barWidth, target?.barWidth, t),
+      barColor: Color.lerp(current?.barColor, target?.barColor, t),
+      gradient: Gradient.lerp(current?.gradient, target?.gradient, t),
+      strokeWidth: lerpDouble(current?.strokeWidth, target?.strokeWidth, t),
+      strokeColor: Color.lerp(current?.strokeColor, target?.strokeColor, t),
+      cornerRadius: BorderRadius.lerp(current?.cornerRadius, target?.cornerRadius, t),
     );
   }
 

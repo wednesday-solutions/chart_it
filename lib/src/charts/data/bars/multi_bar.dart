@@ -56,12 +56,12 @@ class MultiBar extends BarGroup with EquatableMixin {
   @override
   List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
 
-  static MultiBar lerp(BarGroup? a, BarGroup b, double t) {
-    if ((a is MultiBar?) && b is MultiBar) {
+  static MultiBar lerp(BarGroup? current, BarGroup target, double t) {
+    if ((current is MultiBar?) && target is MultiBar) {
       return MultiBar(
-        xValue: lerpDouble(a?.xValue, b.xValue, t) as num,
-        yValues: BarData.llerp(a?.yValues, b.yValues, t),
-        arrangement: b.arrangement,
+        xValue: lerpDouble(current?.xValue, target.xValue, t) as num,
+        yValues: BarData.lerpBarDataList(current?.yValues, target.yValues, t),
+        arrangement: target.arrangement,
       );
     } else {
       throw Exception('Both current & target data should be of same series!');

@@ -44,14 +44,14 @@ class _TestBarChartState extends State<TestBarChart> {
         seriesStyle: const BarDataStyle(
           barWidth: 10.0,
           barColor: Color(0xFF6D71EE),
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              Color(0xFF191FC8),
-              Color(0xFF4247E8),
-            ],
-          ),
+          // gradient: LinearGradient(
+          //   begin: Alignment.bottomCenter,
+          //   end: Alignment.topCenter,
+          //   colors: [
+          //     Color(0xFF191FC8),
+          //     Color(0xFF4247E8),
+          //   ],
+          // ),
           strokeWidth: 3.0,
           strokeColor: Color(0xFF6D71EE),
           cornerRadius: BorderRadius.only(
@@ -70,24 +70,24 @@ class _TestBarChartState extends State<TestBarChart> {
             ),
             yValue: const BarData(
               yValue: 45,
-              barStyle: BarDataStyle(
-                barWidth: 10.0,
-                barColor: Color(0xFF6D71EE),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFF191FC8),
-                    Color(0xFF4247E8),
-                  ],
-                ),
-                strokeWidth: 3.0,
-                strokeColor: Color(0xFF6D71EE),
-                cornerRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5.0),
-                  topRight: Radius.circular(5.0),
-                ),
-              ),
+              // barStyle: BarDataStyle(
+              //   barWidth: 10.0,
+              //   barColor: Color(0xFF6D71EE),
+              //   gradient: LinearGradient(
+              //     begin: Alignment.bottomCenter,
+              //     end: Alignment.topCenter,
+              //     colors: [
+              //       Color(0xFF191FC8),
+              //       Color(0xFF4247E8),
+              //     ],
+              //   ),
+              //   strokeWidth: 3.0,
+              //   strokeColor: Color(0xFF6D71EE),
+              //   cornerRadius: BorderRadius.only(
+              //     topLeft: Radius.circular(5.0),
+              //     topRight: Radius.circular(5.0),
+              //   ),
+              // ),
             ),
           ),
           SimpleBar(

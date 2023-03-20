@@ -80,10 +80,12 @@ class BarPainter implements CartesianPainter {
   ) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-    var style = group.yValue.barStyle ??
-        group.groupStyle ??
-        _data.seriesStyle ??
-        defaultBarSeriesStyle;
+    var userStyle =
+        group.yValue.barStyle ?? group.groupStyle ?? _data.seriesStyle;
+    // ?? defaultBarSeriesStyle;
+    print('User Defined Style: ${userStyle?.barColor}');
+    var style = userStyle ?? defaultBarSeriesStyle;
+    // var style = _data.seriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     var barWidth = _unitWidth / maxBarsInGroup;
@@ -135,7 +137,7 @@ class BarPainter implements CartesianPainter {
   _drawBar(
     Canvas canvas,
     CartesianChartPainter chart,
-    BarDataStyle style,
+    BarDataStyle? style,
     double dxCenter,
     double barWidth,
     num yValue,
@@ -155,10 +157,10 @@ class BarPainter implements CartesianPainter {
       height: y,
     );
 
-    var topLeft = style.cornerRadius?.topLeft ?? Radius.zero;
-    var topRight = style.cornerRadius?.topRight ?? Radius.zero;
-    var bottomLeft = style.cornerRadius?.bottomLeft ?? Radius.zero;
-    var bottomRight = style.cornerRadius?.bottomRight ?? Radius.zero;
+    var topLeft = style?.cornerRadius?.topLeft ?? Radius.zero;
+    var topRight = style?.cornerRadius?.topRight ?? Radius.zero;
+    var bottomLeft = style?.cornerRadius?.bottomLeft ?? Radius.zero;
+    var bottomRight = style?.cornerRadius?.bottomRight ?? Radius.zero;
 
     var bar = RRect.fromRectAndCorners(
       rect,
@@ -170,16 +172,16 @@ class BarPainter implements CartesianPainter {
     );
 
     var barPaint = Paint()
-      ..color = (style.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style.gradient ?? defaultBarSeriesStyle.gradient)
+      ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
           ?.toShader(bar.outerRect);
 
     var barStroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = (style.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
-      ..color = (style.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
+      ..strokeWidth = (style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
+      ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
 
     canvas.drawRRect(bar, barPaint); // draw fill
     canvas.drawRRect(bar, barStroke); // draw stroke

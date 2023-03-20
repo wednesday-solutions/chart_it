@@ -23,6 +23,5 @@ List<T> lerpList<T>(
   List<T> b,
   double t, {
   required Lerp<T> lerp,
-}) {
-  return List.generate(b.length, (i) => lerp(a?.getOrNull(i), b[i], t));
-}
+}) =>
+    List.generate(b.length, (i) => lerp(a?.getOrNull(i), b[i], t));

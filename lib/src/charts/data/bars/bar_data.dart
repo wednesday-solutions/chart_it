@@ -55,9 +55,12 @@ class BarData extends Equatable {
     );
   }
 
-  static List<BarData> llerp(List<BarData>? a, List<BarData> b, double t) {
-    return lerpList(a, b, t, lerp: lerp);
-  }
+  static List<BarData> llerp(
+    List<BarData>? a,
+    List<BarData> b,
+    double t,
+  ) =>
+      lerpList(a, b, t, lerp: lerp);
 
   @override
   List<Object?> get props => [startYFrom, yValue, label, labelStyle, barStyle];

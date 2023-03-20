@@ -1,6 +1,7 @@
-import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
+import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
+import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
 
@@ -53,8 +54,11 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
     throw TypeError();
   }
 
-  static T when<T>(
-      {required BarGroup value, required T Function() simpleBar, required T Function() multiBar}) {
+  static T when<T>({
+    required BarGroup value,
+    required T Function() simpleBar,
+    required T Function() multiBar,
+  }) {
     switch (value.runtimeType) {
       case SimpleBar:
         return simpleBar();

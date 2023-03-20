@@ -54,11 +54,8 @@ class CartesianChartPainter extends CustomPainter {
 
     _drawGridLines(canvas, size);
 
-    // Finally we will handover canvas to the implementing painter
-    // to draw plot and draw the chart data
-    // for (final painter in painters) {
-    //   painter.paint(canvas, size, this);
-    // }
+    // Finally for every data series, we will construct a painter and handover
+    // the canvas to them to draw the data sets into the required chart
     for (var series in controller.currentData) {
       // construct the painter for this data
       var painter = paintBuilder(series.runtimeType);

@@ -1,15 +1,22 @@
+import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
 import 'package:flutter/material.dart';
 
-class CartesianController extends ChangeNotifier {
+class CartesianController extends ChangeNotifier
+    with ChartAnimations<CartesianSeries> {
   List<CartesianSeries> currentData = List.empty();
   List<CartesianSeries> data;
 
   // Animation Variables
-  late List<Tween<CartesianSeries>> _tweenSeries;
+  @override
+  late List<Tween<CartesianSeries>> tweenSeries;
+  @override
   final AnimationController animation;
-  final bool onLoadAnimate;
+  @override
+  final bool animateOnLoad;
+  @override
+  final bool autoAnimate;
 
   final double minValue;
   final double maxValue;
@@ -22,9 +29,10 @@ class CartesianController extends ChangeNotifier {
   Offset? pointer;
 
   CartesianController({
-    required this.animation,
-    this.onLoadAnimate = true,
     required this.data,
+    required this.animation,
+    this.animateOnLoad = true,
+    this.autoAnimate = true,
     required this.minValue,
     required this.maxValue,
     required this.maxXRange,
@@ -32,29 +40,9 @@ class CartesianController extends ChangeNotifier {
     required this.maxYRange,
     this.minYRange = 0.0,
   }) {
-    animation.addListener(() {
-      currentData =
-          _tweenSeries.map((series) => series.evaluate(animation)).toList();
-
-      // Finally trigger a rebuild for all the painters
-      notifyListeners();
-    });
+    animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
     updateDataSeries(data, isInitPhase: true);
-  }
-
-  void updateDataSeries(List<CartesianSeries> newSeries,
-      {bool isInitPhase = false}) {
-    // Tween a List of Tweens for CartesianSeries
-    _tweenSeries = toCartesianTweens(
-          isInitPhase ? List.empty() : currentData,
-          newSeries,
-        ) ??
-        List.empty();
-    // Update the Target Data to the newest value
-    data = newSeries;
-    // Finally animate the differences
-    animation.forward();
   }
 
   bool shouldRepaint(CartesianController changedValue) {
@@ -68,4 +56,21 @@ class CartesianController extends ChangeNotifier {
 
     return false;
   }
+
+  @override
+  List<Tween<CartesianSeries>> getTweens({
+    required List<CartesianSeries> newSeries,
+    required bool isInitPhase,
+  }) =>
+      toCartesianTweens(
+        isInitPhase ? List.empty() : currentData,
+        newSeries,
+      ) ??
+      List.empty();
+
+  @override
+  void setCurrentData(List<CartesianSeries> data) => currentData = data;
+
+  @override
+  void setData(List<CartesianSeries> data) => this.data = data;
 }

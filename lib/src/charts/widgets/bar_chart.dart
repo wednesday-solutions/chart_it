@@ -115,7 +115,7 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
       data: [widget.data],
-      onLoadAnimate: widget.onLoadAnimate,
+      animateOnLoad: widget.onLoadAnimate,
       animation: AnimationController(
         duration: const Duration(seconds: 2),
         vsync: this,

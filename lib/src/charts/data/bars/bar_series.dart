@@ -1,4 +1,3 @@
-import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
@@ -44,12 +43,21 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
 
-  static BarSeries lerp(CartesianSeries? a, CartesianSeries b, double t) {
-    if ((a is BarSeries?) && b is BarSeries) {
+  static BarSeries lerp(
+      CartesianSeries? current, CartesianSeries target, double t) {
+    if ((current is BarSeries?) && target is BarSeries) {
       return BarSeries(
-        labelStyle: ChartTextStyle.lerp(a?.labelStyle, b.labelStyle, t),
-        seriesStyle: BarDataStyle.lerp(a?.seriesStyle, b.seriesStyle, t),
-        barData: lerpBarGroupList(a?.barData, b.barData, t),
+        labelStyle: ChartTextStyle.lerp(
+          current?.labelStyle,
+          target.labelStyle,
+          t,
+        ),
+        seriesStyle: BarDataStyle.lerp(
+          current?.seriesStyle,
+          target.seriesStyle,
+          t,
+        ),
+        barData: BarGroup.llerp(current?.barData, target.barData, t),
       );
     } else {
       throw Exception('Both current & target data should be of same series!');

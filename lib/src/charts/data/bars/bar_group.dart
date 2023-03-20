@@ -54,12 +54,32 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
     throw TypeError();
   }
 
-  static T when<T>({
-    required BarGroup value,
+  @override
+  BarGroup get zeroValue;
+
+  static BarGroup lerp(BarGroup? current, BarGroup target, double t) {
+    final currentValue =
+        current == null || current.runtimeType != target.runtimeType
+            ? null
+            : current;
+    return target._when(
+      simpleBar: () => SimpleBar.lerp(currentValue, target, t),
+      multiBar: () => MultiBar.lerp(currentValue, target, t),
+    );
+  }
+
+  static List<BarGroup> llerp(
+    List<BarGroup>? current,
+    List<BarGroup> target,
+    double t,
+  ) =>
+      lerpList(current, target, t, lerp: lerp);
+
+  T _when<T>({
     required T Function() simpleBar,
     required T Function() multiBar,
   }) {
-    switch (value.runtimeType) {
+    switch (runtimeType) {
       case SimpleBar:
         return simpleBar();
       case MultiBar:
@@ -67,17 +87,5 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
       default:
         throw TypeError();
     }
-  }
-
-  @override
-  BarGroup get zeroValue;
-
-  static BarGroup lerp(BarGroup? a, BarGroup b, double t) {
-    final aValue = a == null || a.runtimeType != b.runtimeType ? null : a;
-    return BarGroup.when(
-      value: b,
-      simpleBar: () => SimpleBar.lerp(aValue, b, t),
-      multiBar: () => MultiBar.lerp(aValue, b, t),
-    );
   }
 }

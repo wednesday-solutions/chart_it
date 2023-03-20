@@ -30,10 +30,10 @@ class ChartTextStyle extends Equatable {
   ) {
     if (target != null) {
       return ChartTextStyle(
-        textStyle: TextStyle.lerp(current?.textStyle, target?.textStyle, t),
-        maxLines: target?.maxLines ?? 1,
-        align: target?.align ?? TextAlign.center,
-        ellipsize: target?.ellipsize ?? true,
+        textStyle: TextStyle.lerp(current?.textStyle, target.textStyle, t),
+        maxLines: target.maxLines,
+        align: target.align,
+        ellipsize: target.ellipsize,
       );
     }
     return null;

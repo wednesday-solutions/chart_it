@@ -28,12 +28,15 @@ class ChartTextStyle extends Equatable {
     ChartTextStyle? target,
     double t,
   ) {
-    return ChartTextStyle(
-      textStyle: TextStyle.lerp(current?.textStyle, target?.textStyle, t),
-      maxLines: target?.maxLines ?? 1,
-      align: target?.align ?? TextAlign.center,
-      ellipsize: target?.ellipsize ?? true,
-    );
+    if (target != null) {
+      return ChartTextStyle(
+        textStyle: TextStyle.lerp(current?.textStyle, target?.textStyle, t),
+        maxLines: target?.maxLines ?? 1,
+        align: target?.align ?? TextAlign.center,
+        ellipsize: target?.ellipsize ?? true,
+      );
+    }
+    return null;
   }
 
   @override

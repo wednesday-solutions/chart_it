@@ -23,8 +23,11 @@ class ChartTextStyle extends Equatable {
     this.ellipsize = true,
   });
 
-  static ChartTextStyle lerp(
-      ChartTextStyle? current, ChartTextStyle? target, double t) {
+  static ChartTextStyle? lerp(
+    ChartTextStyle? current,
+    ChartTextStyle? target,
+    double t,
+  ) {
     return ChartTextStyle(
       textStyle: TextStyle.lerp(current?.textStyle, target?.textStyle, t),
       maxLines: target?.maxLines ?? 1,

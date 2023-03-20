@@ -80,12 +80,10 @@ class BarPainter implements CartesianPainter {
   ) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-    var userStyle =
-        group.yValue.barStyle ?? group.groupStyle ?? _data.seriesStyle;
-    // ?? defaultBarSeriesStyle;
-    print('User Defined Style: ${userStyle?.barColor}');
-    var style = userStyle ?? defaultBarSeriesStyle;
-    // var style = _data.seriesStyle;
+    var style = group.yValue.barStyle ??
+        group.groupStyle ??
+        _data.seriesStyle ??
+        defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     var barWidth = _unitWidth / maxBarsInGroup;
@@ -199,7 +197,8 @@ class BarPainter implements CartesianPainter {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: group.label!(group.xValue),
         maxWidth: _unitWidth,
-        chartTextStyle: group.labelStyle ?? _data.labelStyle,
+        chartTextStyle:
+            group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(
@@ -220,7 +219,7 @@ class BarPainter implements CartesianPainter {
     if (data.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: data.label!(data.yValue),
-        chartTextStyle: data.labelStyle,
+        chartTextStyle: data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(

@@ -59,17 +59,6 @@ class CartesianChartPainter extends CustomPainter {
     for (var series in controller.currentData) {
       // construct the painter for this data
       var painter = paintBuilder(series.runtimeType);
-
-      // var _series = series as BarSeries;
-      // _series.barData.forEach((element) {
-      //   if (element.xValue == 1) {
-      //     print('-------------------------');
-      //     print('SeriesStyle Fill: ${_series.seriesStyle?.barColor}');
-      //     print('BarStyle Fill: ${(element as SimpleBar).yValue.barStyle?.barColor}');
-      //     print('-------------------------');
-      //   }
-      // });
-
       // and paint the chart for given series
       painter.paint(series, canvas, this);
     }

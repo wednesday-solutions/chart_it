@@ -21,7 +21,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   ///
   /// This styling can be overridden by:
   /// * labelStyle in any [BarGroup]
-  final ChartTextStyle labelStyle;
+  final ChartTextStyle? labelStyle;
 
   /// The DataSet for our BarChart. It is Structured as a [BarGroup]
   /// that provides the X-Value and can contain a
@@ -49,20 +49,6 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     double t,
   ) {
     if ((current is BarSeries?) && target is BarSeries) {
-      // print('-------------------------');
-      // print('Lerping Gradient in BarSeries');
-      // print('-------------------------');
-      // print('from ${current?.seriesStyle?.gradient?.colors} to ${target.seriesStyle?.gradient?.colors} at $t');
-      // print('New Lerped Gradient: ${BarDataStyle.lerp(current?.seriesStyle, target.seriesStyle, t).gradient?.colors}');
-      // print('-------------------------');
-
-      print('-------------------------');
-      print('Lerping Color in BarSeries');
-      print('-------------------------');
-      print(
-          'from ${current?.seriesStyle?.barColor} to ${target.seriesStyle?.barColor} at $t');
-      print(
-          'New Lerped Color: ${BarDataStyle.lerp(current?.seriesStyle, target.seriesStyle, t).barColor}');
       return BarSeries(
         labelStyle: ChartTextStyle.lerp(
           current?.labelStyle,

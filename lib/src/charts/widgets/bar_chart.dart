@@ -117,7 +117,7 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       data: [widget.data],
       animateOnLoad: widget.onLoadAnimate,
       animation: AnimationController(
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
         vsync: this,
       ),
       minValue: minYValue,
@@ -160,13 +160,6 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
           maxBarsInGroup: _maxBarsInGroup,
         );
       },
-      // painters: <CartesianPainter>[
-      //   BarPainter(
-      //     data: widget.data,
-      //     useGraphUnits: false,
-      //     maxBarsInGroup: _maxBarsInGroup,
-      //   ),
-      // ],
     );
   }
 }

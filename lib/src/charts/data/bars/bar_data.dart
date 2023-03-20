@@ -24,7 +24,7 @@ class BarData extends Equatable {
   final LabelMapper? label;
 
   /// Text Styling for the [label].
-  final ChartTextStyle labelStyle;
+  final ChartTextStyle? labelStyle;
 
   /// Styling for the Individual Bar in this [BarData].
   ///
@@ -46,27 +46,15 @@ class BarData extends Equatable {
   }
 
   static BarData lerp(BarData? current, BarData? target, double t) {
-    // print('-------------------------');
-    // print('Lerping Gradient in BarData');
-    // print('-------------------------');
-    // print('from ${current?.barStyle?.gradient?.colors} to ${target?.barStyle?.gradient?.colors} at $t');
-    // print('New Lerped Gradient: ${BarDataStyle.lerp(current?.barStyle, target?.barStyle, t).gradient?.colors}');
-    // print('-------------------------');
-
-    // if (target?.barStyle?.barColor != null) {
-    //   print('-------------------------');
-    //   print('Lerping Color in BarData');
-    //   print('-------------------------');
-    //   print('from ${current?.barStyle?.barColor} to ${target?.barStyle?.barColor} at $t');
-    //   print('New Lerped Color: ${BarDataStyle.lerp(current?.barStyle, target?.barStyle, t).barColor}');
-    //   print('-------------------------');
-    // }
     return BarData(
       startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
       yValue: lerpDouble(current?.yValue, target?.yValue, t) as num,
       label: target?.label,
-      labelStyle:
-          ChartTextStyle.lerp(current?.labelStyle, target?.labelStyle, t),
+      labelStyle: ChartTextStyle.lerp(
+        current?.labelStyle,
+        target?.labelStyle,
+        t,
+      ),
       barStyle: BarDataStyle.lerp(current?.barStyle, target?.barStyle, t),
     );
   }

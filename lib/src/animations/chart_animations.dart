@@ -67,7 +67,6 @@ mixin ChartAnimations<T> on ChangeNotifier {
         ..stop()
         ..reset()
         ..forward();
-
     }
   }
 

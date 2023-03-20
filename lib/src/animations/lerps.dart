@@ -17,4 +17,7 @@ List<T> lerpList<T>(
   double t, {
   required Lerp<T> lerp,
 }) =>
-    List.generate(target.length, (i) => lerp(current?.getOrNull(i), target[i], t),);
+    List.generate(
+      target.length,
+      (i) => lerp(current?.getOrNull(i), target[i], t),
+    );

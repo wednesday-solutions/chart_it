@@ -11,10 +11,10 @@ typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
 typedef LabelMapper = String Function(num value);
 
 abstract class CartesianSeries with ZeroValueProvider<CartesianSeries> {
-
-  static T when<T>(
-      {required CartesianSeries value, required T Function() barSeries}) {
-    switch (value.runtimeType) {
+  T when<T>({
+    required T Function() barSeries,
+  }) {
+    switch (runtimeType) {
       case BarSeries:
         return barSeries();
       default:
@@ -55,7 +55,8 @@ class CartesianChartStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props => [backgroundColor, alignment, orientation, gridStyle, axisStyle];
+  List<Object?> get props =>
+      [backgroundColor, alignment, orientation, gridStyle, axisStyle];
 
   CartesianChartStyle copyWith({
     Color? backgroundColor,
@@ -103,7 +104,8 @@ class CartesianGridStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props => [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
+  List<Object?> get props =>
+      [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
 
   CartesianGridStyle copyWith({
     bool? show,

@@ -32,14 +32,16 @@ class SimpleBar extends BarGroup with EquatableMixin {
   List<Object?> get props =>
       [super.xValue, yValue, super.label, super.labelStyle, super.groupStyle];
 
-  static SimpleBar lerp(BarGroup? a, BarGroup b, double t) {
-    if ((a is SimpleBar?) && b is SimpleBar) {
+  static SimpleBar lerp(BarGroup? current, BarGroup target, double t) {
+    if ((current is SimpleBar?) && target is SimpleBar) {
       return SimpleBar(
-        xValue: lerpDouble(a?.xValue, b.xValue, t) as num,
-        yValue: BarData.lerp(a?.yValue, b.yValue, t),
-        label: b.label,
-        labelStyle: ChartTextStyle.lerp(a?.labelStyle, b.labelStyle, t),
-        groupStyle: BarDataStyle.lerp(a?.groupStyle, b.groupStyle, t),
+        xValue: lerpDouble(current?.xValue, target.xValue, t) as num,
+        yValue: BarData.lerp(current?.yValue, target.yValue, t),
+        label: target.label,
+        labelStyle:
+            ChartTextStyle.lerp(current?.labelStyle, target.labelStyle, t),
+        groupStyle:
+            BarDataStyle.lerp(current?.groupStyle, target.groupStyle, t),
       );
     } else {
       throw Exception('Both current & target data should be of same series!');

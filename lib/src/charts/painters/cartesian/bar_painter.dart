@@ -27,14 +27,15 @@ class BarPainter implements CartesianPainter {
       if (maxBarsInGroup != _instance!.maxBarsInGroup ||
           useGraphUnits != _instance!.useGraphUnits) {
         // provide a new factory instance
-        return BarPainter._(useGraphUnits, maxBarsInGroup);
-      } else {
-        // or return the same instance
+        _instance = BarPainter._(useGraphUnits, maxBarsInGroup);
         return _instance!;
       }
     } else {
-      return BarPainter._(useGraphUnits, maxBarsInGroup);
+      // create a new instance & we will use this
+      _instance = BarPainter._(useGraphUnits, maxBarsInGroup);
     }
+    // In either case, we should've provided an instance for our Painter
+    return _instance!;
   }
 
   @override

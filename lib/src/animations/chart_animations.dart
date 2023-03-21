@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /// call [animateDataUpdates].
 ///
 /// To update the tween when new data is available and animate to the new state call [updateDataSeries].
-mixin ChartAnimations<T> on ChangeNotifier {
+mixin ChartAnimationsMixin<T> on ChangeNotifier {
   @protected
   List<Tween<T>> get tweenSeries;
 
@@ -20,7 +20,7 @@ mixin ChartAnimations<T> on ChangeNotifier {
 
   void setData(List<T> data);
 
-  void setCurrentData(List<T> data);
+  void setAnimatableData(List<T> data);
 
   List<Tween<T>> getTweens({
     required List<T> newSeries,
@@ -32,11 +32,11 @@ mixin ChartAnimations<T> on ChangeNotifier {
   /// Adds a listener on [animation].
   ///
   /// On every update calls :
-  /// 1. [setCurrentData] with the values of [tweenSeries] evaluated at current value of [animation].
+  /// 1. [setAnimatableData] with the values of [tweenSeries] evaluated at current value of [animation].
   /// 2. [notifyListeners] so that [CustomPainter.paint] is called on the painters registered with this controller.
   void animateDataUpdates() {
     animation.addListener(() {
-      setCurrentData(
+      setAnimatableData(
         tweenSeries.map((series) => series.evaluate(animation)).toList(),
       );
       // Finally trigger a rebuild for all the painters
@@ -67,6 +67,9 @@ mixin ChartAnimations<T> on ChangeNotifier {
         ..stop()
         ..reset()
         ..forward();
+    } else {
+      // We are to not animate the data updates
+      setAnimatableData(newSeries);
     }
   }
 

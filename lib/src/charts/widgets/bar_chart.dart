@@ -23,7 +23,12 @@ class BarChart extends StatefulWidget {
   /// Chart loads for the first time.
   ///
   /// Defaults to true.
-  final bool onLoadAnimate;
+  final bool animateOnLoad;
+
+  /// Controls if the charts should auto animate any updates to the data
+  ///
+  /// Defaults to true.
+  final bool autoAnimate;
 
   /// Maximum Value along Y-Axis
   /// Draws the Highest Value point along Positive Y-Axis
@@ -41,7 +46,8 @@ class BarChart extends StatefulWidget {
     this.title,
     this.chartWidth,
     this.chartHeight,
-    this.onLoadAnimate = true,
+    this.animateOnLoad = true,
+    this.autoAnimate = true,
     this.maxYValue,
     this.chartStyle,
     required this.data,
@@ -115,7 +121,8 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
       data: [widget.data],
-      animateOnLoad: widget.onLoadAnimate,
+      animateOnLoad: widget.animateOnLoad,
+      autoAnimate: widget.autoAnimate,
       animation: AnimationController(
         duration: const Duration(seconds: 1),
         vsync: this,

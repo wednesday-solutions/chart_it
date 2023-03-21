@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';

@@ -1,9 +1,10 @@
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
-import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/animation.dart';
 
 /// This class defines the Data Set to be provided to the BarChart
 /// and the Global Styling options
@@ -60,7 +61,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
           target.seriesStyle,
           t,
         ),
-        barData: BarGroup.llerp(current?.barData, target.barData, t),
+        barData: BarGroup.lerpBarGroupList(current?.barData, target.barData, t),
       );
     } else {
       throw Exception('Both current & target data should be of same series!');
@@ -69,4 +70,14 @@ class BarSeries extends CartesianSeries with EquatableMixin {
 
   @override
   CartesianSeries get zeroValue => BarSeries.zero();
+}
+
+class BarSeriesTween extends Tween<BarSeries> {
+  BarSeriesTween({
+    required BarSeries? begin,
+    required BarSeries end,
+  }) : super(begin: begin, end: end);
+
+  @override
+  BarSeries lerp(double t) => BarSeries.lerp(begin, end!, t);
 }

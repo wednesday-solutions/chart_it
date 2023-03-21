@@ -20,14 +20,16 @@ class PolarAxis extends RadialAxis with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    super.tickStyle,
-    super.gridLineStrokeColor,
-    super.gridLineStrokeWidth,
-  ];
+        super.tickStyle,
+        super.gridLineStrokeColor,
+        super.gridLineStrokeWidth,
+      ];
 
-  PolarAxis copyWith(ChartTextStyle? tickStyle,
-      Color? gridLineStrokeColor,
-      double? gridLineStrokeWidth,) {
+  PolarAxis copyWith(
+    ChartTextStyle? tickStyle,
+    Color? gridLineStrokeColor,
+    double? gridLineStrokeWidth,
+  ) {
     return PolarAxis(
       tickStyle: tickStyle ?? super.tickStyle,
       gridLineStrokeColor: gridLineStrokeColor ?? super.gridLineStrokeColor,
@@ -61,13 +63,13 @@ class RadarAxis extends RadialAxis with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    super.tickStyle,
-    angleLabelStyle,
-    super.gridLineStrokeColor,
-    super.gridLineStrokeWidth,
-    angleLineStrokeColor,
-    angleLineStrokeWidth,
-  ];
+        super.tickStyle,
+        angleLabelStyle,
+        super.gridLineStrokeColor,
+        super.gridLineStrokeWidth,
+        angleLineStrokeColor,
+        angleLineStrokeWidth,
+      ];
 
   RadarAxis copyWith({
     ChartTextStyle? tickStyle,

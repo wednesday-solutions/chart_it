@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:chart_it/src/charts/data/core/radial_data.dart';
+import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
-import 'package:chart_it/src/common/radial_observer.dart';
+import 'package:chart_it/src/controllers/radial_controller.dart';
+import 'package:flutter/material.dart';
 
 class RadialChartPainter extends CustomPainter {
   late double graphWidth;
@@ -14,7 +14,7 @@ class RadialChartPainter extends CustomPainter {
   late double unitStep;
 
   final RadialChartStyle style;
-  final RadialObserver observer;
+  final RadialController observer;
   final List<RadialPainter> painters;
 
   RadialChartPainter({

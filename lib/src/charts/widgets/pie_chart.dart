@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/core/radial_data.dart';
+import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/painters/radial/pie_painter.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/charts/widgets/core/radial_charts.dart';
-import 'package:chart_it/src/common/radial_observer.dart';
+import 'package:chart_it/src/controllers/radial_controller.dart';
+import 'package:flutter/material.dart';
 
 /// Draws a PieChart or Donut Chart for the Provided Data
 class PieChart extends StatefulWidget {
@@ -41,7 +41,7 @@ class PieChart extends StatefulWidget {
 }
 
 class _PieChartState extends State<PieChart> {
-  late RadialObserver _observer;
+  late RadialController _observer;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _PieChartState extends State<PieChart> {
     }
 
     // Now we can provide the chart details to the observer
-    _observer = RadialObserver(
+    _observer = RadialController(
       minValue: minValue,
       maxValue: maxValue,
     );

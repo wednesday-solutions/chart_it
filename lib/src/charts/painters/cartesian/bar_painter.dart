@@ -7,20 +7,44 @@ import 'package:chart_it/src/extensions/paint_objects.dart';
 import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter {
+  late BarSeries _data;
   late double _vRatio;
   late double _unitWidth;
-  final BarSeries data;
   final bool useGraphUnits;
   final int maxBarsInGroup;
 
-  BarPainter({
-    required this.data,
-    required this.useGraphUnits,
-    this.maxBarsInGroup = 1,
-  });
+  /// get the instance of our painter
+  static BarPainter? _instance;
+
+  BarPainter._(this.useGraphUnits, this.maxBarsInGroup);
+
+  factory BarPainter({
+    required bool useGraphUnits,
+    maxBarsInGroup = 1,
+  }) {
+    if (_instance != null) {
+      // If fields have been updated then
+      if (maxBarsInGroup != _instance!.maxBarsInGroup ||
+          useGraphUnits != _instance!.useGraphUnits) {
+        // provide a new factory instance
+        _instance = BarPainter._(useGraphUnits, maxBarsInGroup);
+        return _instance!;
+      }
+    } else {
+      // create a new instance & we will use this
+      _instance = BarPainter._(useGraphUnits, maxBarsInGroup);
+    }
+    // In either case, we should've provided an instance for our Painter
+    return _instance!;
+  }
 
   @override
-  void paint(Canvas canvas, Size size, CartesianChartPainter chart) {
+  void paint(
+    CartesianSeries series,
+    Canvas canvas,
+    CartesianChartPainter chart,
+  ) {
+    _data = series as BarSeries;
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
@@ -29,7 +53,7 @@ class BarPainter implements CartesianPainter {
 
     var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
-    for (final group in data.barData) {
+    for (final group in _data.barData) {
       if (group is SimpleBar) {
         // We have to paint a single bar
         _drawSimpleBar(canvas, chart, dx, group);
@@ -59,7 +83,7 @@ class BarPainter implements CartesianPainter {
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var style = group.yValue.barStyle ??
         group.groupStyle ??
-        data.seriesStyle ??
+        _data.seriesStyle ??
         defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
@@ -91,7 +115,7 @@ class BarPainter implements CartesianPainter {
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
       var style = barData.barStyle ??
           group.groupStyle ??
-          data.seriesStyle ??
+          _data.seriesStyle ??
           defaultBarSeriesStyle;
 
       _drawBar(
@@ -112,7 +136,7 @@ class BarPainter implements CartesianPainter {
   _drawBar(
     Canvas canvas,
     CartesianChartPainter chart,
-    BarDataStyle style,
+    BarDataStyle? style,
     double dxCenter,
     double barWidth,
     num yValue,
@@ -132,10 +156,10 @@ class BarPainter implements CartesianPainter {
       height: y,
     );
 
-    var topLeft = style.cornerRadius?.topLeft ?? Radius.zero;
-    var topRight = style.cornerRadius?.topRight ?? Radius.zero;
-    var bottomLeft = style.cornerRadius?.bottomLeft ?? Radius.zero;
-    var bottomRight = style.cornerRadius?.bottomRight ?? Radius.zero;
+    var topLeft = style?.cornerRadius?.topLeft ?? Radius.zero;
+    var topRight = style?.cornerRadius?.topRight ?? Radius.zero;
+    var bottomLeft = style?.cornerRadius?.bottomLeft ?? Radius.zero;
+    var bottomRight = style?.cornerRadius?.bottomRight ?? Radius.zero;
 
     var bar = RRect.fromRectAndCorners(
       rect,
@@ -147,16 +171,16 @@ class BarPainter implements CartesianPainter {
     );
 
     var barPaint = Paint()
-      ..color = (style.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style.gradient ?? defaultBarSeriesStyle.gradient)
+      ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
           ?.toShader(bar.outerRect);
 
     var barStroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = (style.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
-      ..color = (style.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
+      ..strokeWidth = (style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
+      ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
 
     canvas.drawRRect(bar, barPaint); // draw fill
     canvas.drawRRect(bar, barStroke); // draw stroke
@@ -174,7 +198,8 @@ class BarPainter implements CartesianPainter {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: group.label!(group.xValue),
         maxWidth: _unitWidth,
-        chartTextStyle: group.labelStyle ?? data.labelStyle,
+        chartTextStyle:
+            group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(
@@ -195,7 +220,7 @@ class BarPainter implements CartesianPainter {
     if (data.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: data.label!(data.yValue),
-        chartTextStyle: data.labelStyle,
+        chartTextStyle: data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(

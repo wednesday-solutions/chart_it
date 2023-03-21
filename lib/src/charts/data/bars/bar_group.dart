@@ -1,6 +1,9 @@
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
-import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
+import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 
 /// Sets the Arrangement for all the bars in a [BarGroup].
 ///
@@ -38,4 +41,36 @@ abstract class BarGroup {
     this.labelStyle,
     this.groupStyle,
   });
+
+  static BarGroup lerp(BarGroup? current, BarGroup target, double t) {
+    final currentValue =
+        current == null || current.runtimeType != target.runtimeType
+            ? null
+            : current;
+    return target._when(
+      simpleBar: () => SimpleBar.lerp(currentValue, target, t),
+      multiBar: () => MultiBar.lerp(currentValue, target, t),
+    );
+  }
+
+  static List<BarGroup> lerpBarGroupList(
+    List<BarGroup>? current,
+    List<BarGroup> target,
+    double t,
+  ) =>
+      lerpList(current, target, t, lerp: lerp);
+
+  T _when<T>({
+    required T Function() simpleBar,
+    required T Function() multiBar,
+  }) {
+    switch (runtimeType) {
+      case SimpleBar:
+        return simpleBar();
+      case MultiBar:
+        return multiBar();
+      default:
+        throw TypeError();
+    }
+  }
 }

@@ -1,6 +1,8 @@
-import 'package:equatable/equatable.dart';
+import 'dart:ui';
+
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:equatable/equatable.dart';
 
 /// Defines a Group of Multiple Bars
 ///
@@ -46,4 +48,16 @@ class MultiBar extends BarGroup with EquatableMixin {
 
   @override
   List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
+
+  static MultiBar lerp(BarGroup? current, BarGroup target, double t) {
+    if ((current is MultiBar?) && target is MultiBar) {
+      return MultiBar(
+        xValue: lerpDouble(current?.xValue, target.xValue, t) as num,
+        yValues: BarData.lerpBarDataList(current?.yValues, target.yValues, t),
+        arrangement: target.arrangement,
+      );
+    } else {
+      throw Exception('Both current & target data should be of same series!');
+    }
+  }
 }

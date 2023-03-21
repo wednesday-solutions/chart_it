@@ -68,9 +68,7 @@ class _TestBarChartState extends State<TestBarChart> {
                 color: theme.colorScheme.inverseSurface,
               ),
             ),
-            yValue: const BarData(
-              yValue: 45,
-            ),
+            yValue: const BarData(yValue: 45),
           ),
           SimpleBar(
             xValue: 2,
@@ -80,9 +78,7 @@ class _TestBarChartState extends State<TestBarChart> {
                 color: theme.colorScheme.inverseSurface,
               ),
             ),
-            yValue: const BarData(
-              yValue: -22,
-            ),
+            yValue: const BarData(yValue: -22),
           ),
           SimpleBar(
             xValue: 4,
@@ -92,9 +88,7 @@ class _TestBarChartState extends State<TestBarChart> {
                 color: theme.colorScheme.inverseSurface,
               ),
             ),
-            yValue: const BarData(
-              yValue: 49,
-            ),
+            yValue: const BarData(yValue: 49),
           ),
         ],
       ),

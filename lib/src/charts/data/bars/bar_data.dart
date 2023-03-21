@@ -1,8 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'dart:ui';
+
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
-import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:equatable/equatable.dart';
 
 /// Defines the Data of Each Individual Bar in a [MultiBar] group
 ///
@@ -21,7 +24,7 @@ class BarData extends Equatable {
   final LabelMapper? label;
 
   /// Text Styling for the [label].
-  final ChartTextStyle labelStyle;
+  final ChartTextStyle? labelStyle;
 
   /// Styling for the Individual Bar in this [BarData].
   ///
@@ -35,6 +38,33 @@ class BarData extends Equatable {
     this.labelStyle = const ChartTextStyle(),
     this.barStyle,
   });
+
+  factory BarData.zero() {
+    return const BarData(
+      yValue: 0,
+    );
+  }
+
+  static BarData lerp(BarData? current, BarData? target, double t) {
+    return BarData(
+      startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
+      yValue: lerpDouble(current?.yValue, target?.yValue, t) as num,
+      label: target?.label,
+      labelStyle: ChartTextStyle.lerp(
+        current?.labelStyle,
+        target?.labelStyle,
+        t,
+      ),
+      barStyle: BarDataStyle.lerp(current?.barStyle, target?.barStyle, t),
+    );
+  }
+
+  static List<BarData> lerpBarDataList(
+    List<BarData>? current,
+    List<BarData> target,
+    double t,
+  ) =>
+      lerpList(current, target, t, lerp: lerp);
 
   @override
   List<Object?> get props => [startYFrom, yValue, label, labelStyle, barStyle];

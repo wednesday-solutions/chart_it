@@ -16,7 +16,7 @@ enum BarGroupArrangement { series, stack }
 ///
 /// Holds the X-Value, Labels and Styling.
 /// {@endtemplate}
-abstract class BarGroup with ZeroValueProvider<BarGroup> {
+abstract class BarGroup {
   /// The Value along X-Axis for this [BarGroup].
   ///
   /// This value is not used for plotting on X-Axis.
@@ -41,21 +41,6 @@ abstract class BarGroup with ZeroValueProvider<BarGroup> {
     this.labelStyle,
     this.groupStyle,
   });
-
-  factory BarGroup.zero(Type type) {
-    if (type == SimpleBar) {
-      return SimpleBar.zero();
-    }
-
-    if (type == MultiBar) {
-      return MultiBar.zero();
-    }
-
-    throw TypeError();
-  }
-
-  @override
-  BarGroup get zeroValue;
 
   static BarGroup lerp(BarGroup? current, BarGroup target, double t) {
     final currentValue =

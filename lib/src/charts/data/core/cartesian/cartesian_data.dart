@@ -1,5 +1,4 @@
 import 'package:chart_it/chart_it.dart';
-import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ enum CartesianChartAlignment {
 /// Orientation of the Chart
 enum CartesianChartOrientation { vertical, horizontal }
 
-abstract class CartesianSeries with ZeroValueProvider<CartesianSeries> {
+abstract class CartesianSeries {
   T when<T>({required T Function() barSeries}) {
     switch (runtimeType) {
       case BarSeries:
@@ -32,9 +31,6 @@ abstract class CartesianSeries with ZeroValueProvider<CartesianSeries> {
         throw TypeError();
     }
   }
-
-  @override
-  CartesianSeries get zeroValue;
 }
 
 List<Tween<CartesianSeries>>? toCartesianTweens(

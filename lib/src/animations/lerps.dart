@@ -4,10 +4,6 @@ import 'package:chart_it/src/extensions/primitives.dart';
 
 typedef Lerp<T> = T Function(T?, T, double);
 
-mixin ZeroValueProvider<T> {
-  T get zeroValue;
-}
-
 int? lerpInt(int? current, int? target, double t) =>
     lerpDouble(current, target, t)?.round();
 

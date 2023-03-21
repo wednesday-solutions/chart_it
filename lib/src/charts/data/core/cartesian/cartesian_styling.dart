@@ -1,30 +1,7 @@
-import 'package:chart_it/chart_it.dart';
-import 'package:chart_it/src/animations/lerps.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
-/// Callback to construct a CartesianPainter for provided CartesianSeries Type
-typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
-
-/// Callback for Mapping a String Value to a Label
-typedef LabelMapper = String Function(num value);
-
-abstract class CartesianSeries with ZeroValueProvider<CartesianSeries> {
-  T when<T>({
-    required T Function() barSeries,
-  }) {
-    switch (runtimeType) {
-      case BarSeries:
-        return barSeries();
-      default:
-        throw TypeError();
-    }
-  }
-
-  @override
-  CartesianSeries get zeroValue;
-}
 
 /// Provides the Styling options for any Cartesian Chart.
 ///
@@ -210,16 +187,3 @@ class CartesianAxisStyle extends Equatable {
     );
   }
 }
-
-/// Alignment of the Data Points for any Cartesian Charts
-enum CartesianChartAlignment {
-  start,
-  end,
-  center,
-  spaceEvenly,
-  spaceAround,
-  spaceBetween,
-}
-
-/// Orientation of the Chart
-enum CartesianChartOrientation { vertical, horizontal }

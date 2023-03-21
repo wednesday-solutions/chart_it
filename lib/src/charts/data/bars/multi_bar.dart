@@ -60,7 +60,7 @@ class MultiBar extends BarGroup with EquatableMixin {
     if ((current is MultiBar?) && target is MultiBar) {
       return MultiBar(
         xValue: lerpDouble(current?.xValue, target.xValue, t) as num,
-        yValues: BarData.llerp(current?.yValues, target.yValues, t),
+        yValues: BarData.lerpBarDataList(current?.yValues, target.yValues, t),
         arrangement: target.arrangement,
       );
     } else {

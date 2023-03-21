@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
-import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:equatable/equatable.dart';
 
 /// Defines the Data of Each Individual Bar in a [MultiBar] group
@@ -59,7 +59,7 @@ class BarData extends Equatable {
     );
   }
 
-  static List<BarData> llerp(
+  static List<BarData> lerpBarDataList(
     List<BarData>? current,
     List<BarData> target,
     double t,

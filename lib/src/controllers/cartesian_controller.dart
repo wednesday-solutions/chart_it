@@ -1,10 +1,9 @@
 import 'package:chart_it/src/animations/chart_animations.dart';
-import 'package:chart_it/src/animations/tweens.dart';
-import 'package:chart_it/src/charts/data/core/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:flutter/material.dart';
 
 class CartesianController extends ChangeNotifier
-    with ChartAnimations<CartesianSeries> {
+    with ChartAnimationsMixin<CartesianSeries> {
   List<CartesianSeries> currentData = List.empty();
   List<CartesianSeries> data;
 
@@ -69,7 +68,7 @@ class CartesianController extends ChangeNotifier
       List.empty();
 
   @override
-  void setCurrentData(List<CartesianSeries> data) => currentData = data;
+  void setAnimatableData(List<CartesianSeries> data) => currentData = data;
 
   @override
   void setData(List<CartesianSeries> data) => this.data = data;

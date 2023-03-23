@@ -1,14 +1,12 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
-import 'package:chart_it/src/extensions/validators.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 mixin SeriesAggregatorMixin<T> {
   void aggregateData(List<T> data);
 }
 
-typedef ValueMapper<T> = Tuple2<double, double> Function(T data);
+typedef ValueMapper<T> = T Function(T data);
 typedef BarSeriesMapper = Function(
   BarSeries data,
   ValueMapper<BarGroup> minMaxValue,
@@ -32,8 +30,7 @@ class TempController with SeriesAggregatorMixin<CartesianSeries> {
     for (var i = 0; i < iterations; i++) {
       // TODO: iterate over the n'th index of every series
       for (var series in data) {
-        whereSeries(
-          series.runtimeType,
+        series.when(
           onBarSeries: () {
             var barSeries = series as BarSeries;
             if (i < barSeries.barData.length) {
@@ -99,7 +96,7 @@ class BarSeriesReducer {
     return _instance;
   }
 
-  Tuple2<double, double>? reduce(BarSeries data) {
-    // TODO: return min & max Y values here
-  }
+// Tuple2<double, double>? reduce(BarSeries data) {
+//   // TODO: return min & max Y values here
+// }
 }

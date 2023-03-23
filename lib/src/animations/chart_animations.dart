@@ -70,6 +70,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     } else {
       // We are to not animate the data updates
       setAnimatableData(newSeries);
+      notifyListeners();
     }
   }
 

@@ -26,17 +26,21 @@ class CartesianChartPainter extends CustomPainter {
   late double _yUnitsCount;
   late double totalYRange;
 
+  final double? uMinXValue;
+  final double? uMaxXValue;
+  final double? uMinYValue;
+  final double? uMaxYValue;
+
   final CartesianChartStyle style;
   final CartesianController controller;
-  final CartesianPaintConstructor paintBuilder;
-
-  // final List<CartesianPainter> painters;
 
   CartesianChartPainter({
+    this.uMinXValue,
+    this.uMaxXValue,
+    this.uMinYValue,
+    this.uMaxYValue,
     required this.style,
     required this.controller,
-    // required this.painters,
-    required this.paintBuilder,
   }) : super(repaint: controller);
 
   @override
@@ -57,10 +61,10 @@ class CartesianChartPainter extends CustomPainter {
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
     for (var series in controller.currentData) {
-      // construct the painter for this data
-      var painter = paintBuilder(series.runtimeType);
+      // get the painter for this data
+      var painter = controller.painters[series.runtimeType];
       // and paint the chart for given series
-      painter.paint(series, canvas, this);
+      painter?.paint(series, canvas, this);
     }
 
     // We will draw axis on top of the painted chart data.

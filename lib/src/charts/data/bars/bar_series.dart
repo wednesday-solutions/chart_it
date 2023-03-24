@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
+import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/animation.dart';
 
@@ -44,11 +48,9 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
 
-  static BarSeries lerp(
-    CartesianSeries? current,
-    CartesianSeries target,
-    double t,
-  ) {
+  static BarSeries lerp(CartesianSeries? current,
+      CartesianSeries target,
+      double t,) {
     if ((current is BarSeries?) && target is BarSeries) {
       return BarSeries(
         labelStyle: ChartTextStyle.lerp(
@@ -66,6 +68,48 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     } else {
       throw Exception('Both current & target data should be of same series!');
     }
+  }
+}
+
+class BarSeriesConfig extends CartesianConfig {
+  var maxBarsInGroup = 1;
+  var calculatedMinXValue = 0.0;
+  var calculatedMaxXValue = double.infinity;
+  var calculatedMinYValue = 0.0;
+  var calculatedMaxYValue = double.infinity;
+
+  BarSeriesConfig();
+
+  void updateEdges(
+    BarGroup group,
+    Function(double minX, double maxX, double minY, double maxY) onUpdate,
+  ) {
+    var yValue = group.yValues();
+
+    var minV = double.infinity;
+    var maxV = 0.0;
+
+    if (group is MultiBar && group.arrangement == BarGroupArrangement.stack) {
+      minV = min(minV, 0);
+      // For a stack, the y value of the bar is the total of all bars
+      maxV = max(maxV, yValue.fold(0, (a, b) => a + b.yValue));
+    } else {
+      for (final data in yValue) {
+        minV = min(minV, data.yValue.toDouble());
+        maxV = max(maxV, data.yValue.toDouble());
+      }
+    }
+
+    calculatedMinYValue = min(calculatedMinYValue, minV);
+    calculatedMaxYValue = max(calculatedMaxYValue, maxV);
+    maxBarsInGroup = max(maxBarsInGroup, yValue.length);
+
+    onUpdate(
+      calculatedMinXValue,
+      calculatedMaxXValue,
+      calculatedMinYValue,
+      calculatedMaxYValue,
+    );
   }
 }
 

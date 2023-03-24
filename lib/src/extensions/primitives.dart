@@ -5,6 +5,11 @@ extension AsExtension on Object? {
     var currObject = this;
     return currObject is X ? currObject : null;
   }
+
+  X? ifNullThen<X>(X defaultValue) {
+    var currObject = this;
+    return currObject.asOrNull() ?? defaultValue;
+  }
 }
 
 extension ListTransforms<T> on List<T> {
@@ -21,6 +26,28 @@ extension ListTransforms<T> on List<T> {
       return null;
     } else {
       return this[index];
+    }
+  }
+
+  List<T> distinct() => toSet().toList();
+
+  List<Type> distinctTypes() => map((e) => e.runtimeType).toSet().toList();
+}
+
+extension ContainsKey<K, V> on Map<K, V> {
+  createAndUpdate(
+    K key, {
+    required V Function() onCreate,
+    Function(V? value)? onUpdate,
+  }) {
+    var isKeyPresent = containsKey(key);
+    if (!isKeyPresent) {
+      // Create new entry for this key
+      this[key] = onCreate();
+    }
+
+    if (onUpdate != null) {
+      onUpdate(this[key]);
     }
   }
 }

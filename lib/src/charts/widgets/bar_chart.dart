@@ -1,11 +1,7 @@
-import 'dart:math';
-
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/widgets/core/cartesian_charts.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
-import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:flutter/material.dart';
 
 /// Draws a BarChart for the Provided Data
@@ -59,81 +55,51 @@ class BarChart extends StatefulWidget {
 
 class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
   late CartesianController _controller;
-  var _maxBarsInGroup = 0;
+  // var _maxBarsInGroup = 0;
 
   @override
   void initState() {
     super.initState();
-    // For Bar charts, we normally don't consider x values, be it +ve or -ve
-    var calculatedMinXValue = 0.0;
-    var calculatedMaxXValue = widget.data.barData.length.toDouble();
-
-    var calculatedMinYValue = double.infinity;
-    var calculatedMaxYValue = 0.0;
-    // We need to find the min & max y value across every bar series
-    // In case, the user hasn't provided these values, we need to calculate them
-    for (final group in widget.data.barData) {
-      var yValue = group.yValues();
-
-      var minV = double.infinity;
-      var maxV = 0.0;
-
-      if (group is MultiBar && group.arrangement == BarGroupArrangement.stack) {
-        minV = min(minV, 0);
-        // For a stack, the y value of the bar is the total of all bars
-        maxV = max(maxV, yValue.fold(0, (a, b) => a + b.yValue));
-      } else {
-        for (final data in yValue) {
-          minV = min(minV, data.yValue.toDouble());
-          maxV = max(maxV, data.yValue.toDouble());
-        }
-      }
-
-      calculatedMinYValue = min(calculatedMinYValue, minV);
-      calculatedMaxYValue = max(calculatedMaxYValue, maxV);
-      _maxBarsInGroup = max(_maxBarsInGroup, yValue.length);
-    }
-
-    // Finally we will collect our user provided min/max values
-    // and the ones that we have calculated
-    var maxYValue = widget.maxYValue ?? calculatedMaxYValue;
-    var minYValue = calculatedMinYValue;
-
-    var unit = (widget.chartStyle ?? defaultCartesianChartStyle)
-        .gridStyle!
-        .yUnitValue!;
-    var maxYRange = maxYValue;
-    while (maxYRange % unit != 0) {
-      maxYRange++;
-    }
-
-    // We need to check for negative y values
-    var minYRange = minYValue;
-    if (minYValue.isNegative) {
-      while (minYRange % unit != 0) {
-        minYRange--;
-      }
-    } else {
-      // No negative y values, so min will be zero
-      minYRange = 0.0;
-    }
-
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
-      data: [widget.data],
-      animateOnLoad: widget.animateOnLoad,
-      autoAnimate: widget.autoAnimate,
-      animation: AnimationController(
-        duration: const Duration(seconds: 1),
-        vsync: this,
-      ),
-      minValue: minYValue,
-      maxValue: maxYValue,
-      maxXRange: calculatedMaxXValue,
-      minXRange: calculatedMinXValue,
-      maxYRange: maxYRange,
-      minYRange: minYRange,
-    );
+        data: [widget.data],
+        animateOnLoad: widget.animateOnLoad,
+        autoAnimate: widget.autoAnimate,
+        animation: AnimationController(
+          duration: const Duration(seconds: 1),
+          vsync: this,
+        ),
+        rangeConstraints: (c) {
+          // For Bar charts, we normally don't consider x values, be it +ve or -ve
+          c.maxXValue = widget.data.barData.length.toDouble();
+          // Finally we will collect our user provided min/max values
+          // and the ones that we have calculated
+          c.maxXRange = c.maxXValue;
+          c.minXRange = c.minXValue;
+          var minYValue = c.minYValue;
+
+          var yUnit = (widget.chartStyle ?? defaultCartesianChartStyle)
+              .gridStyle!
+              .yUnitValue!;
+
+          var maxYRange = widget.maxYValue ?? c.maxYValue;
+          while (maxYRange % yUnit != 0) {
+            maxYRange++;
+          }
+          c.maxYRange = maxYRange;
+
+          // We need to check for negative y values
+          var minYRange = minYValue;
+          if (minYValue.isNegative) {
+            while (minYRange % yUnit != 0) {
+              minYRange--;
+            }
+          } else {
+            // No negative y values, so min will be zero
+            minYRange = 0.0;
+          }
+          c.minYRange = minYRange;
+        });
   }
 
   @override
@@ -150,6 +116,7 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       controller: _controller,
       width: widget.chartWidth,
       height: widget.chartHeight,
+      uMaxYValue: widget.maxYValue,
       style: style.copyWith(
         gridStyle: style.gridStyle!.copyWith(
           // Unless the user is trying to play around with the xUnitValue,
@@ -157,16 +124,6 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
           xUnitValue: style.gridStyle?.xUnitValue ?? _controller.maxXRange,
         ),
       ),
-      constructPainters: (data) {
-        // TODO: In BarChart Widget, we know we can only have Data Series of
-        // BarChart, but in Multi-Chart we will have to type assert and
-        // return the appropriate painter for the type of data series
-        return BarPainter(
-          // data: series as BarSeries,
-          useGraphUnits: false,
-          maxBarsInGroup: _maxBarsInGroup,
-        );
-      },
     );
   }
 }

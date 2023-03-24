@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
-import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
@@ -26,8 +25,8 @@ extension Iterators on List<CartesianSeries> {
     var count = 0;
     forEach((series) {
       series.when(
-        onBarSeries: () {
-          count = max(count, (series as BarSeries).barData.length);
+        onBarSeries: (series) {
+          count = max(count, series.barData.length);
         },
       );
     });

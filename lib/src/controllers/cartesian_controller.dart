@@ -8,14 +8,15 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/data_mixins.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/data/chart_interaction_type.dart';
+import 'package:chart_it/src/interactions/hit_test/hit_test_executor_mixin.dart';
+import 'package:chart_it/src/interactions/hit_test/interaction_dispatcher.dart';
 import 'package:flutter/material.dart';
 
 class CartesianController extends ChangeNotifier
-    with
-        CartesianDataMixin<CartesianSeries>,
-        ChartAnimationsMixin<CartesianSeries> {
+    with CartesianDataMixin<CartesianSeries>, ChartAnimationsMixin<CartesianSeries>, InteractionDispatcher {
   final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
-  final Map<Type, CartesianPainter> painters = {};
+  final Map<CartesianSeries, CartesianPainter> painters = {};
 
   List<CartesianSeries> currentData = List.empty();
   List<CartesianSeries> data;
@@ -80,17 +81,17 @@ class CartesianController extends ChangeNotifier
 
   void invalidatePainters(List<CartesianSeries> data) {
     // For every distinct Cartesian Series, we will construct a painter for it
-    data.distinctTypes().forEach((series) {
+    for (var series in data) {
       painters.createAndUpdate(series, onCreate: () {
         return CartesianSeries.whenSeries(
-          series,
+          series.runtimeType,
           onBarSeries: () => BarPainter(useGraphUnits: false),
           orElse: () {
             throw ArgumentError('No Painter defined for this type: $series');
           },
         );
       });
-    });
+    }
   }
 
   @override
@@ -152,5 +153,20 @@ class CartesianController extends ChangeNotifier
     invalidatePainters(data);
     aggregateData(data);
     this.data = data;
+  }
+
+  @override
+  void onInteraction(ChartInteractionType interactionType, Offset localPosition) {
+    painters.forEach((series, painter) {
+      final hitTestPainter = painter.asOrNull<HitTestExecutorMixin>();
+      if (hitTestPainter != null && hitTestPainter.shouldHitTest) {
+        final result = hitTestPainter.hitTest(interactionType, localPosition);
+        if (result != null) {
+          series.when(onBarSeries: (barSeries) {
+            barSeries.interactionConfig.onInteraction(result);
+          });
+        }
+      }
+    });
   }
 }

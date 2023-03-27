@@ -5,9 +5,14 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/config/bar_interaction_config.dart';
+import 'package:chart_it/src/interactions/data/bar_interaction_result.dart';
+import 'package:chart_it/src/interactions/data/chart_interaction_type.dart';
+import 'package:chart_it/src/interactions/hit_test/hit_test_executor_mixin.dart';
+import 'package:chart_it/src/interactions/data/chart_interaction_result.dart';
 import 'package:flutter/material.dart';
 
-class BarPainter implements CartesianPainter {
+class BarPainter with HitTestExecutorMixin<BarInteractionResult> implements CartesianPainter {
   late BarSeriesConfig _config;
   late BarSeries _data;
 
@@ -93,10 +98,8 @@ class BarPainter implements CartesianPainter {
   ) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-    var style = group.yValue.barStyle ??
-        group.groupStyle ??
-        _data.seriesStyle ??
-        defaultBarSeriesStyle;
+    var style =
+        group.yValue.barStyle ?? group.groupStyle ?? _data.seriesStyle ?? defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     var barWidth = _unitWidth / _config.maxBarsInGroup;
@@ -125,10 +128,8 @@ class BarPainter implements CartesianPainter {
     for (final barData in group.yValues) {
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-      var style = barData.barStyle ??
-          group.groupStyle ??
-          _data.seriesStyle ??
-          defaultBarSeriesStyle;
+      var style =
+          barData.barStyle ?? group.groupStyle ?? _data.seriesStyle ?? defaultBarSeriesStyle;
 
       _drawBar(
         canvas,
@@ -184,8 +185,7 @@ class BarPainter implements CartesianPainter {
 
     var barPaint = Paint()
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
-          ?.toShader(bar.outerRect);
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)?.toShader(bar.outerRect);
 
     var barStroke = Paint()
       ..style = PaintingStyle.stroke
@@ -210,8 +210,7 @@ class BarPainter implements CartesianPainter {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: group.label!(group.xValue),
         maxWidth: _unitWidth,
-        chartTextStyle:
-            group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
+        chartTextStyle: group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(
@@ -243,5 +242,14 @@ class BarPainter implements CartesianPainter {
         ),
       );
     }
+  }
+
+  @override
+  bool get shouldHitTest => _data.interactionConfig.shouldHitTest;
+
+  @override
+  @protected
+  BarInteractionResult? hitTestInternal(ChartInteractionType interactionType, Offset localPosition) {
+    return null;
   }
 }

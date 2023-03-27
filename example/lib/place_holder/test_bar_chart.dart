@@ -41,6 +41,9 @@ class _TestBarChartState extends State<TestBarChart> {
       ),
       maxYValue: 70.0,
       data: BarSeries(
+        interactionConfig: BarInteractionConfig(isEnabled: true, onTap: (result) {
+          result.
+        }),
         seriesStyle: const BarDataStyle(
           barWidth: 10.0,
           barColor: Color(0xFF6D71EE),

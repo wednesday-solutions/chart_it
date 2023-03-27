@@ -7,6 +7,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
+import 'package:chart_it/src/interactions/config/bar_interaction_config.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/animation.dart';
 
@@ -33,10 +34,13 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   /// single or multiple group of bars.
   final List<BarGroup> barData;
 
+  final BarInteractionConfig interactionConfig;
+
   BarSeries({
     this.labelStyle = const ChartTextStyle(),
     this.seriesStyle,
     required this.barData,
+    this.interactionConfig = const BarInteractionConfig(isEnabled: false),
   });
 
   factory BarSeries.zero() {

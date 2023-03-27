@@ -82,7 +82,7 @@ class CartesianController extends ChangeNotifier
     // For every distinct Cartesian Series, we will construct a painter for it
     data.distinctTypes().forEach((series) {
       painters.createAndUpdate(series, onCreate: () {
-        return CartesianSeries.whenSeries(
+        return CartesianSeries.whenType(
           series,
           onBarSeries: () => BarPainter(useGraphUnits: false),
           orElse: () {
@@ -105,21 +105,23 @@ class CartesianController extends ChangeNotifier
             if (i < series.barData.length) {
               // We Know the index. We have to get the min/max values
               //  from the 'i'th element (BarGroup) in this series
-              _seriesConfigs.createAndUpdate(series,
-                  onCreate: () => BarSeriesConfig(),
-                  onUpdate: (config) {
-                    var barConfig = config.asOrNull<BarSeriesConfig>();
-                    // Run the min & max calculations
-                    barConfig?.updateEdges(
-                      series.barData[i],
-                      (minX, maxX, minY, maxY) {
-                        minXValue = min(minXValue, minX);
-                        maxXValue = max(maxXValue, maxX);
-                        minYValue = min(minYValue, minY);
-                        maxYValue = max(maxYValue, maxY);
-                      },
-                    );
-                  });
+              _seriesConfigs.createAndUpdate(
+                series,
+                onCreate: () => BarSeriesConfig(),
+                onUpdate: (config) {
+                  var barConfig = config.asOrNull<BarSeriesConfig>();
+                  // Run the min & max calculations
+                  barConfig?.updateEdges(
+                    series.barData[i],
+                    (minX, maxX, minY, maxY) {
+                      minXValue = min(minXValue, minX);
+                      maxXValue = max(maxXValue, maxX);
+                      minYValue = min(minYValue, minY);
+                      maxYValue = max(maxYValue, maxY);
+                    },
+                  );
+                },
+              );
             }
           },
         );

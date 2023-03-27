@@ -15,31 +15,9 @@ class BarPainter implements CartesianPainter {
   late double _unitWidth;
   final bool useGraphUnits;
 
-  // final int maxBarsInGroup;
-
-  /// get the instance of our painter
-  static BarPainter? _instance;
-
-  BarPainter._(this.useGraphUnits);
-
-  factory BarPainter({
-    required bool useGraphUnits,
-    maxBarsInGroup = 1,
-  }) {
-    if (_instance != null) {
-      // If fields have been updated then
-      if (useGraphUnits != _instance!.useGraphUnits) {
-        // provide a new factory instance
-        _instance = BarPainter._(useGraphUnits);
-        return _instance!;
-      }
-    } else {
-      // create a new instance & we will use this
-      _instance = BarPainter._(useGraphUnits);
-    }
-    // In either case, we should've provided an instance for our Painter
-    return _instance!;
-  }
+  BarPainter({
+    required this.useGraphUnits,
+  });
 
   @override
   void paint(
@@ -52,7 +30,7 @@ class BarPainter implements CartesianPainter {
     // Setup the bar chart config
     var config = chart.controller.getConfig(_data);
     if (config == null) {
-      throw ArgumentError('Invalid State!');
+      throw ArgumentError('Invalid State! Couldn\'t find a config for $_data');
     } else {
       _config = config.asOrNull<BarSeriesConfig>()!;
     }

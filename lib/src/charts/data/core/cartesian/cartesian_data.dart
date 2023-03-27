@@ -43,7 +43,7 @@ abstract class CartesianSeries {
     }
   }
 
-  static T whenSeries<T>(
+  static T whenType<T>(
     Type type, {
     T Function()? onBarSeries,
     required T Function() orElse,
@@ -71,7 +71,7 @@ List<Tween<CartesianSeries>>? toCartesianTweens(
     return target.when(
       onBarSeries: (series) {
         return BarSeriesTween(
-          begin: currentValue.ifNullThen(BarSeries.zero()),
+          begin: currentValue.asOrDefault(BarSeries.zero()),
           end: series,
         );
       },

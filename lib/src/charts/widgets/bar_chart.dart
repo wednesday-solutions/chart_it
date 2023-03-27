@@ -55,6 +55,7 @@ class BarChart extends StatefulWidget {
 
 class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
   late CartesianController _controller;
+
   // var _maxBarsInGroup = 0;
 
   @override
@@ -62,44 +63,45 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
     super.initState();
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
-        data: [widget.data],
-        animateOnLoad: widget.animateOnLoad,
-        autoAnimate: widget.autoAnimate,
-        animation: AnimationController(
-          duration: const Duration(seconds: 1),
-          vsync: this,
-        ),
-        rangeConstraints: (c) {
-          // For Bar charts, we normally don't consider x values, be it +ve or -ve
-          c.maxXValue = widget.data.barData.length.toDouble();
-          // Finally we will collect our user provided min/max values
-          // and the ones that we have calculated
-          c.maxXRange = c.maxXValue;
-          c.minXRange = c.minXValue;
-          var minYValue = c.minYValue;
+      data: [widget.data],
+      animateOnLoad: widget.animateOnLoad,
+      autoAnimate: widget.autoAnimate,
+      animation: AnimationController(
+        duration: const Duration(seconds: 1),
+        vsync: this,
+      ),
+      rangeConstraints: (c) {
+        // For Bar charts, we normally don't consider x values, be it +ve or -ve
+        c.maxXValue = widget.data.barData.length.toDouble();
+        // Finally we will collect our user provided min/max values
+        // and the ones that we have calculated
+        c.maxXRange = c.maxXValue;
+        c.minXRange = c.minXValue;
+        var minYValue = c.minYValue;
 
-          var yUnit = (widget.chartStyle ?? defaultCartesianChartStyle)
-              .gridStyle!
-              .yUnitValue!;
+        var yUnit = (widget.chartStyle?.gridStyle ??
+                defaultCartesianChartStyle.gridStyle)!
+            .yUnitValue!;
 
-          var maxYRange = widget.maxYValue ?? c.maxYValue;
-          while (maxYRange % yUnit != 0) {
-            maxYRange++;
+        var maxYRange = widget.maxYValue ?? c.maxYValue;
+        while (maxYRange % yUnit != 0) {
+          maxYRange++;
+        }
+        c.maxYRange = maxYRange;
+
+        // We need to check for negative y values
+        var minYRange = minYValue;
+        if (minYValue.isNegative) {
+          while (minYRange % yUnit != 0) {
+            minYRange--;
           }
-          c.maxYRange = maxYRange;
-
-          // We need to check for negative y values
-          var minYRange = minYValue;
-          if (minYValue.isNegative) {
-            while (minYRange % yUnit != 0) {
-              minYRange--;
-            }
-          } else {
-            // No negative y values, so min will be zero
-            minYRange = 0.0;
-          }
-          c.minYRange = minYRange;
-        });
+        } else {
+          // No negative y values, so min will be zero
+          minYRange = 0.0;
+        }
+        c.minYRange = minYRange;
+      },
+    );
   }
 
   @override

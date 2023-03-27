@@ -6,7 +6,7 @@ extension AsExtension on Object? {
     return currObject is X ? currObject : null;
   }
 
-  X? ifNullThen<X>(X defaultValue) {
+  X asOrDefault<X>(X defaultValue) {
     var currObject = this;
     return currObject.asOrNull() ?? defaultValue;
   }

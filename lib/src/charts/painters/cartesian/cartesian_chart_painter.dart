@@ -63,8 +63,14 @@ class CartesianChartPainter extends CustomPainter {
     for (var series in controller.currentData) {
       // get the painter for this data
       var painter = controller.painters[series.runtimeType];
-      // and paint the chart for given series
-      painter?.paint(series, canvas, this);
+      if (painter != null) {
+        // and paint the chart for given series
+        painter.paint(series, canvas, this);
+      } else {
+        throw ArgumentError(
+          'Illegal State: No painter found for series type: ${series.runtimeType}',
+        );
+      }
     }
 
     // We will draw axis on top of the painted chart data.

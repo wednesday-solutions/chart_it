@@ -1,10 +1,7 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/tweens.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
-
-/// Callback to construct a CartesianPainter for provided CartesianSeries Type
-typedef CartesianPaintConstructor = CartesianPainter Function(Type series);
 
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
@@ -23,15 +20,44 @@ enum CartesianChartAlignment {
 enum CartesianChartOrientation { vertical, horizontal }
 
 abstract class CartesianSeries {
-  T when<T>({required T Function() barSeries}) {
+  T when<T>({
+    required T Function(BarSeries series) onBarSeries,
+  }) {
     switch (runtimeType) {
       case BarSeries:
-        return barSeries();
+        return onBarSeries(this as BarSeries);
+      default:
+        throw TypeError();
+    }
+  }
+
+  T maybeWhen<T>({
+    T Function(BarSeries series)? onBarSeries,
+    required T Function() orElse,
+  }) {
+    switch (runtimeType) {
+      case BarSeries:
+        return onBarSeries?.call(this as BarSeries) ?? orElse();
+      default:
+        throw TypeError();
+    }
+  }
+
+  static T whenType<T>(
+    Type type, {
+    T Function()? onBarSeries,
+    required T Function() orElse,
+  }) {
+    switch (type) {
+      case BarSeries:
+        return onBarSeries?.call() ?? orElse();
       default:
         throw TypeError();
     }
   }
 }
+
+abstract class CartesianConfig {}
 
 List<Tween<CartesianSeries>>? toCartesianTweens(
   List<CartesianSeries>? current,
@@ -40,11 +66,15 @@ List<Tween<CartesianSeries>>? toCartesianTweens(
   return buildTweens(current, target, builder: (current, target) {
     final currentValue =
         current == null || current.runtimeType != target.runtimeType
-            ? BarSeries.zero()
+            ? null
             : current;
     return target.when(
-      barSeries: () => BarSeriesTween(
-          begin: currentValue as BarSeries, end: target as BarSeries),
+      onBarSeries: (series) {
+        return BarSeriesTween(
+          begin: currentValue.asOrDefault(BarSeries.zero()),
+          end: series,
+        );
+      },
     );
   });
 }

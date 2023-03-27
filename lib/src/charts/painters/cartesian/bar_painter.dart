@@ -4,47 +4,38 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.d
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter {
+  late BarSeriesConfig _config;
   late BarSeries _data;
+
   late double _vRatio;
   late double _unitWidth;
   final bool useGraphUnits;
-  final int maxBarsInGroup;
 
-  /// get the instance of our painter
-  static BarPainter? _instance;
-
-  BarPainter._(this.useGraphUnits, this.maxBarsInGroup);
-
-  factory BarPainter({
-    required bool useGraphUnits,
-    maxBarsInGroup = 1,
-  }) {
-    if (_instance != null) {
-      // If fields have been updated then
-      if (maxBarsInGroup != _instance!.maxBarsInGroup ||
-          useGraphUnits != _instance!.useGraphUnits) {
-        // provide a new factory instance
-        _instance = BarPainter._(useGraphUnits, maxBarsInGroup);
-        return _instance!;
-      }
-    } else {
-      // create a new instance & we will use this
-      _instance = BarPainter._(useGraphUnits, maxBarsInGroup);
-    }
-    // In either case, we should've provided an instance for our Painter
-    return _instance!;
-  }
+  BarPainter({
+    required this.useGraphUnits,
+  });
 
   @override
   void paint(
-    CartesianSeries series,
+    CartesianSeries lerpSeries,
+    CartesianSeries targetSeries,
     Canvas canvas,
     CartesianChartPainter chart,
   ) {
-    _data = series as BarSeries;
+    // Setup the bar data
+    _data = lerpSeries as BarSeries;
+    // Setup the bar chart config
+    var config = chart.controller.getConfig(targetSeries);
+    if (config == null) {
+      throw ArgumentError('Invalid State! Couldn\'t find a config for $_data');
+    } else {
+      _config = config.asOrNull<BarSeriesConfig>()!;
+    }
+
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
@@ -87,7 +78,7 @@ class BarPainter implements CartesianPainter {
         defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
-    var barWidth = _unitWidth / maxBarsInGroup;
+    var barWidth = _unitWidth / _config.maxBarsInGroup;
     _drawBar(
       canvas,
       chart,
@@ -106,7 +97,7 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     MultiBar group,
   ) {
-    var barWidth = _unitWidth / maxBarsInGroup;
+    var barWidth = _unitWidth / _config.maxBarsInGroup;
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;

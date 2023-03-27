@@ -3,5 +3,10 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.d
 import 'package:flutter/material.dart';
 
 abstract class CartesianPainter {
-  void paint(CartesianSeries data, Canvas canvas, CartesianChartPainter chart);
+  void paint(
+    CartesianSeries lerp,
+    CartesianSeries target,
+    Canvas canvas,
+    CartesianChartPainter chart,
+  );
 }

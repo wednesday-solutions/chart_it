@@ -21,14 +21,15 @@ class BarPainter implements CartesianPainter {
 
   @override
   void paint(
-    CartesianSeries series,
+    CartesianSeries lerpSeries,
+    CartesianSeries targetSeries,
     Canvas canvas,
     CartesianChartPainter chart,
   ) {
     // Setup the bar data
-    _data = series as BarSeries;
+    _data = lerpSeries as BarSeries;
     // Setup the bar chart config
-    var config = chart.controller.getConfig(_data);
+    var config = chart.controller.getConfig(targetSeries);
     if (config == null) {
       throw ArgumentError('Invalid State! Couldn\'t find a config for $_data');
     } else {

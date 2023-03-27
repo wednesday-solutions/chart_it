@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class CartesianChartPainter extends CustomPainter {
@@ -60,18 +61,18 @@ class CartesianChartPainter extends CustomPainter {
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    for (var series in controller.currentData) {
+    controller.targetData.forEachIndexed((index, series) {
       // get the painter for this data
       var painter = controller.painters[series.runtimeType];
       if (painter != null) {
         // and paint the chart for given series
-        painter.paint(series, canvas, this);
+        painter.paint(controller.currentData[index], series, canvas, this);
       } else {
         throw ArgumentError(
           'Illegal State: No painter found for series type: ${series.runtimeType}',
         );
       }
-    }
+    });
 
     // We will draw axis on top of the painted chart data.
     _drawAxis(canvas, size);

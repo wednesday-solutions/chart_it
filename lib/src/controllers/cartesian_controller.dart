@@ -18,7 +18,7 @@ class CartesianController extends ChangeNotifier
   final Map<Type, CartesianPainter> painters = {};
 
   List<CartesianSeries> currentData = List.empty();
-  List<CartesianSeries> data;
+  List<CartesianSeries> targetData;
 
   final Function(CartesianController controller) rangeConstraints;
 
@@ -53,7 +53,7 @@ class CartesianController extends ChangeNotifier
   Offset? pointer;
 
   CartesianController({
-    required this.data,
+    required this.targetData,
     required this.animation,
     this.animateOnLoad = true,
     this.autoAnimate = true,
@@ -61,7 +61,7 @@ class CartesianController extends ChangeNotifier
   }) {
     animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(data, isInitPhase: true);
+    updateDataSeries(targetData, isInitPhase: true);
   }
 
   bool shouldRepaint(CartesianController changedValue) {
@@ -153,6 +153,6 @@ class CartesianController extends ChangeNotifier
   void setData(List<CartesianSeries> data) {
     invalidatePainters(data);
     aggregateData(data);
-    this.data = data;
+    targetData = data;
   }
 }

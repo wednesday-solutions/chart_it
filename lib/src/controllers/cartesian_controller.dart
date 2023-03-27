@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
@@ -20,7 +21,7 @@ class CartesianController extends ChangeNotifier
   List<CartesianSeries> currentData = List.empty();
   List<CartesianSeries> targetData;
 
-  final Function(CartesianController controller) rangeConstraints;
+  final CalculateCartesianRange calculateRange;
 
   @override
   double maxXValue = 0.0;
@@ -57,7 +58,7 @@ class CartesianController extends ChangeNotifier
     required this.animation,
     this.animateOnLoad = true,
     this.autoAnimate = true,
-    required this.rangeConstraints,
+    required this.calculateRange,
   }) {
     animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
@@ -78,7 +79,7 @@ class CartesianController extends ChangeNotifier
     return false;
   }
 
-  void invalidatePainters(List<CartesianSeries> data) {
+  _invalidatePainters(List<CartesianSeries> data) {
     // For every distinct Cartesian Series, we will construct a painter for it
     data.distinctTypes().forEach((series) {
       painters.createAndUpdate(series, onCreate: () {
@@ -91,6 +92,35 @@ class CartesianController extends ChangeNotifier
         );
       });
     });
+  }
+
+  _invalidateRangeValues() {
+    var rangeCtx = CartesianRangeContext(
+      maxX: maxXValue,
+      maxY: maxYValue,
+      minX: minXValue,
+      minY: minYValue,
+    );
+    var results = calculateRange(rangeCtx);
+
+    while (results.maxYRange % results.yUnitValue != 0) {
+      results.maxYRange++;
+    }
+
+    // We need to check for negative y values
+    if (results.minYRange.isNegative) {
+      while (results.minYRange % results.yUnitValue != 0) {
+        results.minYRange--;
+      }
+    } else {
+      // No negative y values, so min will be zero
+      results.minYRange = 0.0;
+    }
+
+    minXRange = results.minXRange;
+    maxXRange = results.maxXRange;
+    minYRange = results.minYRange;
+    maxYRange = results.maxYRange;
   }
 
   @override
@@ -127,9 +157,8 @@ class CartesianController extends ChangeNotifier
         );
       }
     }
-    // At this point, we have setup our min/max values across all the data
     // Finally we are ready to calculate the ranges
-    rangeConstraints(this);
+    _invalidateRangeValues();
   }
 
   @override
@@ -151,7 +180,7 @@ class CartesianController extends ChangeNotifier
 
   @override
   void setData(List<CartesianSeries> data) {
-    invalidatePainters(data);
+    _invalidatePainters(data);
     aggregateData(data);
     targetData = data;
   }

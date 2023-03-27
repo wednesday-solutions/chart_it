@@ -1,5 +1,6 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/widgets/core/cartesian_charts.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
@@ -70,36 +71,20 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
         duration: const Duration(seconds: 1),
         vsync: this,
       ),
-      rangeConstraints: (c) {
-        // For Bar charts, we normally don't consider x values, be it +ve or -ve
-        c.maxXValue = widget.data.barData.length.toDouble();
-        // Finally we will collect our user provided min/max values
-        // and the ones that we have calculated
-        c.maxXRange = c.maxXValue;
-        c.minXRange = c.minXValue;
-        var minYValue = c.minYValue;
-
-        var yUnit = (widget.chartStyle?.gridStyle ??
-                defaultCartesianChartStyle.gridStyle)!
-            .yUnitValue!;
-
-        var maxYRange = widget.maxYValue ?? c.maxYValue;
-        while (maxYRange % yUnit != 0) {
-          maxYRange++;
-        }
-        c.maxYRange = maxYRange;
-
-        // We need to check for negative y values
-        var minYRange = minYValue;
-        if (minYValue.isNegative) {
-          while (minYRange % yUnit != 0) {
-            minYRange--;
-          }
-        } else {
-          // No negative y values, so min will be zero
-          minYRange = 0.0;
-        }
-        c.minYRange = minYRange;
+      calculateRange: (context) {
+        var gridStyle = (widget.chartStyle?.gridStyle ??
+            defaultCartesianChartStyle.gridStyle)!;
+        var maxXRange = widget.data.barData.length.toDouble();
+        var maxYRange = widget.maxYValue ?? context.maxY;
+        return CartesianRangeResult(
+          xUnitValue: gridStyle.xUnitValue?.toDouble() ?? maxXRange,
+          yUnitValue: gridStyle.yUnitValue?.toDouble() ?? maxYRange,
+          // For Bar charts, we don't consider x values, be it +ve or -ve
+          minXRange: 0,
+          maxXRange: maxXRange,
+          minYRange: context.minY,
+          maxYRange: maxYRange,
+        );
       },
     );
   }

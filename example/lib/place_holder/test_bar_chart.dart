@@ -86,7 +86,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(5, (index) {
+  List<BarGroup> barSeries = List.generate(next(1, 10).toInt(), (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,
@@ -96,12 +96,17 @@ List<BarGroup> makeGroupData(BuildContext context) {
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: next(25, 100)),
+        yValue: BarData(yValue: next(10, 100)),
       );
     } else {
       return MultiBar(
         xValue: index + 1,
         label: (value) => 'Group ${index + 1}',
+        labelStyle: ChartTextStyle(
+          textStyle: GoogleFonts.poppins(
+            color: theme.colorScheme.inverseSurface,
+          ),
+        ),
         yValues: [
           BarData(
             barStyle: const BarDataStyle(
@@ -120,7 +125,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(25, 100),
+            yValue: next(10, 100),
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -139,7 +144,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(25, 100),
+            yValue: next(10, 100),
           ),
         ],
       );

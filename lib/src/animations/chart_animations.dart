@@ -62,7 +62,6 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
     final shouldAnimateOnUpdate = !isInitPhase && autoAnimate;
     if (shouldAnimateOnLoad || shouldAnimateOnUpdate) {
-      // TODO: Check if animation.forward works if the animation is already in completed state which can happen for update animations.
       animation
         ..stop()
         ..reset()

@@ -27,6 +27,8 @@ const defaultBarSeriesStyle = BarDataStyle(
   ),
 );
 
-const defaultPieSeriesStyle = SliceDataStyle(radius: 150.0);
+const defaultPieSeriesStyle = SliceDataStyle(
+  radius: 150.0,
+);
 
 const defaultChartTextStyle = ChartTextStyle();

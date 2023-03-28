@@ -5,6 +5,7 @@ import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 
 extension YValueGetter on BarGroup {
   // Helper method to strip group data into data object with raw values
@@ -20,13 +21,27 @@ extension YValueGetter on BarGroup {
   }
 }
 
-extension Iterators on List<CartesianSeries> {
+extension CartesianIterators on List<CartesianSeries> {
   int maxIterations() {
     var count = 0;
     forEach((series) {
       series.when(
         onBarSeries: (series) {
           count = max(count, series.barData.length);
+        },
+      );
+    });
+    return count;
+  }
+}
+
+extension RadialIterators on List<RadialSeries> {
+  int maxIterations() {
+    var count = 0;
+    forEach((series) {
+      series.when(
+        onPieSeries: (series) {
+          count = max(count, series.slices.length);
         },
       );
     });

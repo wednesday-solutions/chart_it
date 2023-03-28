@@ -39,11 +39,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     required this.barData,
   });
 
-  factory BarSeries.zero() {
-    return BarSeries(
-      barData: List.empty(),
-    );
-  }
+  factory BarSeries.zero() => BarSeries(barData: List.empty());
 
   @override
   List<Object?> get props => [labelStyle, seriesStyle, barData];
@@ -79,8 +75,6 @@ class BarSeriesConfig extends CartesianConfig {
   var calculatedMaxXValue = double.infinity;
   var calculatedMinYValue = 0.0;
   var calculatedMaxYValue = double.infinity;
-
-  BarSeriesConfig();
 
   void updateEdges(
     BarGroup group,

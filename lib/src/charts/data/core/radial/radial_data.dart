@@ -1,11 +1,72 @@
+import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
 typedef SliceMapper = String Function(num percentage, num value);
 
-abstract class RadialSeries {}
+abstract class RadialSeries {
+  T when<T>({
+    required T Function(PieSeries series) onPieSeries,
+  }) {
+    switch (runtimeType) {
+      case PieSeries:
+        return onPieSeries(this as PieSeries);
+      default:
+        throw TypeError();
+    }
+  }
+
+  T maybeWhen<T>({
+    T Function(PieSeries series)? onPieSeries,
+    required T Function() orElse,
+  }) {
+    switch (runtimeType) {
+      case PieSeries:
+        return onPieSeries?.call(this as PieSeries) ?? orElse();
+      default:
+        throw TypeError();
+    }
+  }
+
+  static T whenType<T>(
+    Type type, {
+    T Function()? onPieSeries,
+    required T Function() orElse,
+  }) {
+    switch (type) {
+      case PieSeries:
+        return onPieSeries?.call() ?? orElse();
+      default:
+        throw TypeError();
+    }
+  }
+}
+
+abstract class RadialConfig {}
+
+List<Tween<RadialSeries>>? toRadialTweens(
+  List<RadialSeries>? current,
+  List<RadialSeries> target,
+) {
+  return buildTweens(current, target, builder: (current, target) {
+    final currentValue =
+        current == null || current.runtimeType != target.runtimeType
+            ? null
+            : current;
+    return target.when(
+      onPieSeries: (series) {
+        return PieSeriesTween(
+          begin: currentValue.asOrDefault(PieSeries.zero()),
+          end: series,
+        );
+      },
+    );
+  });
+}
 
 /// Defines that the Axis Type is for a [PolarChart], and
 /// provides Styling for Elements only for PolarChart Axis Type

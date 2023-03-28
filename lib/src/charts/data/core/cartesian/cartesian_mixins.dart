@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 
-mixin CartesianDataMixin<T> {
+mixin CartesianDataMixin {
   double get minXValue;
 
   double get maxXValue;
@@ -17,7 +17,7 @@ mixin CartesianDataMixin<T> {
 
   double get maxYRange;
 
-  void aggregateData(List<T> data);
+  void aggregateData(List<CartesianSeries> data);
 
-  CartesianConfig? getConfig(T series);
+  CartesianConfig? getConfig(CartesianSeries series);
 }

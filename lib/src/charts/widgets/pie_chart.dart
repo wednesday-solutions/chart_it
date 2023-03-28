@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
-import 'package:chart_it/src/charts/painters/radial/pie_painter.dart';
-import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/charts/widgets/core/radial_charts.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +16,17 @@ class PieChart extends StatefulWidget {
   /// Height of the Chart
   final double? chartHeight;
 
+  /// Animates the Charts from zero values to given Data when the
+  /// Chart loads for the first time.
+  ///
+  /// Defaults to true.
+  final bool animateOnLoad;
+
+  /// Controls if the charts should auto animate any updates to the data
+  ///
+  /// Defaults to true.
+  final bool autoAnimate;
+
   /// Styling for the Chart. Includes options like
   /// Background, StartAngle, etc.
   final RadialChartStyle? chartStyle;
@@ -32,6 +39,8 @@ class PieChart extends StatefulWidget {
     this.title,
     this.chartWidth,
     this.chartHeight,
+    this.animateOnLoad = true,
+    this.autoAnimate = true,
     this.chartStyle,
     required this.data,
   }) : super(key: key);
@@ -40,45 +49,39 @@ class PieChart extends StatefulWidget {
   State<PieChart> createState() => _PieChartState();
 }
 
-class _PieChartState extends State<PieChart> {
-  late RadialController _observer;
+class _PieChartState extends State<PieChart> with TickerProviderStateMixin {
+  late RadialController _controller;
 
   @override
   void initState() {
     super.initState();
-
-    var minValue = 0.0;
-    var maxValue = double.infinity;
-
-    for (var slice in widget.data.slices) {
-      minValue = min(minValue, slice.value.toDouble());
-      maxValue = max(maxValue, slice.value.toDouble());
-    }
-
-    if (minValue.isNegative) {
-      throw ArgumentError("All data values must be positive!");
-    }
-
-    // Now we can provide the chart details to the observer
-    _observer = RadialController(
-      minValue: minValue,
-      maxValue: maxValue,
+    // provide the chart details to the controller
+    _controller = RadialController(
+      targetData: [widget.data],
+      animateOnLoad: widget.animateOnLoad,
+      autoAnimate: widget.autoAnimate,
+      animation: AnimationController(
+        duration: const Duration(seconds: 1),
+        vsync: this,
+      ),
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant PieChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // We will update our Chart when new data is provided
+    _controller.updateDataSeries([widget.data]);
   }
 
   @override
   Widget build(BuildContext context) {
     var style = widget.chartStyle ?? defaultRadialChartStyle;
     return RadialCharts(
-      observer: _observer,
+      controller: _controller,
       width: widget.chartWidth,
       height: widget.chartHeight,
       style: style,
-      painters: <RadialPainter>[
-        PiePainter(
-          data: widget.data,
-        ),
-      ],
     );
   }
 }

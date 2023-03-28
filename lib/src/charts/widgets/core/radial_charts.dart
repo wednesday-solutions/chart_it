@@ -1,6 +1,5 @@
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
-import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -10,16 +9,14 @@ class RadialCharts extends StatefulWidget {
   final RadialChartStyle style;
 
   // Mandatory Fields
-  final List<RadialPainter> painters;
-  final RadialController observer;
+  final RadialController controller;
 
   const RadialCharts({
     Key? key,
     this.width,
     this.height,
     required this.style,
-    required this.painters,
-    required this.observer,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -42,8 +39,7 @@ class _RadialChartsState extends State<RadialCharts> {
             isComplex: true,
             painter: RadialChartPainter(
               style: widget.style,
-              observer: widget.observer,
-              painters: widget.painters,
+              controller: widget.controller,
             ),
             child: ConstrainedBox(
               constraints: BoxConstraints.expand(

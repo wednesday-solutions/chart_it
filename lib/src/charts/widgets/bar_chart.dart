@@ -57,8 +57,6 @@ class BarChart extends StatefulWidget {
 class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
   late CartesianController _controller;
 
-  // var _maxBarsInGroup = 0;
-
   @override
   void initState() {
     super.initState();

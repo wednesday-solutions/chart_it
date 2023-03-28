@@ -3,18 +3,16 @@ import 'dart:math';
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
-import 'package:chart_it/src/extensions/data_mixins.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class CartesianController extends ChangeNotifier
-    with
-        CartesianDataMixin<CartesianSeries>,
-        ChartAnimationsMixin<CartesianSeries> {
+    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries> {
   final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
   final Map<Type, CartesianPainter> painters = {};
 
@@ -56,8 +54,8 @@ class CartesianController extends ChangeNotifier
   CartesianController({
     required this.targetData,
     required this.animation,
-    this.animateOnLoad = true,
     this.autoAnimate = true,
+    this.animateOnLoad = true,
     required this.calculateRange,
   }) {
     animateDataUpdates();

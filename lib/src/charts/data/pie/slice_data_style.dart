@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data.dart';
 import 'package:chart_it/src/charts/widgets/pie_chart.dart';
@@ -18,16 +20,16 @@ class SliceDataStyle extends Equatable {
   final double radius;
 
   /// The color of the slice
-  final Color color;
+  final Color? color;
 
   /// The Gradient of the slice
   final Gradient? gradient;
 
   /// The Width of the Stroke/Border around the Pie/Slice
-  final double strokeWidth;
+  final double? strokeWidth;
 
   /// The Color of the Stroke/Border around the Pie/Slice
-  final Color strokeColor;
+  final Color? strokeColor;
 
   const SliceDataStyle({
     required this.radius,
@@ -38,11 +40,23 @@ class SliceDataStyle extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        radius,
-        color,
-        gradient,
-        strokeWidth,
-        strokeColor,
-      ];
+  List<Object?> get props =>
+      [radius, color, gradient, strokeWidth, strokeColor];
+
+  static SliceDataStyle? lerp(
+    SliceDataStyle? current,
+    SliceDataStyle? target,
+    double t,
+  ) {
+    if (target != null) {
+      return SliceDataStyle(
+        radius: lerpDouble(current?.radius, target.radius, t) ?? 0,
+        color: Color.lerp(current?.color, target.color, t),
+        gradient: Gradient.lerp(current?.gradient, target.gradient, t),
+        strokeWidth: lerpDouble(current?.strokeWidth, target.strokeWidth, t),
+        strokeColor: Color.lerp(current?.strokeColor, target.strokeColor, t),
+      );
+    }
+    return null;
+  }
 }

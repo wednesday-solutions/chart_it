@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
-import 'package:collection/collection.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class RadialChartPainter extends CustomPainter {

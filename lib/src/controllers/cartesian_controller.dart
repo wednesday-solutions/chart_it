@@ -46,7 +46,7 @@ class CartesianController extends ChangeNotifier
   @override
   final bool animateOnLoad;
   @override
-  final bool autoAnimate;
+  final bool animateOnUpdate;
 
   // Values to keep updating when scrolling
   Offset? pointer;
@@ -54,7 +54,7 @@ class CartesianController extends ChangeNotifier
   CartesianController({
     required this.targetData,
     required this.animation,
-    this.autoAnimate = true,
+    this.animateOnUpdate = true,
     this.animateOnLoad = true,
     required this.calculateRange,
   }) {

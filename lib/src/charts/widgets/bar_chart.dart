@@ -27,6 +27,12 @@ class BarChart extends StatefulWidget {
   /// Defaults to true.
   final bool autoAnimate;
 
+  /// The Duration for which the chart should animate
+  final Duration? animDuration;
+
+  /// A custom Animation controller which can be provided by the user
+  final AnimationController? animation;
+
   /// Maximum Value along Y-Axis
   /// Draws the Highest Value point along Positive Y-Axis
   final double? maxYValue;
@@ -45,6 +51,8 @@ class BarChart extends StatefulWidget {
     this.chartHeight,
     this.animateOnLoad = true,
     this.autoAnimate = true,
+    this.animDuration,
+    this.animation,
     this.maxYValue,
     this.chartStyle,
     required this.data,
@@ -65,8 +73,8 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       targetData: [widget.data],
       animateOnLoad: widget.animateOnLoad,
       autoAnimate: widget.autoAnimate,
-      animation: AnimationController(
-        duration: const Duration(seconds: 1),
+      animation: widget.animation ?? AnimationController(
+        duration: widget.animDuration ?? const Duration(milliseconds: 500),
         vsync: this,
       ),
       calculateRange: (context) {

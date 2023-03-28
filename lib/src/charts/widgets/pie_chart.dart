@@ -27,6 +27,12 @@ class PieChart extends StatefulWidget {
   /// Defaults to true.
   final bool autoAnimate;
 
+  /// The Duration for which the chart should animate
+  final Duration? animDuration;
+
+  /// A custom Animation controller which can be provided by the user
+  final AnimationController? animation;
+
   /// Styling for the Chart. Includes options like
   /// Background, StartAngle, etc.
   final RadialChartStyle? chartStyle;
@@ -41,6 +47,8 @@ class PieChart extends StatefulWidget {
     this.chartHeight,
     this.animateOnLoad = true,
     this.autoAnimate = true,
+    this.animDuration,
+    this.animation,
     this.chartStyle,
     required this.data,
   }) : super(key: key);
@@ -60,8 +68,8 @@ class _PieChartState extends State<PieChart> with TickerProviderStateMixin {
       targetData: [widget.data],
       animateOnLoad: widget.animateOnLoad,
       autoAnimate: widget.autoAnimate,
-      animation: AnimationController(
-        duration: const Duration(seconds: 1),
+      animation: widget.animation ?? AnimationController(
+        duration: widget.animDuration ?? const Duration(milliseconds: 500),
         vsync: this,
       ),
     );

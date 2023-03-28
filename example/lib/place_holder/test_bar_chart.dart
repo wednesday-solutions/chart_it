@@ -39,7 +39,6 @@ class _TestBarChartState extends State<TestBarChart> {
           yUnitValue: 10.0,
         ),
       ),
-      maxYValue: 70.0,
       data: BarSeries(
         seriesStyle: const BarDataStyle(
           barWidth: 10.0,

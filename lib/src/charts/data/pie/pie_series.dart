@@ -110,7 +110,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
 
 class PieSeriesConfig extends RadialConfig {
   var minValue = 0.0;
-  var maxValue = double.infinity;
+  var maxValue = 0.0;
 
   void updateEdges(
     SliceData slice,

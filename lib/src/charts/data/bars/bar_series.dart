@@ -72,9 +72,9 @@ class BarSeries extends CartesianSeries with EquatableMixin {
 class BarSeriesConfig extends CartesianConfig {
   var maxBarsInGroup = 1;
   var calculatedMinXValue = 0.0;
-  var calculatedMaxXValue = double.infinity;
+  var calculatedMaxXValue = 0.0;
   var calculatedMinYValue = 0.0;
-  var calculatedMaxYValue = double.infinity;
+  var calculatedMaxYValue = 0.0;
 
   void updateEdges(
     BarGroup group,

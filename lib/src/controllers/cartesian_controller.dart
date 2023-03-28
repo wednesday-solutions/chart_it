@@ -102,12 +102,14 @@ class CartesianController extends ChangeNotifier
     var results = calculateRange(rangeCtx);
 
     while (results.maxYRange % results.yUnitValue != 0) {
+      results.maxYRange = results.maxYRange.round().toDouble();
       results.maxYRange++;
     }
 
     // We need to check for negative y values
     if (results.minYRange.isNegative) {
       while (results.minYRange % results.yUnitValue != 0) {
+        results.minYRange = results.minYRange.round().toDouble();
         results.minYRange--;
       }
     } else {
@@ -123,6 +125,7 @@ class CartesianController extends ChangeNotifier
 
   @override
   void aggregateData(List<CartesianSeries> data) {
+    _resetRangeData();
     // How many times we may need to iterate over our data
     var iterations = data.maxIterations();
     for (var i = 0; i < iterations; i++) {
@@ -181,5 +184,16 @@ class CartesianController extends ChangeNotifier
     _invalidatePainters(data);
     aggregateData(data);
     targetData = data;
+  }
+
+  _resetRangeData() {
+    maxXValue = 0.0;
+    maxYValue = 0.0;
+    minXValue = 0.0;
+    minYValue = 0.0;
+    maxXRange = 0.0;
+    maxYRange = 0.0;
+    minXRange = 0.0;
+    minYRange = 0.0;
   }
 }

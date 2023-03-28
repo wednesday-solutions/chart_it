@@ -68,10 +68,11 @@ class _PieChartState extends State<PieChart> with TickerProviderStateMixin {
       targetData: [widget.data],
       animateOnLoad: widget.animateOnLoad,
       autoAnimate: widget.autoAnimate,
-      animation: widget.animation ?? AnimationController(
-        duration: widget.animDuration ?? const Duration(milliseconds: 500),
-        vsync: this,
-      ),
+      animation: widget.animation ??
+          AnimationController(
+            duration: widget.animDuration ?? const Duration(milliseconds: 500),
+            vsync: this,
+          ),
     );
   }
 

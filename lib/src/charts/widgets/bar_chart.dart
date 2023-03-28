@@ -73,10 +73,11 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       targetData: [widget.data],
       animateOnLoad: widget.animateOnLoad,
       autoAnimate: widget.autoAnimate,
-      animation: widget.animation ?? AnimationController(
-        duration: widget.animDuration ?? const Duration(milliseconds: 500),
-        vsync: this,
-      ),
+      animation: widget.animation ??
+          AnimationController(
+            duration: widget.animDuration ?? const Duration(milliseconds: 500),
+            vsync: this,
+          ),
       calculateRange: (context) {
         var gridStyle = (widget.chartStyle?.gridStyle ??
             defaultCartesianChartStyle.gridStyle)!;

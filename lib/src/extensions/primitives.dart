@@ -32,6 +32,12 @@ extension ListTransforms<T> on List<T> {
   List<T> distinct() => toSet().toList();
 
   List<Type> distinctTypes() => map((e) => e.runtimeType).toSet().toList();
+
+  void forEachIndexed(void Function(int index, T item) action) {
+    for (var index = 0; index < length; index++) {
+      action(index, this[index]);
+    }
+  }
 }
 
 extension ContainsKey<K, V> on Map<K, V> {

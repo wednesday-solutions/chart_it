@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
-import 'package:collection/collection.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class CartesianChartPainter extends CustomPainter {

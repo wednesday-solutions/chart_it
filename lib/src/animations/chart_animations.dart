@@ -16,7 +16,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
 
   bool get animateOnLoad;
 
-  bool get autoAnimate;
+  bool get animateOnUpdate;
 
   void setData(List<T> data);
 
@@ -60,9 +60,8 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     setData(newSeries);
     // Finally animate the differences
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
-    final shouldAnimateOnUpdate = !isInitPhase && autoAnimate;
+    final shouldAnimateOnUpdate = !isInitPhase && animateOnUpdate;
     if (shouldAnimateOnLoad || shouldAnimateOnUpdate) {
-      // TODO: Check if animation.forward works if the animation is already in completed state which can happen for update animations.
       animation
         ..stop()
         ..reset()

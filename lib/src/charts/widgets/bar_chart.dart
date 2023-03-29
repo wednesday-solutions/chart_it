@@ -25,7 +25,13 @@ class BarChart extends StatefulWidget {
   /// Controls if the charts should auto animate any updates to the data
   ///
   /// Defaults to true.
-  final bool autoAnimate;
+  final bool animateOnUpdate;
+
+  /// The Duration for which the chart should animate
+  final Duration animationDuration;
+
+  /// A custom Animation controller to drive the chart animations
+  final AnimationController? animation;
 
   /// Maximum Value along Y-Axis
   /// Draws the Highest Value point along Positive Y-Axis
@@ -44,7 +50,9 @@ class BarChart extends StatefulWidget {
     this.chartWidth,
     this.chartHeight,
     this.animateOnLoad = true,
-    this.autoAnimate = true,
+    this.animateOnUpdate = true,
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.animation,
     this.maxYValue,
     this.chartStyle,
     required this.data,
@@ -57,8 +65,6 @@ class BarChart extends StatefulWidget {
 class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
   late CartesianController _controller;
 
-  // var _maxBarsInGroup = 0;
-
   @override
   void initState() {
     super.initState();
@@ -66,11 +72,12 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
     _controller = CartesianController(
       targetData: [widget.data],
       animateOnLoad: widget.animateOnLoad,
-      autoAnimate: widget.autoAnimate,
-      animation: AnimationController(
-        duration: const Duration(seconds: 1),
-        vsync: this,
-      ),
+      animateOnUpdate: widget.animateOnUpdate,
+      animation: widget.animation ??
+          AnimationController(
+            duration: widget.animationDuration,
+            vsync: this,
+          ),
       calculateRange: (context) {
         var gridStyle = (widget.chartStyle?.gridStyle ??
             defaultCartesianChartStyle.gridStyle)!;

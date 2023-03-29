@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
-import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class RadialChartPainter extends CustomPainter {
@@ -14,18 +14,16 @@ class RadialChartPainter extends CustomPainter {
   late double unitStep;
 
   final RadialChartStyle style;
-  final RadialController observer;
-  final List<RadialPainter> painters;
+  final RadialController controller;
 
   RadialChartPainter({
     required this.style,
-    required this.observer,
-    required this.painters,
-  }) : super(repaint: observer);
+    required this.controller,
+  }) : super(repaint: controller);
 
   @override
   bool shouldRepaint(RadialChartPainter oldDelegate) =>
-      observer.shouldRepaint(oldDelegate.observer);
+      controller.shouldRepaint(oldDelegate.controller);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -36,11 +34,20 @@ class RadialChartPainter extends CustomPainter {
     var bg = Paint()..color = style.backgroundColor;
     canvas.drawPaint(bg);
 
-    // Finally we will handover canvas to the implementing painter
-    // to draw plot and draw the chart data
-    for (final painter in painters) {
-      painter.paint(canvas, size, this);
-    }
+    // Finally for every data series, we will construct a painter and handover
+    // the canvas to them to draw the data sets into the required chart
+    controller.targetData.forEachIndexed((index, series) {
+      // get the painter for this data
+      var painter = controller.painters[series.runtimeType];
+      if (painter != null) {
+        // and paint the chart for given series
+        painter.paint(controller.currentData[index], series, canvas, this);
+      } else {
+        throw ArgumentError(
+          'Illegal State: No painter found for series type: ${series.runtimeType}',
+        );
+      }
+    });
   }
 
   _calculateGraphConstraints(Size widgetSize) {

@@ -3,18 +3,16 @@ import 'dart:math';
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
-import 'package:chart_it/src/extensions/data_mixins.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class CartesianController extends ChangeNotifier
-    with
-        CartesianDataMixin<CartesianSeries>,
-        ChartAnimationsMixin<CartesianSeries> {
+    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries> {
   final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
   final Map<Type, CartesianPainter> painters = {};
 
@@ -48,7 +46,7 @@ class CartesianController extends ChangeNotifier
   @override
   final bool animateOnLoad;
   @override
-  final bool autoAnimate;
+  final bool animateOnUpdate;
 
   // Values to keep updating when scrolling
   Offset? pointer;
@@ -56,8 +54,8 @@ class CartesianController extends ChangeNotifier
   CartesianController({
     required this.targetData,
     required this.animation,
+    this.animateOnUpdate = true,
     this.animateOnLoad = true,
-    this.autoAnimate = true,
     required this.calculateRange,
   }) {
     animateDataUpdates();
@@ -104,12 +102,14 @@ class CartesianController extends ChangeNotifier
     var results = calculateRange(rangeCtx);
 
     while (results.maxYRange % results.yUnitValue != 0) {
+      results.maxYRange = results.maxYRange.round().toDouble();
       results.maxYRange++;
     }
 
     // We need to check for negative y values
     if (results.minYRange.isNegative) {
       while (results.minYRange % results.yUnitValue != 0) {
+        results.minYRange = results.minYRange.round().toDouble();
         results.minYRange--;
       }
     } else {
@@ -125,6 +125,7 @@ class CartesianController extends ChangeNotifier
 
   @override
   void aggregateData(List<CartesianSeries> data) {
+    _resetRangeData();
     // How many times we may need to iterate over our data
     var iterations = data.maxIterations();
     for (var i = 0; i < iterations; i++) {
@@ -183,5 +184,16 @@ class CartesianController extends ChangeNotifier
     _invalidatePainters(data);
     aggregateData(data);
     targetData = data;
+  }
+
+  _resetRangeData() {
+    maxXValue = 0.0;
+    maxYValue = 0.0;
+    minXValue = 0.0;
+    minYValue = 0.0;
+    maxXRange = 0.0;
+    maxYRange = 0.0;
+    minXRange = 0.0;
+    minYRange = 0.0;
   }
 }

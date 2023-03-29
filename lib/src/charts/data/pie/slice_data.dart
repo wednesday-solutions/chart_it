@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data_style.dart';
@@ -30,4 +33,24 @@ class SliceData extends Equatable {
 
   @override
   List<Object?> get props => [style, label, labelStyle, value];
+
+  static SliceData lerp(SliceData? current, SliceData target, double t) {
+    return SliceData(
+      value: lerpDouble(current?.value, target.value, t) as num,
+      labelStyle: ChartTextStyle.lerp(
+        current?.labelStyle,
+        target.labelStyle,
+        t,
+      ),
+      label: target.label,
+      style: SliceDataStyle.lerp(current?.style, target.style, t),
+    );
+  }
+
+  static List<SliceData> lerpSliceDataList(
+    List<SliceData>? current,
+    List<SliceData> target,
+    double t,
+  ) =>
+      lerpList(current, target, t, lerp: lerp);
 }

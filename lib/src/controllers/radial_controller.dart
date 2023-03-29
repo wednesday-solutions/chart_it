@@ -72,6 +72,7 @@ class RadialController extends ChangeNotifier
 
   @override
   void aggregateData(List<RadialSeries> data) {
+    _resetMinMaxValues();
     // How many times we may need to iterate over our data
     var iterations = data.maxIterations();
     for (var i = 0; i < iterations; i++) {
@@ -128,5 +129,10 @@ class RadialController extends ChangeNotifier
   void setData(List<RadialSeries> data) {
     _invalidatePainters(data);
     targetData = data;
+  }
+
+  _resetMinMaxValues() {
+    minValue = 0.0;
+    maxValue = 0.0;
   }
 }

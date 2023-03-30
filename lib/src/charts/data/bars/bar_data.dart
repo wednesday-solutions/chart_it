@@ -31,6 +31,9 @@ class BarData extends Equatable {
   /// {@macro bar_styling_order}
   final BarDataStyle? barStyle;
 
+  /// Defines the Data of Each Individual Bar in a [MultiBar] group
+  ///
+  /// Holds the Y-Value, label and styling for this BarData
   const BarData({
     this.startYFrom,
     required this.yValue,
@@ -39,12 +42,7 @@ class BarData extends Equatable {
     this.barStyle,
   });
 
-  factory BarData.zero() {
-    return const BarData(
-      yValue: 0,
-    );
-  }
-
+  /// Lerps between two [BarData] values for a factor [t]
   static BarData lerp(BarData? current, BarData? target, double t) {
     return BarData(
       startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
@@ -59,6 +57,7 @@ class BarData extends Equatable {
     );
   }
 
+  /// Lerps between two [BarData] Lists for a factor [t]
   static List<BarData> lerpBarDataList(
     List<BarData>? current,
     List<BarData> target,

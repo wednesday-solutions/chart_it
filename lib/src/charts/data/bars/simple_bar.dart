@@ -13,6 +13,9 @@ class SimpleBar extends BarGroup with EquatableMixin {
   /// The Y-Value data ([BarData]) for this Bar.
   final BarData yValue;
 
+  /// Defines a Simple singular Bar with a Single Y-Value
+  ///
+  /// See Also: [BarGroup]
   SimpleBar({
     required super.xValue,
     required this.yValue,
@@ -25,6 +28,7 @@ class SimpleBar extends BarGroup with EquatableMixin {
   List<Object?> get props =>
       [super.xValue, yValue, super.label, super.labelStyle, super.groupStyle];
 
+  /// Lerps between two [SimpleBar]s for a factor [t]
   static SimpleBar lerp(BarGroup? current, BarGroup target, double t) {
     if ((current is SimpleBar?) && target is SimpleBar) {
       return SimpleBar(

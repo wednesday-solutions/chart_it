@@ -1,5 +1,5 @@
-import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/tweens.dart';
+import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,11 @@ enum CartesianChartAlignment {
 /// Orientation of the Chart
 enum CartesianChartOrientation { vertical, horizontal }
 
+/// Base Series for any type of Data which can be plotted
+/// on a Cartesian Chart.
 abstract class CartesianSeries {
+  /// Checks the Subclass Type and returns the casted instance
+  /// to the matched callback. All callbacks must be provided.
   T when<T>({
     required T Function(BarSeries series) onBarSeries,
   }) {
@@ -31,6 +35,10 @@ abstract class CartesianSeries {
     }
   }
 
+  /// Checks the Subclass Type and returns the casted instance
+  /// to the matched callback.
+  ///
+  /// [orElse] is triggered if the callback for the matched type is not provided.
   T maybeWhen<T>({
     T Function(BarSeries series)? onBarSeries,
     required T Function() orElse,
@@ -43,6 +51,10 @@ abstract class CartesianSeries {
     }
   }
 
+  /// Static method to Check the Subclass Type when we do not have
+  /// an instance for an object extending this class.
+  ///
+  /// Does the same operation as [maybeWhen].
   static T whenType<T>(
     Type type, {
     T Function()? onBarSeries,
@@ -59,6 +71,8 @@ abstract class CartesianSeries {
 
 abstract class CartesianConfig {}
 
+/// Converts [current] and [target] list of [CartesianSeries] to
+/// a list of [Tween] of type [CartesianSeries]
 List<Tween<CartesianSeries>>? toCartesianTweens(
   List<CartesianSeries>? current,
   List<CartesianSeries> target,

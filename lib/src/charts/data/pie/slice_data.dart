@@ -24,6 +24,9 @@ class SliceData extends Equatable {
   /// Numeric Value of this Slice.
   final num value;
 
+  /// Defines the Data of a Pie Slice in the Pie/Donut chart
+  ///
+  /// Holds the Numeric Value, label and styling for this Slice
   const SliceData({
     required this.value,
     this.labelStyle,
@@ -34,6 +37,7 @@ class SliceData extends Equatable {
   @override
   List<Object?> get props => [style, label, labelStyle, value];
 
+  /// Lerps between two [SliceData] values for a factor [t]
   static SliceData lerp(SliceData? current, SliceData target, double t) {
     return SliceData(
       value: lerpDouble(current?.value, target.value, t) as num,
@@ -47,6 +51,7 @@ class SliceData extends Equatable {
     );
   }
 
+  /// Lerps between two [SliceData] Lists for a factor [t]
   static List<SliceData> lerpSliceDataList(
     List<SliceData>? current,
     List<SliceData> target,

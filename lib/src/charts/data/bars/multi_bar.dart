@@ -27,6 +27,13 @@ class MultiBar extends BarGroup with EquatableMixin {
   /// will throw an Exception.
   final double groupSpacing;
 
+  /// Defines a Group of Multiple Bars
+  ///
+  /// A list of [BarData] needs to be provided which will
+  /// provide us the Y-Value for each individual bar in the group.
+  ///
+  /// See Also: [BarGroup]
+  ///
   MultiBar({
     required super.xValue,
     required this.yValues,
@@ -49,6 +56,7 @@ class MultiBar extends BarGroup with EquatableMixin {
   @override
   List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
 
+  /// Lerps between two [MultiBar]s for a factor [t]
   static MultiBar lerp(BarGroup? current, BarGroup target, double t) {
     if ((current is MultiBar?) && target is MultiBar) {
       return MultiBar(

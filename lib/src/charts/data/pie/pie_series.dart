@@ -45,6 +45,12 @@ class PieSeries extends RadialSeries with EquatableMixin {
   /// and every slice can be set to have it's own radius and styling
   final List<SliceData> slices;
 
+  /// This class defines the Data Set to be provided to the PieChart
+  /// and the Global Styling options
+  ///
+  /// The PieSeries is **mandatory** to be provided to the [PieChart] widget.
+  ///
+  /// See Also: [RadialSeries]
   PieSeries({
     this.donutRadius = 0.0,
     this.donutSpaceColor = Colors.transparent,
@@ -55,6 +61,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
     required this.slices,
   });
 
+  /// Constructs a Factory Instance of [PieSeries] without any Data.
   factory PieSeries.zero() => PieSeries(slices: List.empty());
 
   @override
@@ -67,51 +74,56 @@ class PieSeries extends RadialSeries with EquatableMixin {
         slices,
       ];
 
+  /// Lerps between two [PieSeries] for a factor [t]
   static PieSeries lerp(
-    RadialSeries? current,
-    RadialSeries target,
+    PieSeries? current,
+    PieSeries target,
     double t,
   ) {
-    if ((current is PieSeries?) && target is PieSeries) {
-      return PieSeries(
-        donutRadius: lerpDouble(
-          current?.donutRadius,
-          target.donutRadius,
-          t,
-        ),
-        donutSpaceColor: Color.lerp(
-          current?.donutSpaceColor,
-          target.donutSpaceColor,
-          t,
-        ),
-        donutLabel: target.donutLabel,
-        donutLabelStyle: ChartTextStyle.lerp(
-          current?.donutLabelStyle,
-          target.donutLabelStyle,
-          t,
-        ),
-        labelStyle: ChartTextStyle.lerp(
-          current?.labelStyle,
-          target.labelStyle,
-          t,
-        ),
-        seriesStyle: SliceDataStyle.lerp(
-          current?.seriesStyle,
-          target.seriesStyle,
-          t,
-        ),
-        slices: SliceData.lerpSliceDataList(current?.slices, target.slices, t),
-      );
-    } else {
-      throw Exception('Both current & target data should be of same series!');
-    }
+    return PieSeries(
+      donutRadius: lerpDouble(
+        current?.donutRadius,
+        target.donutRadius,
+        t,
+      ),
+      donutSpaceColor: Color.lerp(
+        current?.donutSpaceColor,
+        target.donutSpaceColor,
+        t,
+      ),
+      donutLabel: target.donutLabel,
+      donutLabelStyle: ChartTextStyle.lerp(
+        current?.donutLabelStyle,
+        target.donutLabelStyle,
+        t,
+      ),
+      labelStyle: ChartTextStyle.lerp(
+        current?.labelStyle,
+        target.labelStyle,
+        t,
+      ),
+      seriesStyle: SliceDataStyle.lerp(
+        current?.seriesStyle,
+        target.seriesStyle,
+        t,
+      ),
+      slices: SliceData.lerpSliceDataList(current?.slices, target.slices, t),
+    );
   }
 }
 
+/// Defines [PieSeries] specific data variables, which are utilized
+/// when drawing a [PieChart].
+///
+/// Returns the value for a [SliceData].
 class PieSeriesConfig extends RadialConfig {
-  var minValue = 0.0;
-  var maxValue = 0.0;
+  /// Calculated Minimum Value
+  var calculatedMinValue = 0.0;
 
+  /// Calculated Maximum Value
+  var calculatedMaxValue = 0.0;
+
+  /// Returns the value of this [SliceData] in [onUpdate].
   void updateEdges(
     SliceData slice,
     Function(double value) onUpdate,
@@ -119,6 +131,9 @@ class PieSeriesConfig extends RadialConfig {
       onUpdate(slice.value.toDouble());
 }
 
+/// A Tween to interpolate between two [PieSeries]
+///
+/// [end] object must not be null.
 class PieSeriesTween extends Tween<PieSeries> {
   PieSeriesTween({
     required PieSeries? begin,

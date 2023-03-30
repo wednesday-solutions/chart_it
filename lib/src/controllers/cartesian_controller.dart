@@ -28,46 +28,85 @@ abstract class ChartController {
   }
 }
 
+/// The Animation and Data Controller for a Cartesian Chart.
+///
+/// Encapsulates the required Chart Data, Animatable Data, Configs
+/// and Mapped Painters for every [CartesianSeries].
 class CartesianController extends ChartController
     with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries> {
+  /// Holds a map of configs for every data series.
   final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
+
+  /// Holds a map of painters for every series type.
   final Map<Type, CartesianPainter> painters = {};
 
+  /// The Current Data which will be lerped across every animation tick.
   List<CartesianSeries> currentData = List.empty();
+
+  /// The Target Data to which the chart needs to updates.
   List<CartesianSeries> targetData;
 
+  /// Callback to calculate the X & Y ranges after Data Aggregation.
   final CalculateCartesianRange calculateRange;
 
+  /// The maximum value along X-Axis.
   @override
   double maxXValue = 0.0;
+
+  /// The maximum value along Y-Axis.
   @override
   double maxYValue = 0.0;
+
+  /// The minimum value along X-Axis.
   @override
   double minXValue = 0.0;
+
+  /// The minimum value along Y-Axis.
   @override
   double minYValue = 0.0;
+
+  /// The maximum range across X-Axis.
   @override
   double maxXRange = 0.0;
+
+  /// The maximum range across Y-Axis.
   @override
   double maxYRange = 0.0;
+
+  /// The minimum range across X-Axis.
   @override
   double minXRange = 0.0;
+
+  /// The minimum range across Y-Axis.
   @override
   double minYRange = 0.0;
 
-  // Animation Variables
+  /// A List of [Tween] for evaluating every [CartesianSeries] when
+  /// the chart animates.
   @override
   late List<Tween<CartesianSeries>> tweenSeries;
+
+  /// The Animation Controller to drive the charts animations.
   @override
   final AnimationController animation;
+
+  /// Sets if the chart should animate or not, when loaded for the first time.
+  /// Defaults to true.
   @override
   final bool animateOnLoad;
+
+  /// Sets if the chart should animate or not, when the data is updated.
+  /// Defaults to true.
   @override
   final bool animateOnUpdate;
 
   // Values to keep updating when scrolling
   Offset? pointer;
 
+  /// The Animation and Data Controller for a Cartesian Chart.
+  ///
+  /// Encapsulates the required Chart Data, Animatable Data, Configs
+  /// and Mapped Painters for every [CartesianSeries].
   CartesianController({
     required this.targetData,
     required this.animation,

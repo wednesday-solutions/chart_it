@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-/// Encapsulates all the Styling options required for a [BarChart]
+/// Encapsulates all the Styling options required for a [BarChart].
 /// {@template bar_styling_order}
 /// The order of priority in styling is
 /// 1. barStyle in [BarData]
@@ -35,6 +35,8 @@ class BarDataStyle extends Equatable {
   /// Radius for the Bar Rectangle's Corners
   final BorderRadius? cornerRadius;
 
+  /// Encapsulates all the Styling options required for a [BarChart].
+  /// {@macro bar_styling_order}
   const BarDataStyle({
     this.barWidth,
     this.barColor,
@@ -44,6 +46,7 @@ class BarDataStyle extends Equatable {
     this.cornerRadius,
   });
 
+  /// Lerps between two [BarDataStyle]'s for a factor [t]
   static BarDataStyle? lerp(
     BarDataStyle? current,
     BarDataStyle? target,

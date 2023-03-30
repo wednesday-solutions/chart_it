@@ -57,7 +57,8 @@ class PieChart extends StatefulWidget {
   State<PieChart> createState() => _PieChartState();
 }
 
-class _PieChartState extends State<PieChart> with TickerProviderStateMixin {
+class _PieChartState extends State<PieChart>
+    with SingleTickerProviderStateMixin {
   late RadialController _controller;
 
   @override

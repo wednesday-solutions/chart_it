@@ -12,7 +12,7 @@ import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 enum BarGroupArrangement { series, stack }
 
 /// {@template bar_group}
-/// Defines the structure of a Group of Bars
+/// Defines the structure of a Group of Bars.
 ///
 /// Holds the X-Value, Labels and Styling.
 /// {@endtemplate}
@@ -24,7 +24,7 @@ abstract class BarGroup {
   final num xValue;
 
   /// Callback for the label underneath a [BarGroup].
-  /// The X-Value is provided as a param, and a string is to be returned
+  /// The X-Value is provided as a param, and a string is to be returned.
   final LabelMapper? label;
 
   /// Text Styling for the [label].
@@ -35,6 +35,7 @@ abstract class BarGroup {
   /// {@macro bar_styling_order}
   final BarDataStyle? groupStyle;
 
+  /// {@macro bar_group}
   BarGroup({
     required this.xValue,
     this.label,
@@ -42,6 +43,10 @@ abstract class BarGroup {
     this.groupStyle,
   });
 
+  /// Lerps between two [BarGroup] objects for a factor [t].
+  ///
+  /// If subtypes of the two objects are not identical, then it lerps
+  /// from null to [target] object's type.
   static BarGroup lerp(BarGroup? current, BarGroup target, double t) {
     final currentValue =
         current == null || current.runtimeType != target.runtimeType
@@ -53,6 +58,7 @@ abstract class BarGroup {
     );
   }
 
+  /// Lerps between two Lists of [BarGroup] for a factor [t].
   static List<BarGroup> lerpBarGroupList(
     List<BarGroup>? current,
     List<BarGroup> target,
@@ -60,6 +66,8 @@ abstract class BarGroup {
   ) =>
       lerpList(current, target, t, lerp: lerp);
 
+  /// Helper method to capture [runtimeType] checks for the subtype of
+  /// [BarGroup] object, and provides callback method for the matching type.
   T _when<T>({
     required T Function() simpleBar,
     required T Function() multiBar,

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
@@ -10,34 +9,60 @@ import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
+/// The Animation and Data Controller for a Radial Chart.
+///
+/// Encapsulates the required Chart Data, Animatable Data, Configs
+/// and Mapped Painters for every [RadialSeries].
 class RadialController extends ChangeNotifier
     with RadialDataMixin
         // ChartAnimationsMixin<RadialSeries>
 {
+  /// Holds a map of configs for every data series.
   final Map<RadialSeries, RadialConfig> _seriesConfigs = {};
+
+  /// Holds a map of painters for every series type.
   final Map<Type, RadialPainter> painters = {};
 
+  /// The Current Data which will be lerped across every animation tick.
+  List<RadialSeries> currentData = List.empty();
+
+  /// The Target Data to which the chart needs to updates.
+  List<RadialSeries> targetData;
+
+  /// The minimum value across all Series.
   @override
   double minValue = 0.0;
+
+  /// The maximum value across all Series.
   @override
   double maxValue = 0.0;
 
-  List<RadialSeries> currentData = List.empty();
-  List<RadialSeries> targetData;
-
-  // Animation Variables
+  /// A List of [Tween] for evaluating every [RadialSeries] when
+  /// the chart animates.
   @override
   late List<Tween<RadialSeries>> tweenSeries;
+
+  /// The Animation Controller to drive the charts animations.
   @override
   final AnimationController animation;
+
+  /// Sets if the chart should animate or not, when loaded for the first time.
+  /// Defaults to true.
   @override
   final bool animateOnLoad;
+
+  /// Sets if the chart should animate or not, when the data is updated.
+  /// Defaults to true.
   @override
   final bool animateOnUpdate;
 
   // Values to keep updating when scrolling
   Offset? pointer;
 
+  /// The Animation and Data Controller for a Radial Chart.
+  ///
+  /// Encapsulates the required Chart Data, Animatable Data, Configs
+  /// and Mapped Painters for every [RadialSeries].
   RadialController({
     required this.targetData,
     required this.animation,

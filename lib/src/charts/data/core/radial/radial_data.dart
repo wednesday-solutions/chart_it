@@ -8,7 +8,11 @@ import 'package:flutter/material.dart';
 /// Callback for Mapping a String Value to a Label
 typedef SliceMapper = String Function(num percentage, num value);
 
+/// Base Series for any type of Data which can be plotted
+/// on a Radial Type Chart.
 abstract class RadialSeries {
+  /// Checks the Subclass Type and returns the casted instance
+  /// to the matched callback. All callbacks must be provided.
   T when<T>({
     required T Function(PieSeries series) onPieSeries,
   }) {
@@ -20,6 +24,10 @@ abstract class RadialSeries {
     }
   }
 
+  /// Checks the Subclass Type and returns the casted instance
+  /// to the matched callback.
+  ///
+  /// [orElse] is triggered if the callback for the matched type is not provided.
   T maybeWhen<T>({
     T Function(PieSeries series)? onPieSeries,
     required T Function() orElse,
@@ -32,6 +40,10 @@ abstract class RadialSeries {
     }
   }
 
+  /// Static method to Check the Subclass Type when we do not have
+  /// an instance for an object extending this class.
+  ///
+  /// Does the same operation as [maybeWhen].
   static T whenType<T>(
     Type type, {
     T Function()? onPieSeries,
@@ -48,6 +60,8 @@ abstract class RadialSeries {
 
 abstract class RadialConfig {}
 
+/// Converts [current] and [target] list of [RadialSeries] to
+/// a list of [Tween] of type [RadialSeries]
 List<Tween<RadialSeries>>? toRadialTweens(
   List<RadialSeries>? current,
   List<RadialSeries> target,

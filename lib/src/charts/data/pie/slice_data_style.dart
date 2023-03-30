@@ -6,7 +6,7 @@ import 'package:chart_it/src/charts/widgets/pie_chart.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-/// Encapsulates all the Styling options required for a [PieChart]
+/// Encapsulates all the Styling options required for a [PieChart].
 /// {@template slice_styling_order}
 /// The order of priority in styling is
 /// 1. style in [SliceData]
@@ -31,6 +31,8 @@ class SliceDataStyle extends Equatable {
   /// The Color of the Stroke/Border around the Pie/Slice
   final Color? strokeColor;
 
+  /// Encapsulates all the Styling options required for a [PieChart].
+  /// {@macro slice_styling_order}
   const SliceDataStyle({
     required this.radius,
     this.color = Colors.amber,
@@ -43,6 +45,7 @@ class SliceDataStyle extends Equatable {
   List<Object?> get props =>
       [radius, color, gradient, strokeWidth, strokeColor];
 
+  /// Lerps between two [SliceDataStyle]'s for a factor [t]
   static SliceDataStyle? lerp(
     SliceDataStyle? current,
     SliceDataStyle? target,

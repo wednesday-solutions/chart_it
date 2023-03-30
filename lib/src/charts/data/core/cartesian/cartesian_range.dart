@@ -1,7 +1,10 @@
+/// Defines a Callback that returns a [CartesianRangeResult] for the
+/// provided [context] of type [CartesianRangeContext].
 typedef CalculateCartesianRange = CartesianRangeResult Function(
   CartesianRangeContext context,
 );
 
+/// Wraps the Minimum & Maximum values for X & Y values in a Cartesian Chart
 class CartesianRangeContext {
   double maxX;
   double maxY;
@@ -16,6 +19,7 @@ class CartesianRangeContext {
   });
 }
 
+/// A Result Wrapper that provides the X & Y Ranges and the unit values.
 class CartesianRangeResult {
   double xUnitValue;
   double yUnitValue;

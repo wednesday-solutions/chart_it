@@ -105,7 +105,6 @@ class _CartesianChartsState extends RenderBox {
     controller: controller,
   ) {
     controller.addListener(markNeedsPaint);
-    markNeedsPaint();
   }
 
   @override
@@ -126,6 +125,7 @@ class _CartesianChartsState extends RenderBox {
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);
+    print("Painting at ${_painter.controller.animation.value}");
     _painter.paint(
       canvas,
       size,

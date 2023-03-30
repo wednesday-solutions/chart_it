@@ -15,7 +15,7 @@ abstract class ChartController {
   VoidCallback? _listener;
 
   void addListener(VoidCallback listener) {
-    _listener = _listener;
+    _listener = listener;
   }
 
   void notifyListener() {

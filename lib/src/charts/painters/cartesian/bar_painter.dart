@@ -178,7 +178,10 @@ class BarPainter implements CartesianPainter {
     // var bar = RRect.fromRectAndCorners(
     //   rect,
     //   // We are swapping top & bottom corners for negative i.e. inverted bar
-
+    //   topLeft: yValue.isNegative ? bottomLeft : topLeft,
+    //   topRight: yValue.isNegative ? bottomRight : topRight,
+    //   bottomLeft: yValue.isNegative ? topLeft : bottomLeft,
+    //   bottomRight: yValue.isNegative ? topRight : bottomRight,
     // );
 
     var barPaint = Paint()

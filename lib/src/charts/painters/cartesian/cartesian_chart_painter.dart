@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
-class CartesianChartPainter extends CustomPainter {
+class CartesianChartPainter {
   late Rect graphPolygon;
   late double graphHeight;
   late double graphWidth;
@@ -27,13 +28,13 @@ class CartesianChartPainter extends CustomPainter {
   late double _yUnitsCount;
   late double totalYRange;
 
-  final double? uMinXValue;
-  final double? uMaxXValue;
-  final double? uMinYValue;
-  final double? uMaxYValue;
+  double? uMinXValue;
+  double? uMaxXValue;
+  double? uMinYValue;
+  double? uMaxYValue;
 
-  final CartesianChartStyle style;
-  final CartesianController controller;
+  CartesianChartStyle style;
+  CartesianController controller;
 
   CartesianChartPainter({
     this.uMinXValue,
@@ -42,13 +43,11 @@ class CartesianChartPainter extends CustomPainter {
     this.uMaxYValue,
     required this.style,
     required this.controller,
-  }) : super(repaint: controller);
+  });
 
-  @override
   bool shouldRepaint(CartesianChartPainter oldDelegate) =>
       controller.shouldRepaint(oldDelegate.controller);
 
-  @override
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
     _calculateGraphConstraints(size);
@@ -61,18 +60,24 @@ class CartesianChartPainter extends CustomPainter {
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    controller.targetData.forEachIndexed((index, series) {
-      // get the painter for this data
-      var painter = controller.painters[series.runtimeType];
-      if (painter != null) {
-        // and paint the chart for given series
-        painter.paint(controller.currentData[index], series, canvas, this);
-      } else {
-        throw ArgumentError(
-          'Illegal State: No painter found for series type: ${series.runtimeType}',
-        );
-      }
-    });
+    for (var i = 0; i < controller.targetData.length; i++) {
+      final targetData = controller.targetData[i];
+      var painter = controller.painters[controller.targetData[i].runtimeType];
+      painter?.paint(controller.currentData[i], targetData, canvas, this);
+    }
+
+    // controller.targetData.forEachIndexed((index, series) {
+    //   // get the painter for this data
+    //   var painter = controller.painters[series.runtimeType];
+    //   if (painter != null) {
+    //     // and paint the chart for given series
+    //     painter.paint(controller.currentData[index], series, canvas, this);
+    //   } else {
+    //     throw ArgumentError(
+    //       'Illegal State: No painter found for series type: ${series.runtimeType}',
+    //     );
+    //   }
+    // });
 
     // We will draw axis on top of the painted chart data.
     _drawAxis(canvas, size);

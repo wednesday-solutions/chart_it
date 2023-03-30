@@ -11,7 +11,9 @@ import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class RadialController extends ChangeNotifier
-    with RadialDataMixin, ChartAnimationsMixin<RadialSeries> {
+    with RadialDataMixin
+        // ChartAnimationsMixin<RadialSeries>
+{
   final Map<RadialSeries, RadialConfig> _seriesConfigs = {};
   final Map<Type, RadialPainter> painters = {};
 
@@ -42,9 +44,9 @@ class RadialController extends ChangeNotifier
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
   }) {
-    animateDataUpdates();
-    // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(targetData, isInitPhase: true);
+    // animateDataUpdates();
+    // // On Initialization, we need to animate our chart if necessary
+    // updateDataSeries(targetData, isInitPhase: true);
   }
 
   bool shouldRepaint(RadialController changedValue) {

@@ -1,3 +1,4 @@
+import 'package:example/place_holder/fl.dart';
 import 'package:example/screens/navigation/multi_platform_content.dart';
 import 'package:example/themes/dark_theme.dart';
 import 'package:example/themes/light_theme.dart';

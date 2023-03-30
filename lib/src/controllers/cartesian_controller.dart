@@ -11,7 +11,24 @@ import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
-class CartesianController extends ChangeNotifier
+abstract class ChartController {
+  VoidCallback? _listener;
+
+  void addListener(VoidCallback listener) {
+    _listener = _listener;
+  }
+
+  void notifyListener() {
+    _listener?.call();
+  }
+
+  @mustCallSuper
+  void dispose() {
+    _listener = null;
+  }
+}
+
+class CartesianController extends ChartController
     with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries> {
   final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
   final Map<Type, CartesianPainter> painters = {};

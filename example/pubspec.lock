@@ -96,11 +96,27 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      sha256: e97c5b850ad056e9b3a85d3afeb44c239a83aa994a90723940dac82234f2efaf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.61.0"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_displaymode:
+    dependency: "direct main"
+    description:
+      name: flutter_displaymode
+      sha256: "136b0314fdc78fe995b0b75061fe9ff8210dffca84f8f8110f8f71029479db3b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   flutter_lints:
     dependency: "direct dev"
     description:

@@ -80,7 +80,7 @@ class _PieChartState extends State<PieChart> with TickerProviderStateMixin {
   void didUpdateWidget(covariant PieChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
-    _controller.updateDataSeries([widget.data]);
+    // _controller.updateDataSeries([widget.data]);
   }
 
   @override

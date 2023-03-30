@@ -1,3 +1,4 @@
+import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 /// call [animateDataUpdates].
 ///
 /// To update the tween when new data is available and animate to the new state call [updateDataSeries].
-mixin ChartAnimationsMixin<T> on ChangeNotifier {
+mixin ChartAnimationsMixin<T> on ChartController {
   @protected
   List<Tween<T>> get tweenSeries;
 
@@ -35,12 +36,13 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
   /// 1. [setAnimatableData] with the values of [tweenSeries] evaluated at current value of [animation].
   /// 2. [notifyListeners] so that [CustomPainter.paint] is called on the painters registered with this controller.
   void animateDataUpdates() {
+    int count = 0;
     animation.addListener(() {
       setAnimatableData(
         tweenSeries.map((series) => series.evaluate(animation)).toList(),
       );
       // Finally trigger a rebuild for all the painters
-      notifyListeners();
+      notifyListener();
     });
   }
 
@@ -69,7 +71,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     } else {
       // We are to not animate the data updates
       setAnimatableData(newSeries);
-      notifyListeners();
+      notifyListener();
     }
   }
 

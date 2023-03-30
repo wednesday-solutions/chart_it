@@ -15,7 +15,9 @@ import 'package:flutter/material.dart';
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [RadialSeries].
 class RadialController extends ChangeNotifier
-    with RadialDataMixin, ChartAnimationsMixin<RadialSeries> {
+    with RadialDataMixin
+        // ChartAnimationsMixin<RadialSeries>
+{
   /// Holds a map of configs for every data series.
   final Map<RadialSeries, RadialConfig> _seriesConfigs = {};
 
@@ -68,9 +70,9 @@ class RadialController extends ChangeNotifier
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
   }) {
-    animateDataUpdates();
-    // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(targetData, isInitPhase: true);
+    // animateDataUpdates();
+    // // On Initialization, we need to animate our chart if necessary
+    // updateDataSeries(targetData, isInitPhase: true);
   }
 
   bool shouldRepaint(RadialController changedValue) {

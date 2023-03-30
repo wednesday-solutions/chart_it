@@ -63,6 +63,25 @@ class BarPainter implements CartesianPainter {
 
       dx += _unitWidth;
     }
+
+    // for (final group in _data.barData) {
+    //   if (group is SimpleBar) {
+    //     // We have to paint a single bar
+    //     _drawSimpleBar(canvas, chart, dx, group);
+    //   } else if (group is MultiBar) {
+    //     // We need to find the arrangement of our bar group
+    //     if (group.arrangement == BarGroupArrangement.stack) {
+    //       // TODO: Paint Stacked Bars
+    //     } else {
+    //       // Paint Bar Series across unit width
+    //       _drawBarSeries(canvas, chart, dx, group);
+    //     }
+    //   }
+    //
+    //   _drawGroupLabel(canvas, chart, dx, group);
+    //
+    //   dx += _unitWidth;
+    // }
   }
 
   _drawSimpleBar(
@@ -73,10 +92,8 @@ class BarPainter implements CartesianPainter {
   ) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-    var style = group.yValue.barStyle ??
-        group.groupStyle ??
-        _data.seriesStyle ??
-        defaultBarSeriesStyle;
+    var style =
+        group.yValue.barStyle ?? group.groupStyle ?? _data.seriesStyle ?? defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     var barWidth = _unitWidth / _config.maxBarsInGroup;
@@ -106,10 +123,8 @@ class BarPainter implements CartesianPainter {
       final barData = group.yValues[i];
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-      var style = barData.barStyle ??
-          group.groupStyle ??
-          _data.seriesStyle ??
-          defaultBarSeriesStyle;
+      var style =
+          barData.barStyle ?? group.groupStyle ?? _data.seriesStyle ?? defaultBarSeriesStyle;
 
       _drawBar(
         canvas,
@@ -160,20 +175,28 @@ class BarPainter implements CartesianPainter {
       bottomRight: yValue.isNegative ? topRight : bottomRight,
     );
 
+    // var bar = RRect.fromRectAndCorners(
+    //   rect,
+    //   // We are swapping top & bottom corners for negative i.e. inverted bar
+
+    // );
+
     var barPaint = Paint()
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
-          ?.toShader(bar.outerRect);
-
-    var barStroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = (style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
-      ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)?.toShader(bar.outerRect);
 
     canvas.drawRRect(bar, barPaint); // draw fill
-    canvas.drawRRect(bar, barStroke); // draw stroke
+
+    final strokeWidth = style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth;
+    if (strokeWidth != null && strokeWidth > 0.0) {
+      var barStroke = Paint()
+        ..style = PaintingStyle.stroke
+      // ..strokeCap = StrokeCap.round
+      // ..strokeJoin = StrokeJoin.round
+        ..strokeWidth = strokeWidth
+        ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
+      canvas.drawRRect(bar, barStroke); // draw stroke
+    }
   }
 
   void _drawGroupLabel(
@@ -188,8 +211,7 @@ class BarPainter implements CartesianPainter {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: group.label!(group.xValue),
         maxWidth: _unitWidth,
-        chartTextStyle:
-            group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
+        chartTextStyle: group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(

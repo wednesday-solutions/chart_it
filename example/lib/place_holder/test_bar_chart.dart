@@ -14,13 +14,28 @@ class TestBarChart extends StatefulWidget {
 }
 
 class _TestBarChartState extends State<TestBarChart> {
+  late final AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+        duration: const Duration(milliseconds: 500),
+        vsync: FpsTickerProvider(
+          fps: 30,
+        ));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Column(
       children: [
-        Expanded(
+        SizedBox(
+          height: 400,
           child: BarChart(
+            maxYValue: 100,
+            // animation: _animationController,
             title: const Text('Demo Chart'),
             chartStyle: CartesianChartStyle(
               backgroundColor: theme.canvasColor,
@@ -42,20 +57,21 @@ class _TestBarChartState extends State<TestBarChart> {
                 gridLineWidth: 1.0,
                 gridLineColor: theme.colorScheme.onBackground,
                 yUnitValue: 10.0,
+                xUnitValue: 1
               ),
             ),
             data: BarSeries(
               seriesStyle: const BarDataStyle(
                 barWidth: 10.0,
                 barColor: Color(0xFF6D71EE),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFF191FC8),
-                    Color(0xFF4247E8),
-                  ],
-                ),
+                // gradient: LinearGradient(
+                //   begin: Alignment.bottomCenter,
+                //   end: Alignment.topCenter,
+                //   colors: [
+                //     Color(0xFF191FC8),
+                //     Color(0xFF4247E8),
+                //   ],
+                // ),
                 strokeWidth: 3.0,
                 strokeColor: Color(0xFF6D71EE),
                 cornerRadius: BorderRadius.only(

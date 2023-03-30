@@ -11,6 +11,23 @@ import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
+abstract class ChartController {
+  VoidCallback? _listener;
+
+  void addListener(VoidCallback listener) {
+    _listener = _listener;
+  }
+
+  void notifyListener() {
+    _listener?.call();
+  }
+
+  @mustCallSuper
+  void dispose() {
+    _listener = null;
+  }
+}
+
 /// The Animation and Data Controller for a Cartesian Chart.
 ///
 /// Encapsulates the required Chart Data, Animatable Data, Configs

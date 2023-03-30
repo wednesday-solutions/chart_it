@@ -62,7 +62,8 @@ class BarChart extends StatefulWidget {
   State<BarChart> createState() => _BarChartState();
 }
 
-class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
+class _BarChartState extends State<BarChart>
+    with SingleTickerProviderStateMixin {
   late CartesianController _controller;
 
   @override

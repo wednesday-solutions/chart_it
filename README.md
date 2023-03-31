@@ -95,8 +95,43 @@ Pick a Chart Widget for the type of Chart you want to draw and provide the neces
    ```
    For Advanced usecases, Check out our Docs [here]().
 
+The **default** animation behaviour for Chart Widgets is it:
+- animates when the widget loads for the first time.
+- animates for every new data updates.
+
+You can override this behaviour using the `animateOnLoad` and `animateOnUpdate` properties at top level widget.
+
+```dart
+...
+import 'package:chart_it/chart_it.dart';
+	
+...
+child: BarChart(
+  animateOnLoad: false,
+  animateOnUpdate: true,
+  animationDuration: const Duration(milliseconds: 750),
+  data: BarSeries(
+  ...
+```
+
+All animations in the widget are handled internally. However, if you wish to control your own animation, then you can provide your own custom [AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html) to the top level property `animation`.
+
+```dart
+...
+import 'package:chart_it/chart_it.dart';
+	
+...
+child: BarChart(
+  animation: AnimationController(
+    duration: Duration(milliseconds: 500),
+    vsync: this, 
+  ),
+  data: BarSeries(
+  ...
+```
+
 # License
 
-Flutter Charts is licensed under the BSD-3-Clause license. Check
-the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for
+Flutter Charts is licensed under the BSD-3-Clause license. Check  
+the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for  
 details.

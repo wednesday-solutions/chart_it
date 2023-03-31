@@ -97,13 +97,13 @@ class _CartesianChartsState extends RenderBox {
     required CartesianChartStyle style,
     required CartesianController controller,
   }) : _painter = CartesianChartPainter(
-    uMinXValue: uMinXValue,
-    uMaxXValue: uMaxXValue,
-    uMinYValue: uMinYValue,
-    uMaxYValue: uMaxYValue,
-    style: style,
-    controller: controller,
-  ) {
+          uMinXValue: uMinXValue,
+          uMaxXValue: uMaxXValue,
+          uMinYValue: uMinYValue,
+          uMaxYValue: uMaxYValue,
+          style: style,
+          controller: controller,
+        ) {
     controller.addListener(markNeedsPaint);
     markNeedsPaint();
   }
@@ -117,15 +117,14 @@ class _CartesianChartsState extends RenderBox {
   bool hitTestSelf(Offset position) => true;
 
   @override
-  void performLayout() {
-    size = computeDryLayout(constraints);
-  }
+  void performLayout() => size = computeDryLayout(constraints);
 
   @override
   void paint(PaintingContext context, Offset offset) {
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);
+
     _painter.paint(
       canvas,
       size,

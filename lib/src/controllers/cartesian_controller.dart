@@ -7,26 +7,10 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/controllers/chart_controller.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
-
-abstract class ChartController {
-  VoidCallback? _listener;
-
-  void addListener(VoidCallback listener) {
-    _listener = _listener;
-  }
-
-  void notifyListener() {
-    _listener?.call();
-  }
-
-  @mustCallSuper
-  void dispose() {
-    _listener = null;
-  }
-}
 
 /// The Animation and Data Controller for a Cartesian Chart.
 ///

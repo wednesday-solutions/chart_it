@@ -1,5 +1,6 @@
 library chart_it;
 
+export 'src/animations/refresh_rate_ticker.dart';
 export 'src/charts/data/bars/bar_data.dart';
 export 'src/charts/data/bars/bar_data_style.dart';
 export 'src/charts/data/bars/bar_group.dart';
@@ -17,4 +18,3 @@ export 'src/charts/data/pie/slice_data_style.dart';
 export 'src/charts/widgets/bar_chart.dart';
 export 'src/charts/widgets/line_chart.dart';
 export 'src/charts/widgets/pie_chart.dart';
-export 'src/animations/FpsTicker.dart';

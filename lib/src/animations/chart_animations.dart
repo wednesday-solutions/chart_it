@@ -1,4 +1,4 @@
-import 'package:chart_it/src/controllers/cartesian_controller.dart';
+import 'package:chart_it/src/controllers/chart_controller.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -42,7 +42,7 @@ mixin ChartAnimationsMixin<T> on ChartController {
         tweenSeries.map((series) => series.evaluate(animation)).toList(),
       );
       // Finally trigger a rebuild for all the painters
-      notifyListener();
+      notifyListeners();
     });
   }
 
@@ -71,7 +71,7 @@ mixin ChartAnimationsMixin<T> on ChartController {
     } else {
       // We are to not animate the data updates
       setAnimatableData(newSeries);
-      notifyListener();
+      notifyListeners();
     }
   }
 

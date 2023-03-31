@@ -92,8 +92,10 @@ class BarPainter implements CartesianPainter {
   ) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-    var style =
-        group.yValue.barStyle ?? group.groupStyle ?? _data.seriesStyle ?? defaultBarSeriesStyle;
+    var style = group.yValue.barStyle ??
+        group.groupStyle ??
+        _data.seriesStyle ??
+        defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     var barWidth = _unitWidth / _config.maxBarsInGroup;
@@ -122,8 +124,10 @@ class BarPainter implements CartesianPainter {
     for (final barData in group.yValues) {
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-      var style =
-          barData.barStyle ?? group.groupStyle ?? _data.seriesStyle ?? defaultBarSeriesStyle;
+      var style = barData.barStyle ??
+          group.groupStyle ??
+          _data.seriesStyle ??
+          defaultBarSeriesStyle;
 
       _drawBar(
         canvas,
@@ -190,7 +194,8 @@ class BarPainter implements CartesianPainter {
 
     var barPaint = Paint()
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)?.toShader(bar.outerRect);
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
+          ?.toShader(bar.outerRect);
 
     canvas.drawRRect(bar, barPaint); // draw fill
 
@@ -198,8 +203,8 @@ class BarPainter implements CartesianPainter {
     if (strokeWidth != null && strokeWidth > 0.0) {
       var barStroke = Paint()
         ..style = PaintingStyle.stroke
-      // ..strokeCap = StrokeCap.round
-      // ..strokeJoin = StrokeJoin.round
+        // ..strokeCap = StrokeCap.round
+        // ..strokeJoin = StrokeJoin.round
         ..strokeWidth = strokeWidth
         ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
       canvas.drawRRect(bar, barStroke); // draw stroke
@@ -218,7 +223,8 @@ class BarPainter implements CartesianPainter {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: group.label!(group.xValue),
         maxWidth: _unitWidth,
-        chartTextStyle: group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
+        chartTextStyle:
+            group.labelStyle ?? _data.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(

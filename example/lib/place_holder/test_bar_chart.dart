@@ -19,10 +19,9 @@ class _TestBarChartState extends State<TestBarChart> {
   @override
   void initState() {
     _animationController = AnimationController(
-        duration: const Duration(milliseconds: 500),
-        vsync: FpsTickerProvider(
-          fps: 30,
-        ));
+      duration: const Duration(milliseconds: 500),
+      vsync: RefreshRateTickerProvider(fps: 30),
+    );
     super.initState();
   }
 
@@ -53,12 +52,11 @@ class _TestBarChartState extends State<TestBarChart> {
                 ),
               ),
               gridStyle: CartesianGridStyle(
-                show: true,
-                gridLineWidth: 1.0,
-                gridLineColor: theme.colorScheme.onBackground,
-                yUnitValue: 10.0,
-                xUnitValue: 1
-              ),
+                  show: true,
+                  gridLineWidth: 1.0,
+                  gridLineColor: theme.colorScheme.onBackground,
+                  yUnitValue: 10.0,
+                  xUnitValue: 1),
             ),
             data: BarSeries(
               seriesStyle: const BarDataStyle(

@@ -13,9 +13,8 @@ import 'package:flutter/material.dart';
 ///
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [RadialSeries].
-class RadialController extends ChangeNotifier
-    with RadialDataMixin
-        // ChartAnimationsMixin<RadialSeries>
+class RadialController extends ChangeNotifier with RadialDataMixin
+// ChartAnimationsMixin<RadialSeries>
 {
   /// Holds a map of configs for every data series.
   final Map<RadialSeries, RadialConfig> _seriesConfigs = {};

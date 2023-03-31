@@ -132,6 +132,4 @@ child: BarChart(
 
 # License
 
-Flutter Charts is licensed under the BSD-3-Clause license. Check  
-the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for  
-details.
+Flutter Charts is licensed under the BSD-3-Clause license. Check the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for details.

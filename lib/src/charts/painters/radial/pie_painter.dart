@@ -35,7 +35,8 @@ class PiePainter implements RadialPainter {
 
     var startAngle = (chart.style.initAngle - 90.0);
     var pointDegrees = 0.0;
-    for (var slice in _data.slices) {
+    for (var i = 0; i < _data.slices.length; i++) {
+      final slice = _data.slices[i];
       var sliceRadius = slice.style?.radius ?? seriesRadius;
       // We need to ensure that user hasn't provided a radius value
       // that exceeds our max limit to draw a circle within given constraints

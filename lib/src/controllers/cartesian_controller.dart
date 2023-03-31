@@ -169,7 +169,8 @@ class CartesianController extends ChangeNotifier
     var iterations = data.maxIterations();
     for (var i = 0; i < iterations; i++) {
       // iterate over the n'th index of every series
-      for (var series in data) {
+      for (var j = 0; j < data.length; j++) {
+        final series = data[j];
         series.when(
           onBarSeries: (series) {
             if (i < series.barData.length) {

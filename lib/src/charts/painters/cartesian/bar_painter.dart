@@ -44,7 +44,8 @@ class BarPainter implements CartesianPainter {
 
     var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
-    for (final group in _data.barData) {
+    for (var i = 0; i < _data.barData.length; i++) {
+      final group = _data.barData[i];
       if (group is SimpleBar) {
         // We have to paint a single bar
         _drawSimpleBar(canvas, chart, dx, group);
@@ -83,7 +84,7 @@ class BarPainter implements CartesianPainter {
       canvas,
       chart,
       style,
-      dxOffset + (_unitWidth * 0.5), // dx pos for center of the unit
+      dxOffset, // dx pos to start the bar from
       barWidth,
       group.yValue.yValue,
     );
@@ -101,7 +102,8 @@ class BarPainter implements CartesianPainter {
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;
-    for (final barData in group.yValues) {
+    for (var i = 0; i < group.yValues.length; i++) {
+      final barData = group.yValues[i];
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
       var style = barData.barStyle ??
@@ -113,7 +115,7 @@ class BarPainter implements CartesianPainter {
         canvas,
         chart,
         style,
-        x + (groupWidth * 0.5), // dx pos for center of each group
+        x, // dx pos to start the bar in this group
         barWidth,
         barData.yValue,
       );
@@ -140,20 +142,23 @@ class BarPainter implements CartesianPainter {
     // The x values start from the left side of the chart and then increase by unit width!
     // Note: y values increase from the top to the bottom of the screen, so
     // we have to subtract the computed y value from the chart's bottom to invert the drawing!
-    var rect = Rect.fromCenter(
-      center: Offset(dxCenter, chart.axisOrigin.dy - (y * 0.5)),
-      // center of bar
-      width: barWidth - (2 * padding),
-      height: y,
-    );
+    // var rect = Rect.fromCenter(
+    //   center: Offset(dxCenter, chart.axisOrigin.dy - (y * 0.5)),
+    //   // center of bar
+    //   width: barWidth - (2 * padding),
+    //   height: y,
+    // );
 
     var topLeft = style?.cornerRadius?.topLeft ?? Radius.zero;
     var topRight = style?.cornerRadius?.topRight ?? Radius.zero;
     var bottomLeft = style?.cornerRadius?.bottomLeft ?? Radius.zero;
     var bottomRight = style?.cornerRadius?.bottomRight ?? Radius.zero;
 
-    var bar = RRect.fromRectAndCorners(
-      rect,
+    var bar = RRect.fromLTRBAndCorners(
+      dxCenter + padding, // start X + padding
+      chart.axisOrigin.dy - y, // axisOrigin's dY - yValue
+      dxCenter + barWidth, // startX + barWidth
+      chart.axisOrigin.dy, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
       topLeft: yValue.isNegative ? bottomLeft : topLeft,
       topRight: yValue.isNegative ? bottomRight : topRight,

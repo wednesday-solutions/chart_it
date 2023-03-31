@@ -109,7 +109,8 @@ class BarSeriesConfig extends CartesianConfig {
       // For a stack, the y value of the bar is the total of all bars
       maxV = max(maxV, yValue.fold(0, (a, b) => a + b.yValue));
     } else {
-      for (final data in yValue) {
+      for (var i = 0; i < yValue.length; i++) {
+        final data = yValue[i];
         minV = min(minV, data.yValue.toDouble());
         maxV = max(maxV, data.yValue.toDouble());
       }

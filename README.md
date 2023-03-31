@@ -1,13 +1,13 @@
 <!-- TODO: Add Banners Above Here -->
 # Chart It
 
-Chart_It is a fully written in dart, strongly customizable Collection of Charts.
+Chart_It is a fully written in dart, strongly customizable and Seamlessly animated Collection of Charts.
 
 ## Installation
 Add the `chart_it` package to your project's `pubspec.yaml` file:
 ```yaml
 dependencies:
-  chart_it: ^0.0.1
+  chart_it: ^0.0.2
 ```
 Alternatively, you can also run the following command in your Flutter Project:
 ```shell

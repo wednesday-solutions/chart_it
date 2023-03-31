@@ -1,7 +1,11 @@
+import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class CartesianCharts extends LeafRenderObjectWidget {
   final double? width;
@@ -15,6 +19,10 @@ class CartesianCharts extends LeafRenderObjectWidget {
   // Mandatory Fields
   final CartesianChartStyle style;
   final CartesianController controller;
+  final List<CartesianSeries> currentData;
+  final List<CartesianSeries> targetData;
+  final Map<int, CartesianPainter> painters;
+  final Map<CartesianSeries, CartesianConfig> configs;
 
   const CartesianCharts({
     Key? key,
@@ -26,6 +34,10 @@ class CartesianCharts extends LeafRenderObjectWidget {
     this.uMaxYValue,
     required this.style,
     required this.controller,
+    required this.currentData,
+    required this.targetData,
+    required this.painters,
+    required this.configs,
   }) : super(key: key);
 
   // @override
@@ -81,11 +93,14 @@ class _CartesianChartsState extends RenderBox {
     markNeedsPaint();
   }
 
-  set controller(CartesianController value) {
-    if (_painter.controller == value) return;
-    _painter.controller = value;
-    markNeedsPaint();
-  }
+  // set controller(CartesianController value) {
+  //   if (_painter.controller == value) return;
+  //   _painter.controller = value;
+  //   markNeedsPaint();
+  // }
+
+  late TapGestureRecognizer _tapGestureRecognizer;
+  final _doubleTapGestureRecognizer = DoubleTapGestureRecognizer();
 
   _CartesianChartsState({
     this.width,
@@ -95,16 +110,19 @@ class _CartesianChartsState extends RenderBox {
     double? uMinYValue,
     double? uMaxYValue,
     required CartesianChartStyle style,
-    required CartesianController controller,
   }) : _painter = CartesianChartPainter(
-    uMinXValue: uMinXValue,
-    uMaxXValue: uMaxXValue,
-    uMinYValue: uMinYValue,
-    uMaxYValue: uMaxYValue,
-    style: style,
-    controller: controller,
-  ) {
-    controller.addListener(markNeedsPaint);
+          uMinXValue: uMinXValue,
+          uMaxXValue: uMaxXValue,
+          uMinYValue: uMinYValue,
+          uMaxYValue: uMaxYValue,
+          style: style,
+        );
+
+  _registerGestureRecognizers() {
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTapUp = (details) {
+        _painter.controller.onTapUp(details.localPosition);
+      };
   }
 
   @override
@@ -114,6 +132,14 @@ class _CartesianChartsState extends RenderBox {
 
   @override
   bool hitTestSelf(Offset position) => true;
+
+  @override
+  void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
+    if (event is PointerDownEvent) {
+      _tapGestureRecognizer.addPointer(event);
+      _doubleTapGestureRecognizer.addPointer(event);
+    }
+  }
 
   @override
   void performLayout() {

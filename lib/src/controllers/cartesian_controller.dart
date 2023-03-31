@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
@@ -33,12 +35,13 @@ abstract class ChartController {
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [CartesianSeries].
 class CartesianController extends ChangeNotifier
-    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries> {
+    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries>, InteractionDispatcher {
   /// Holds a map of configs for every data series.
-  final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
+  final Map<CartesianSeries, CartesianConfig> configCache = {};
+  final Map<int, CartesianConfig> seriesConfigs = {};
 
   /// Holds a map of painters for every series type.
-  final Map<Type, CartesianPainter> painters = {};
+  final Map<int, CartesianPainter> painters = {};
 
   /// The Current Data which will be lerped across every animation tick.
   List<CartesianSeries> currentData = List.empty();
@@ -135,17 +138,18 @@ class CartesianController extends ChangeNotifier
 
   _invalidatePainters(List<CartesianSeries> data) {
     // For every distinct Cartesian Series, we will construct a painter for it
-    data.distinctTypes().forEach((series) {
-      painters.createAndUpdate(series, onCreate: () {
-        return CartesianSeries.whenType(
-          series,
-          onBarSeries: () => BarPainter(useGraphUnits: false),
-          orElse: () {
-            throw ArgumentError('No Painter defined for this type: $series');
-          },
-        );
+    for (var i = 0; i < data.length; i++) {
+      final series = data[i];
+      final painter = painters.getOrNull(i);
+
+      series.when(onBarSeries: (barSeries) {
+        if (painter.runtimeType != BarPainter) {
+          painters[i] = BarPainter(useGraphUnits: data.length > 1);
+        } else {
+          (painter as BarPainter).useGraphUnits = data.length > 1;
+        }
       });
-    });
+    }
   }
 
   _invalidateRangeValues() {
@@ -189,27 +193,23 @@ class CartesianController extends ChangeNotifier
       for (var j = 0; j < data.length; j++) {
         final series = data[j];
         series.when(
-          onBarSeries: (series) {
-            if (i < series.barData.length) {
+          onBarSeries: (barSeries) {
+            if (i < barSeries.barData.length) {
               // We Know the index. We have to get the min/max values
               //  from the 'i'th element (BarGroup) in this series
-              _seriesConfigs.createAndUpdate(
-                series,
-                onCreate: () => BarSeriesConfig(),
-                onUpdate: (config) {
-                  var barConfig = config.asOrNull<BarSeriesConfig>();
-                  // Run the min & max calculations
-                  barConfig?.updateEdges(
-                    series.barData[i],
-                    (minX, maxX, minY, maxY) {
-                      minXValue = min(minXValue, minX);
-                      maxXValue = max(maxXValue, maxX);
-                      minYValue = min(minYValue, minY);
-                      maxYValue = max(maxYValue, maxY);
-                    },
-                  );
-                },
-              );
+              if (config.runtimeType != BarSeriesConfig) {
+                seriesConfigs[s] = BarSeriesConfig();
+              } else {
+                (config as BarSeriesConfig).updateEdges(
+                  barSeries.barData[i],
+                  (minX, maxX, minY, maxY) {
+                    minXValue = min(minXValue, minX);
+                    maxXValue = max(maxXValue, maxX);
+                    minYValue = min(minYValue, minY);
+                    maxYValue = max(maxYValue, maxY);
+                  },
+                );
+              }
             }
           },
         );
@@ -220,7 +220,7 @@ class CartesianController extends ChangeNotifier
   }
 
   @override
-  CartesianConfig? getConfig(CartesianSeries series) => _seriesConfigs[series];
+  CartesianConfig? getConfig(CartesianSeries series) => seriesConfigs[series];
 
   @override
   List<Tween<CartesianSeries>> getTweens({
@@ -240,6 +240,20 @@ class CartesianController extends ChangeNotifier
   void setData(List<CartesianSeries> data) {
     _invalidatePainters(data);
     aggregateData(data);
+
+    for (var i = 0; i < data.length; i++) {
+      final series = data[i];
+      series.when(onBarSeries: (barSeries) {
+        for (var s = 0; s < barSeries.barData.length; s++) {
+          final barData = barSeries.barData[s];
+          final yValues = barData.yValues();
+          series.when(onBarSeries: (barSeries) {
+
+          });
+        }
+      });
+
+    }
     targetData = data;
   }
 
@@ -253,4 +267,21 @@ class CartesianController extends ChangeNotifier
     minXRange = 0.0;
     minYRange = 0.0;
   }
+
+  @override
+  void onInteraction(ChartInteractionType interactionType, Offset localPosition) {
+    // TODO: implement onInteraction
+  }
+}
+
+abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
+  SERIES series;
+  CONFIG config;
+  PAINTER painter;
+
+  ChartPaintingContext({required this.series, required this.config, required this.painter});
+}
+
+class BarChartPaintingContext extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
+  BarChartPaintingContext({required super.series, required super.config, required super.painter});
 }

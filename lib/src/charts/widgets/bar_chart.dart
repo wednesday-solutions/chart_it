@@ -119,6 +119,10 @@ class _BarChartState extends State<BarChart>
           xUnitValue: style.gridStyle?.xUnitValue ?? _controller.maxXRange,
         ),
       ),
+      currentData: _controller.currentData,
+      targetData: _controller.targetData,
+      painters: _controller.painters,
+      configs: _controller.seriesConfigs,
     );
   }
 }

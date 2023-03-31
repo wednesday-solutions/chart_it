@@ -8,5 +8,6 @@ abstract class CartesianPainter {
     CartesianSeries target,
     Canvas canvas,
     CartesianChartPainter chart,
+    CartesianConfig config,
   );
 }

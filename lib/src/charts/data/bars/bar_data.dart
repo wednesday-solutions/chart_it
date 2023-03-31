@@ -13,11 +13,11 @@ import 'package:equatable/equatable.dart';
 class BarData extends Equatable {
   /// The LowerBound Value of Y-Axis. Only useful to control the Height
   /// of the drawn Bar in Stack Arrangement.
-  final num? startYFrom;
+  final double? startYFrom;
 
   /// The UpperBound Value that's to be plotted along the Y-Axis.
   /// This will be drawn as the Height of the Bar
-  final num yValue;
+  final double yValue;
 
   /// Callback for the label along the Y-Axis in this [BarData]
   /// The Y-Value is provided as a param, and a string is to be returned
@@ -46,7 +46,7 @@ class BarData extends Equatable {
   static BarData lerp(BarData? current, BarData? target, double t) {
     return BarData(
       startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
-      yValue: lerpDouble(current?.yValue, target?.yValue, t) as num,
+      yValue: lerpDouble(current?.yValue, target?.yValue, t) ?? 0,
       label: target?.label,
       labelStyle: ChartTextStyle.lerp(
         current?.labelStyle,

@@ -13,7 +13,7 @@ class BarPainter implements CartesianPainter {
 
   late double _vRatio;
   late double _unitWidth;
-  final bool useGraphUnits;
+  bool useGraphUnits;
 
   BarPainter({
     required this.useGraphUnits,
@@ -25,16 +25,16 @@ class BarPainter implements CartesianPainter {
     CartesianSeries targetSeries,
     Canvas canvas,
     CartesianChartPainter chart,
+    CartesianConfig config,
   ) {
+    assert(
+      config is BarSeriesConfig,
+      "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
+    );
     // Setup the bar data
     _data = lerpSeries as BarSeries;
     // Setup the bar chart config
-    var config = chart.controller.getConfig(targetSeries);
-    if (config == null) {
-      throw ArgumentError('Invalid State! Couldn\'t find a config for $_data');
-    } else {
-      _config = config.asOrNull<BarSeriesConfig>()!;
-    }
+    _config = config as BarSeriesConfig;
 
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
@@ -194,8 +194,8 @@ class BarPainter implements CartesianPainter {
     if (strokeWidth != null && strokeWidth > 0.0) {
       var barStroke = Paint()
         ..style = PaintingStyle.stroke
-      // ..strokeCap = StrokeCap.round
-      // ..strokeJoin = StrokeJoin.round
+        // ..strokeCap = StrokeCap.round
+        // ..strokeJoin = StrokeJoin.round
         ..strokeWidth = strokeWidth
         ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
       canvas.drawRRect(bar, barStroke); // draw stroke

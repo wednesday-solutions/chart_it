@@ -7,6 +7,122 @@ import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
+mixin InteractionDispatcher {
+  Offset? _latestDoubleTapOffset;
+  Offset? _latestPanOffset;
+
+  @protected
+  void onInteraction(ChartInteractionType interactionType, Offset localPosition);
+
+  void onTapUp(Offset localPosition) {
+    onInteraction(ChartInteractionType.tap, localPosition);
+  }
+
+  void onDoubleTapDown(Offset localPosition) {
+    _latestDoubleTapOffset = localPosition;
+  }
+
+  void onDoubleTapCancel() {
+    _latestDoubleTapOffset = null;
+  }
+
+  void onDoubleTap() {
+    final latestDoubleTapOffset = _latestDoubleTapOffset;
+    if (latestDoubleTapOffset != null) {
+      onInteraction(ChartInteractionType.doubleTap, latestDoubleTapOffset);
+    }
+  }
+
+  void onPanStart(Offset localPosition) {
+    _latestPanOffset = localPosition;
+    onInteraction(ChartInteractionType.drag, localPosition);
+  }
+
+  void onPanUpdate(Offset localPosition) {
+    _latestPanOffset = localPosition;
+    onInteraction(ChartInteractionType.drag, localPosition);
+  }
+
+  void onPanCancel() {
+    _latestPanOffset = null;
+  }
+
+  void onPanEnd() {
+    final latestPanOffset = _latestPanOffset;
+    if (latestPanOffset != null) {
+      onInteraction(ChartInteractionType.dragEnd, latestPanOffset);
+    }
+    _latestPanOffset = null;
+  }
+}
+
+enum ChartInteractionType {
+  tap,
+  doubleTap,
+  dragStart,
+  drag,
+  dragEnd;
+}
+
+abstract class ChartInteractionResult {
+  final Offset? localPosition;
+  final ChartInteractionType interactionType;
+
+  ChartInteractionResult({
+    required this.localPosition,
+    required this.interactionType,
+  });
+}
+
+abstract class ChartInteractionConfig<T extends ChartInteractionResult> {
+  final bool isEnabled;
+  final void Function(T interactionResult)? onRawInteraction;
+  final void Function(T interactionResult)? onTap;
+  final void Function(T interactionResult)? onDoubleTap;
+  final void Function(T interactionResult)? onDragStart;
+  final void Function(T interactionResult)? onDrag;
+  final void Function(T interactionResult)? onDragEnd;
+
+  const ChartInteractionConfig({
+    this.onRawInteraction,
+    required this.onTap,
+    required this.onDoubleTap,
+    required this.onDragStart,
+    required this.onDrag,
+    required this.onDragEnd,
+    required this.isEnabled,
+  });
+
+  void onInteraction(T interactionResult) {
+    switch (interactionResult.interactionType) {
+      case ChartInteractionType.tap:
+        onTap?.call(interactionResult);
+        break;
+      case ChartInteractionType.doubleTap:
+        onDoubleTap?.call(interactionResult);
+        break;
+      case ChartInteractionType.drag:
+        onDragStart?.call(interactionResult);
+        break;
+      case ChartInteractionType.dragStart:
+        onDrag?.call(interactionResult);
+        break;
+      case ChartInteractionType.dragEnd:
+        onDragEnd?.call(interactionResult);
+        break;
+    }
+  }
+
+  bool get shouldHitTest =>
+      isEnabled &&
+      (onRawInteraction != null ||
+          onTap != null ||
+          onDoubleTap != null ||
+          onDragStart != null ||
+          onDragEnd != null ||
+          onDrag != null);
+}
+
 class CartesianChartPainter {
   late Rect graphPolygon;
   late double graphHeight;
@@ -34,7 +150,10 @@ class CartesianChartPainter {
   double? uMaxYValue;
 
   CartesianChartStyle style;
-  CartesianController controller;
+  List<CartesianSeries> currentData;
+  List<CartesianSeries> targetData;
+  Map<int, CartesianPainter> painters;
+  Map<CartesianSeries, CartesianConfig> configs;
 
   CartesianChartPainter({
     this.uMinXValue,
@@ -42,11 +161,14 @@ class CartesianChartPainter {
     this.uMinYValue,
     this.uMaxYValue,
     required this.style,
-    required this.controller,
+    required this.currentData,
+    required this.targetData,
+    required this.painters,
+    required this.configs,
   });
 
-  bool shouldRepaint(CartesianChartPainter oldDelegate) =>
-      controller.shouldRepaint(oldDelegate.controller);
+  // bool shouldRepaint(CartesianChartPainter oldDelegate) =>
+  //     controller.shouldRepaint(oldDelegate.controller);
 
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
@@ -60,10 +182,19 @@ class CartesianChartPainter {
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    for (var i = 0; i < controller.targetData.length; i++) {
-      final targetData = controller.targetData[i];
-      var painter = controller.painters[controller.targetData[i].runtimeType];
-      painter?.paint(controller.currentData[i], targetData, canvas, this);
+    for (var i = 0; i < targetData.length; i++) {
+      final target = targetData[i];
+      var painter = painters[i];
+      var config = configs[target];
+      if (painter != null && config != null) {
+        painter.paint(
+          currentData[i],
+          target,
+          canvas,
+          this,
+          config,
+        );
+      }
     }
 
     // controller.targetData.forEachIndexed((index, series) {
@@ -168,12 +299,10 @@ class CartesianChartPainter {
       if (showXLabels && i <= _xUnitsCount) {
         ChartTextPainter.fromChartTextStyle(
           text: i.toString(),
-          chartTextStyle:
-              style.axisStyle?.tickLabelStyle ?? const ChartTextStyle(),
+          chartTextStyle: style.axisStyle?.tickLabelStyle ?? const ChartTextStyle(),
         ).paint(
           canvas: canvas,
-          offset:
-              Offset(x, graphPolygon.bottom + style.axisStyle!.tickLength + 15),
+          offset: Offset(x, graphPolygon.bottom + style.axisStyle!.tickLength + 15),
         );
 
         // increment by unitWidth every iteration along x
@@ -181,8 +310,7 @@ class CartesianChartPainter {
       }
 
       if (showYLabels && i <= _yUnitsCount) {
-        final textStyle =
-            style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
+        final textStyle = style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
         ChartTextPainter.fromChartTextStyle(
           text: (controller.minYRange + (yUnitValue * i)).toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
@@ -228,10 +356,8 @@ class CartesianChartPainter {
     valueUnitHeight = graphHeight / totalYRange;
 
     // Calculate the Offset for Axis Origin
-    var negativeXRange =
-        (controller.minXRange.abs() / xUnitValue) * graphUnitWidth;
-    var negativeYRange =
-        (controller.minYRange.abs() / yUnitValue) * graphUnitHeight;
+    var negativeXRange = (controller.minXRange.abs() / xUnitValue) * graphUnitWidth;
+    var negativeYRange = (controller.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     axisOrigin = Offset(xOffset, yOffset);

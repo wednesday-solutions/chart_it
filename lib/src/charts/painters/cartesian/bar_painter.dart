@@ -194,8 +194,6 @@ class BarPainter implements CartesianPainter {
     if (strokeWidth != null && strokeWidth > 0.0) {
       var barStroke = Paint()
         ..style = PaintingStyle.stroke
-        // ..strokeCap = StrokeCap.round
-        // ..strokeJoin = StrokeJoin.round
         ..strokeWidth = strokeWidth
         ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
       canvas.drawRRect(bar, barStroke); // draw stroke

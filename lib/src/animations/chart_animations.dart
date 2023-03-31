@@ -1,3 +1,4 @@
+import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,6 @@ mixin ChartAnimationsMixin<T> on ChartController {
   /// 1. [setAnimatableData] with the values of [tweenSeries] evaluated at current value of [animation].
   /// 2. [notifyListeners] so that [CustomPainter.paint] is called on the painters registered with this controller.
   void animateDataUpdates() {
-    int count = 0;
     animation.addListener(() {
       setAnimatableData(
         tweenSeries.map((series) => series.evaluate(animation)).toList(),
@@ -52,6 +52,7 @@ mixin ChartAnimationsMixin<T> on ChartController {
   /// 1. Updates the [tweenSeries] with tween created from the [newSeries] data.
   /// 2. [setData] with the [newSeries].
   /// 3. Starts the [animation] if applicable.
+  @protected
   void updateDataSeries(
     List<T> newSeries, {
     bool isInitPhase = false,

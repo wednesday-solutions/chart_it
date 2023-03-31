@@ -132,7 +132,7 @@ class BarChartSample1State extends State<BarChartSample1> {
     );
   }
 
-  List<BarChartGroupData> showingGroups() => List.generate(7, (i) {
+  List<BarChartGroupData> showingGroups() => List.generate(100, (i) {
     switch (i) {
       case 0:
         return makeGroupData(0, 5, isTouched: i == touchedIndex);
@@ -149,7 +149,7 @@ class BarChartSample1State extends State<BarChartSample1> {
       case 6:
         return makeGroupData(6, 6.5, isTouched: i == touchedIndex);
       default:
-        return throw Error();
+        return makeGroupData(0, 5, isTouched: i == touchedIndex);
     }
   });
 
@@ -321,7 +321,7 @@ class BarChartSample1State extends State<BarChartSample1> {
       borderData: FlBorderData(
         show: false,
       ),
-      barGroups: List.generate(7, (i) {
+      barGroups: List.generate(100, (i) {
         switch (i) {
           case 0:
             return makeGroupData(
@@ -373,7 +373,12 @@ class BarChartSample1State extends State<BarChartSample1> {
               Random().nextInt(widget.availableColors.length)],
             );
           default:
-            return throw Error();
+            return makeGroupData(
+              6,
+              Random().nextInt(15).toDouble() + 6,
+              barColor: widget.availableColors[
+              Random().nextInt(widget.availableColors.length)],
+            );
         }
       }),
       gridData: FlGridData(show: false),

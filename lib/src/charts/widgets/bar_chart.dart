@@ -44,6 +44,8 @@ class BarChart extends StatefulWidget {
   /// The Data which will be Drawn as Bars
   final BarSeries data;
 
+  final CartesianRangeContext? rangeContext;
+
   const BarChart({
     Key? key,
     this.title,
@@ -55,6 +57,7 @@ class BarChart extends StatefulWidget {
     this.animation,
     this.maxYValue,
     this.chartStyle,
+    this.rangeContext,
     required this.data,
   }) : super(key: key);
 
@@ -80,8 +83,7 @@ class _BarChartState extends State<BarChart>
             vsync: this,
           ),
       calculateRange: (context) {
-        var gridStyle = (widget.chartStyle?.gridStyle ??
-            defaultCartesianChartStyle.gridStyle)!;
+        var gridStyle = (widget.chartStyle?.gridStyle ?? defaultCartesianChartStyle.gridStyle)!;
         var maxXRange = widget.data.barData.length.toDouble();
         var maxYRange = widget.maxYValue ?? context.maxY;
         return CartesianRangeResult(
@@ -95,20 +97,35 @@ class _BarChartState extends State<BarChart>
         );
       },
     );
+
+    _controller.addListener(() {
+      setState(() {
+
+      });
+    });
   }
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
-    _controller.updateDataSeries([widget.data]);
+    _controller.update(
+      targetData: [widget.data],
+      animateOnLoad: widget.animateOnLoad,
+      animateOnUpdate: widget.animateOnUpdate,
+      animation: widget.animation ??
+          AnimationController(
+            duration: widget.animationDuration,
+            vsync: this,
+          ),
+      rangeContext: widget.rangeContext,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var style = widget.chartStyle ?? defaultCartesianChartStyle;
     return CartesianCharts(
-      controller: _controller,
       width: widget.chartWidth,
       height: widget.chartHeight,
       uMaxYValue: widget.maxYValue,
@@ -122,7 +139,8 @@ class _BarChartState extends State<BarChart>
       currentData: _controller.currentData,
       targetData: _controller.targetData,
       painters: _controller.painters,
-      configs: _controller.seriesConfigs,
+      configs: _controller.configCache,
+      cartesianRangeData: _controller,
     );
   }
 }

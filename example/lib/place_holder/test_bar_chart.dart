@@ -64,14 +64,14 @@ class _TestBarChartState extends State<TestBarChart> {
               seriesStyle: const BarDataStyle(
                 barWidth: 10.0,
                 barColor: Color(0xFF6D71EE),
-                // gradient: LinearGradient(
-                //   begin: Alignment.bottomCenter,
-                //   end: Alignment.topCenter,
-                //   colors: [
-                //     Color(0xFF191FC8),
-                //     Color(0xFF4247E8),
-                //   ],
-                // ),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Color(0xFF191FC8),
+                    Color(0xFF4247E8),
+                  ],
+                ),
                 strokeWidth: 3.0,
                 strokeColor: Color(0xFF6D71EE),
                 cornerRadius: BorderRadius.only(
@@ -102,7 +102,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(next(1, 10).toInt(), (index) {
+  List<BarGroup> barSeries = List.generate(10.toInt(), (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,

@@ -142,12 +142,6 @@ class BarPainter implements CartesianPainter {
     // The x values start from the left side of the chart and then increase by unit width!
     // Note: y values increase from the top to the bottom of the screen, so
     // we have to subtract the computed y value from the chart's bottom to invert the drawing!
-    // var rect = Rect.fromCenter(
-    //   center: Offset(dxCenter, chart.axisOrigin.dy - (y * 0.5)),
-    //   // center of bar
-    //   width: barWidth - (2 * padding),
-    //   height: y,
-    // );
 
     var topLeft = style?.cornerRadius?.topLeft ?? Radius.zero;
     var topRight = style?.cornerRadius?.topRight ?? Radius.zero;

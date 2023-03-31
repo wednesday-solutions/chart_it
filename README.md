@@ -1,7 +1,7 @@
 <!-- TODO: Add Banners Above Here -->
 # Chart It
 
-Chart_It is a fully written in dart, strongly customizable and Seamlessly animated Collection of Charts.
+Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
 
 ## Installation
 Add the `chart_it` package to your project's `pubspec.yaml` file:

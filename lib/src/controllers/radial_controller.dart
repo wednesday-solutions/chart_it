@@ -103,7 +103,8 @@ class RadialController extends ChangeNotifier with RadialDataMixin
     var iterations = data.maxIterations();
     for (var i = 0; i < iterations; i++) {
       // iterate over the n'th index of every series
-      for (var series in data) {
+      for (var i = 0; i < data.length; i++) {
+        final series = data[i];
         series.when(
           onPieSeries: (series) {
             if (i < series.slices.length) {

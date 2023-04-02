@@ -376,7 +376,7 @@ class BarChartSample1State extends State<BarChartSample1> {
               6,
               Random().nextInt(15).toDouble() + 6,
               barColor: widget.availableColors[
-              Random().nextInt(widget.availableColors.length)],
+                  Random().nextInt(widget.availableColors.length)],
             );
         }
       }),

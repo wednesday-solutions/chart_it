@@ -14,7 +14,10 @@ import 'package:flutter/material.dart';
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [CartesianSeries].
 class CartesianController extends ChangeNotifier
-    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries>, InteractionDispatcher {
+    with
+        CartesianDataMixin,
+        ChartAnimationsMixin<CartesianSeries>,
+        InteractionDispatcher {
   /// Holds a map of configs for every data series.
   final Map<CartesianSeries, CartesianConfig> cachedConfigs = {};
 
@@ -247,7 +250,8 @@ class CartesianController extends ChangeNotifier
               cachedConfigs[barSeries] = config;
             }
             assert(config is BarSeriesConfig);
-            (config as BarSeriesConfig).updateEdges(barGroup, _updateMinMaxValues);
+            (config as BarSeriesConfig)
+                .updateEdges(barGroup, _updateMinMaxValues);
           });
         }
       });
@@ -286,7 +290,8 @@ class CartesianController extends ChangeNotifier
   }
 
   @override
-  void onInteraction(ChartInteractionType interactionType, Offset localPosition) {
+  void onInteraction(
+      ChartInteractionType interactionType, Offset localPosition) {
     // TODO: implement onInteraction
   }
 }
@@ -296,9 +301,12 @@ abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
   CONFIG config;
   PAINTER painter;
 
-  ChartPaintingContext({required this.series, required this.config, required this.painter});
+  ChartPaintingContext(
+      {required this.series, required this.config, required this.painter});
 }
 
-class BarChartPaintingContext extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
-  BarChartPaintingContext({required super.series, required super.config, required super.painter});
+class BarChartPaintingContext
+    extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
+  BarChartPaintingContext(
+      {required super.series, required super.config, required super.painter});
 }

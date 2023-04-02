@@ -20,7 +20,7 @@ class _TestBarChartState extends State<TestBarChart> {
   void initState() {
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
-      vsync: RefreshRateTickerProvider(fps: 30),
+      vsync: RefreshRateTickerProvider(fps: 60),
     );
     super.initState();
   }

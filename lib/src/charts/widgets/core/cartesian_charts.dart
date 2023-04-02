@@ -41,6 +41,19 @@ class CartesianCharts extends LeafRenderObjectWidget {
       ..uMinXValue = uMinXValue
       ..uMinYValue = uMinYValue;
   }
+
+  @override
+  void updateRenderObject(BuildContext context, _CartesianChartsState renderObject) {
+    renderObject
+      ..width = width
+      ..height = height
+      ..style = style
+      ..controller = controller
+      ..uMaxXValue = uMaxXValue
+      ..uMaxYValue = uMaxYValue
+      ..uMinXValue = uMinXValue
+      ..uMinYValue = uMinYValue;
+  }
 }
 
 class _CartesianChartsState extends RenderBox {
@@ -74,7 +87,7 @@ class _CartesianChartsState extends RenderBox {
   }
 
   // Mandatory Fields
-
+  // TODO: This is not getting triggered on seState Rebuild!
   set style(CartesianChartStyle value) {
     if (_painter.style == value) return;
     _painter.style = value;

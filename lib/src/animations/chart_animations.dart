@@ -1,4 +1,5 @@
 import 'package:chart_it/src/controllers/chart_controller.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -39,7 +40,7 @@ mixin ChartAnimationsMixin<T> on ChartController {
     int count = 0;
     animation.addListener(() {
       setAnimatableData(
-        tweenSeries.map((series) => series.evaluate(animation)).toList(),
+        tweenSeries.fastMap((series) => series.evaluate(animation)),
       );
       // Finally trigger a rebuild for all the painters
       notifyListeners();

@@ -84,7 +84,7 @@ class BarPainter implements CartesianPainter {
       canvas,
       chart,
       style,
-      dxOffset, // dx pos to start the bar from
+      dxOffset + (_unitWidth * 0.5) - (barWidth * 0.5), // dx pos to start the bar from
       barWidth,
       group.yValue.yValue,
     );
@@ -151,7 +151,7 @@ class BarPainter implements CartesianPainter {
     var bar = RRect.fromLTRBAndCorners(
       dxCenter + padding, // start X + padding
       chart.axisOrigin.dy - y, // axisOrigin's dY - yValue
-      dxCenter + barWidth, // startX + barWidth
+      dxCenter + barWidth - padding, // startX + barWidth
       chart.axisOrigin.dy, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
       topLeft: yValue.isNegative ? bottomLeft : topLeft,

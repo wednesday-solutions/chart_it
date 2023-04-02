@@ -38,6 +38,15 @@ extension ListTransforms<T> on List<T> {
       action(index, this[index]);
     }
   }
+
+  List<K> fastMap<K>(K Function(T t) convertTo) {
+    List<K> mappedList = List.empty(growable: true);
+
+    for (var i = 0; i < length; i++) {
+      mappedList.add(convertTo(this[i]));
+    }
+    return mappedList;
+  }
 }
 
 extension ContainsKey<K, V> on Map<K, V> {

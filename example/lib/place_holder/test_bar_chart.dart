@@ -52,11 +52,11 @@ class _TestBarChartState extends State<TestBarChart> {
                 ),
               ),
               gridStyle: CartesianGridStyle(
-                  show: true,
-                  gridLineWidth: 1.0,
-                  gridLineColor: theme.colorScheme.onBackground,
-                  yUnitValue: 10.0,
-                  xUnitValue: 1),
+                show: true,
+                gridLineWidth: 1.0,
+                gridLineColor: theme.colorScheme.onBackground,
+                yUnitValue: 10.0,
+              ),
             ),
             data: BarSeries(
               seriesStyle: const BarDataStyle(

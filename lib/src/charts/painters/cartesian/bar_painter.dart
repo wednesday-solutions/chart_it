@@ -1,10 +1,15 @@
-import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
+import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/bar_series.dart';
+import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
+import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter {
@@ -13,7 +18,7 @@ class BarPainter implements CartesianPainter {
 
   late double _vRatio;
   late double _unitWidth;
-  final bool useGraphUnits;
+  bool useGraphUnits;
 
   BarPainter({
     required this.useGraphUnits,
@@ -25,16 +30,16 @@ class BarPainter implements CartesianPainter {
     CartesianSeries targetSeries,
     Canvas canvas,
     CartesianChartPainter chart,
+    CartesianConfig config,
   ) {
+    assert(
+      config is BarSeriesConfig,
+      "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
+    );
     // Setup the bar data
     _data = lerpSeries as BarSeries;
     // Setup the bar chart config
-    var config = chart.controller.getConfig(targetSeries);
-    if (config == null) {
-      throw ArgumentError('Invalid State! Couldn\'t find a config for $_data');
-    } else {
-      _config = config.asOrNull<BarSeriesConfig>()!;
-    }
+    _config = config as BarSeriesConfig;
 
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
     // We need to compute the RATIO between the chart height (in pixels) and
@@ -84,7 +89,8 @@ class BarPainter implements CartesianPainter {
       canvas,
       chart,
       style,
-      dxOffset + (_unitWidth * 0.5) - (barWidth * 0.5), // dx pos to start the bar from
+      dxOffset + (_unitWidth * 0.5) - (barWidth * 0.5),
+      // dx pos to start the bar from
       barWidth,
       group.yValue.yValue,
     );
@@ -165,15 +171,17 @@ class BarPainter implements CartesianPainter {
       ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
           ?.toShader(bar.outerRect);
 
-    var barStroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = (style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
-      ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
-
     canvas.drawRRect(bar, barPaint); // draw fill
-    canvas.drawRRect(bar, barStroke); // draw stroke
+
+    final strokeWidth = style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth;
+    if (strokeWidth != null && strokeWidth > 0.0) {
+      var barStroke = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeJoin = StrokeJoin.round
+        ..strokeWidth = strokeWidth
+        ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
+      canvas.drawRRect(bar, barStroke); // draw stroke
+    }
   }
 
   void _drawGroupLabel(

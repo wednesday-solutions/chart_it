@@ -1,11 +1,129 @@
 import 'dart:math';
 
-import 'package:chart_it/chart_it.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
-import 'package:chart_it/src/controllers/cartesian_controller.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
+
+mixin InteractionDispatcher {
+  Offset? _latestDoubleTapOffset;
+  Offset? _latestPanOffset;
+
+  @protected
+  void onInteraction(
+      ChartInteractionType interactionType, Offset localPosition);
+
+  void onTapUp(Offset localPosition) {
+    onInteraction(ChartInteractionType.tap, localPosition);
+  }
+
+  void onDoubleTapDown(Offset localPosition) {
+    _latestDoubleTapOffset = localPosition;
+  }
+
+  void onDoubleTapCancel() {
+    _latestDoubleTapOffset = null;
+  }
+
+  void onDoubleTap() {
+    final latestDoubleTapOffset = _latestDoubleTapOffset;
+    if (latestDoubleTapOffset != null) {
+      onInteraction(ChartInteractionType.doubleTap, latestDoubleTapOffset);
+    }
+  }
+
+  void onPanStart(Offset localPosition) {
+    _latestPanOffset = localPosition;
+    onInteraction(ChartInteractionType.drag, localPosition);
+  }
+
+  void onPanUpdate(Offset localPosition) {
+    _latestPanOffset = localPosition;
+    onInteraction(ChartInteractionType.drag, localPosition);
+  }
+
+  void onPanCancel() {
+    _latestPanOffset = null;
+  }
+
+  void onPanEnd() {
+    final latestPanOffset = _latestPanOffset;
+    if (latestPanOffset != null) {
+      onInteraction(ChartInteractionType.dragEnd, latestPanOffset);
+    }
+    _latestPanOffset = null;
+  }
+}
+
+enum ChartInteractionType {
+  tap,
+  doubleTap,
+  dragStart,
+  drag,
+  dragEnd;
+}
+
+abstract class ChartInteractionResult {
+  final Offset? localPosition;
+  final ChartInteractionType interactionType;
+
+  ChartInteractionResult({
+    required this.localPosition,
+    required this.interactionType,
+  });
+}
+
+abstract class ChartInteractionConfig<T extends ChartInteractionResult> {
+  final bool isEnabled;
+  final void Function(T interactionResult)? onRawInteraction;
+  final void Function(T interactionResult)? onTap;
+  final void Function(T interactionResult)? onDoubleTap;
+  final void Function(T interactionResult)? onDragStart;
+  final void Function(T interactionResult)? onDrag;
+  final void Function(T interactionResult)? onDragEnd;
+
+  const ChartInteractionConfig({
+    this.onRawInteraction,
+    required this.onTap,
+    required this.onDoubleTap,
+    required this.onDragStart,
+    required this.onDrag,
+    required this.onDragEnd,
+    required this.isEnabled,
+  });
+
+  void onInteraction(T interactionResult) {
+    switch (interactionResult.interactionType) {
+      case ChartInteractionType.tap:
+        onTap?.call(interactionResult);
+        break;
+      case ChartInteractionType.doubleTap:
+        onDoubleTap?.call(interactionResult);
+        break;
+      case ChartInteractionType.drag:
+        onDragStart?.call(interactionResult);
+        break;
+      case ChartInteractionType.dragStart:
+        onDrag?.call(interactionResult);
+        break;
+      case ChartInteractionType.dragEnd:
+        onDragEnd?.call(interactionResult);
+        break;
+    }
+  }
+
+  bool get shouldHitTest =>
+      isEnabled &&
+      (onRawInteraction != null ||
+          onTap != null ||
+          onDoubleTap != null ||
+          onDragStart != null ||
+          onDragEnd != null ||
+          onDrag != null);
+}
 
 class CartesianChartPainter {
   late Rect graphPolygon;
@@ -28,25 +146,21 @@ class CartesianChartPainter {
   late double _yUnitsCount;
   late double totalYRange;
 
-  double? uMinXValue;
-  double? uMaxXValue;
-  double? uMinYValue;
-  double? uMaxYValue;
-
   CartesianChartStyle style;
-  CartesianController controller;
+  List<CartesianSeries> currentData;
+  List<CartesianSeries> targetData;
+  Map<int, CartesianPainter> painters;
+  Map<CartesianSeries, CartesianConfig> configs;
+  CartesianDataMixin rangeData;
 
   CartesianChartPainter({
-    this.uMinXValue,
-    this.uMaxXValue,
-    this.uMinYValue,
-    this.uMaxYValue,
     required this.style,
-    required this.controller,
+    required this.currentData,
+    required this.targetData,
+    required this.painters,
+    required this.configs,
+    required this.rangeData,
   });
-
-  bool shouldRepaint(CartesianChartPainter oldDelegate) =>
-      controller.shouldRepaint(oldDelegate.controller);
 
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
@@ -60,10 +174,19 @@ class CartesianChartPainter {
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    for (var i = 0; i < controller.targetData.length; i++) {
-      final targetData = controller.targetData[i];
-      var painter = controller.painters[controller.targetData[i].runtimeType];
-      painter?.paint(controller.currentData[i], targetData, canvas, this);
+    for (var i = 0; i < targetData.length; i++) {
+      final target = targetData[i];
+      var painter = painters[i];
+      var config = configs[target];
+      if (painter != null && config != null) {
+        painter.paint(
+          currentData[i],
+          target,
+          canvas,
+          this,
+          config,
+        );
+      }
     }
 
     // controller.targetData.forEachIndexed((index, series) {
@@ -142,13 +265,13 @@ class CartesianChartPainter {
     axis.lineTo(axisOrigin.dx, axisOrigin.dy); // +ve y axis
     axis.lineTo(graphPolygon.right, axisOrigin.dy); // +ve x axis
 
-    if (controller.minYRange.isNegative) {
+    if (rangeData.minYRange.isNegative) {
       // Paint negative Y-axis if we have negative values
       axis.moveTo(graphPolygon.bottomLeft.dx, graphPolygon.bottomLeft.dy);
       axis.lineTo(axisOrigin.dx, axisOrigin.dy); // -ve y axis
     }
 
-    if (controller.minXRange.isNegative) {
+    if (rangeData.minXRange.isNegative) {
       // Paint negative X-axis if we have Negative values
       axis.lineTo(graphPolygon.left, axisOrigin.dy); // -ve x axis
     }
@@ -184,7 +307,7 @@ class CartesianChartPainter {
         final textStyle =
             style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
         ChartTextPainter.fromChartTextStyle(
-          text: (controller.minYRange + (yUnitValue * i)).toString(),
+          text: (rangeData.minYRange + (yUnitValue * i)).toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
         ).paint(
           canvas: canvas,
@@ -212,10 +335,10 @@ class CartesianChartPainter {
     xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
     yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
 
-    totalXRange = controller.maxXRange.abs() + controller.minXRange.abs();
+    totalXRange = rangeData.maxXRange.abs() + rangeData.minXRange.abs();
     _xUnitsCount = totalXRange / xUnitValue;
 
-    totalYRange = controller.maxYRange.abs() + controller.minYRange.abs();
+    totalYRange = rangeData.maxYRange.abs() + rangeData.minYRange.abs();
     _yUnitsCount = totalYRange / yUnitValue;
 
     // We will get unitWidth & unitHeight by dividing the
@@ -229,9 +352,9 @@ class CartesianChartPainter {
 
     // Calculate the Offset for Axis Origin
     var negativeXRange =
-        (controller.minXRange.abs() / xUnitValue) * graphUnitWidth;
+        (rangeData.minXRange.abs() / xUnitValue) * graphUnitWidth;
     var negativeYRange =
-        (controller.minYRange.abs() / yUnitValue) * graphUnitHeight;
+        (rangeData.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     axisOrigin = Offset(xOffset, yOffset);

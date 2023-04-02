@@ -33,7 +33,7 @@ class _TestBarChartState extends State<TestBarChart> {
         SizedBox(
           height: 400,
           child: BarChart(
-            maxYValue: 100,
+            // maxYValue: 100,
             // animation: _animationController,
             title: const Text('Demo Chart'),
             chartStyle: CartesianChartStyle(
@@ -62,14 +62,14 @@ class _TestBarChartState extends State<TestBarChart> {
               seriesStyle: const BarDataStyle(
                 barWidth: 10.0,
                 barColor: Color(0xFF6D71EE),
-                // gradient: LinearGradient(
-                //   begin: Alignment.bottomCenter,
-                //   end: Alignment.topCenter,
-                //   colors: [
-                //     Color(0xFF191FC8),
-                //     Color(0xFF4247E8),
-                //   ],
-                // ),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Color(0xFF191FC8),
+                    Color(0xFF4247E8),
+                  ],
+                ),
                 strokeWidth: 3.0,
                 strokeColor: Color(0xFF6D71EE),
                 cornerRadius: BorderRadius.only(

@@ -50,6 +50,11 @@ extension ListTransforms<T> on List<T> {
 }
 
 extension ContainsKey<K, V> on Map<K, V> {
+  V? getOrNull(K key) {
+    if (containsKey(key)) return this[key];
+    return null;
+  }
+
   createAndUpdate(
     K key, {
     required V Function() onCreate,

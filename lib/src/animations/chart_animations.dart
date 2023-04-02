@@ -1,4 +1,3 @@
-import 'package:chart_it/src/controllers/chart_controller.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 /// call [animateDataUpdates].
 ///
 /// To update the tween when new data is available and animate to the new state call [updateDataSeries].
-mixin ChartAnimationsMixin<T> on ChartController {
+mixin ChartAnimationsMixin<T> on ChangeNotifier {
   @protected
   List<Tween<T>> get tweenSeries;
 
@@ -37,7 +36,6 @@ mixin ChartAnimationsMixin<T> on ChartController {
   /// 1. [setAnimatableData] with the values of [tweenSeries] evaluated at current value of [animation].
   /// 2. [notifyListeners] so that [CustomPainter.paint] is called on the painters registered with this controller.
   void animateDataUpdates() {
-    int count = 0;
     animation.addListener(() {
       setAnimatableData(
         tweenSeries.fastMap((series) => series.evaluate(animation)),
@@ -53,6 +51,7 @@ mixin ChartAnimationsMixin<T> on ChartController {
   /// 1. Updates the [tweenSeries] with tween created from the [newSeries] data.
   /// 2. [setData] with the [newSeries].
   /// 3. Starts the [animation] if applicable.
+  @protected
   void updateDataSeries(
     List<T> newSeries, {
     bool isInitPhase = false,

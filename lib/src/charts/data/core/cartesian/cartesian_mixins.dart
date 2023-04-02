@@ -23,7 +23,7 @@ mixin CartesianDataMixin {
 
   double get maxYRange;
 
-  void aggregateData(List<CartesianSeries> data);
+  // void aggregateData(List<CartesianSeries> data);
 
   CartesianConfig? getConfig(CartesianSeries series);
 }

@@ -154,6 +154,11 @@ class CartesianChartPainter {
   Map<CartesianSeries, CartesianConfig> configs;
   CartesianDataMixin rangeData;
 
+  late Paint _bgPaint;
+  late Paint _gridBorder;
+  late Paint _gridTick;
+  late Paint _axisPaint;
+
   CartesianChartPainter({
     required this.style,
     required this.currentData,
@@ -161,7 +166,15 @@ class CartesianChartPainter {
     required this.painters,
     required this.configs,
     required this.rangeData,
-  });
+  }) {
+    _bgPaint = Paint()..color = style.backgroundColor;
+    _gridBorder = Paint()..style = PaintingStyle.stroke;
+    _gridTick = Paint()..style = PaintingStyle.stroke;
+    _axisPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
+  }
 
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
@@ -169,8 +182,8 @@ class CartesianChartPainter {
 
     Timeline.startSync('Painting Background');
     // Paint the background
-    var bg = Paint()..color = style.backgroundColor;
-    canvas.drawPaint(bg);
+    // var bg = Paint()..color = style.backgroundColor;
+    canvas.drawPaint(_bgPaint);
     Timeline.finishSync();
 
     _drawGridLines(canvas, size);
@@ -213,15 +226,13 @@ class CartesianChartPainter {
 
   void _drawGridLines(Canvas canvas, Size size) {
     Timeline.startSync('Painting Grids');
-    var border = Paint()
+    var border = _gridBorder
       ..color = style.gridStyle!.gridLineColor
-      ..strokeWidth = style.gridStyle!.gridLineWidth
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = style.gridStyle!.gridLineWidth;
 
-    var tickPaint = Paint()
+    var tickPaint = _gridTick
       ..color = style.axisStyle!.tickColor
-      ..strokeWidth = style.axisStyle!.tickWidth
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = style.axisStyle!.tickWidth;
 
     Timeline.startSync('Vertical Lines');
     var x = graphPolygon.left;
@@ -265,12 +276,9 @@ class CartesianChartPainter {
 
   void _drawAxis(Canvas canvas, Size size) {
     Timeline.startSync('Painting Axis');
-    var axisPaint = Paint()
+    var axisPaint = _axisPaint
       ..color = style.axisStyle!.axisColor
-      ..strokeWidth = style.axisStyle!.axisWidth
-      ..strokeJoin = StrokeJoin.round
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = style.axisStyle!.axisWidth;
 
     // We will use a L shaped path for the Axes
     var axis = Path();

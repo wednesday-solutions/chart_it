@@ -22,9 +22,18 @@ class BarPainter implements CartesianPainter {
   late double _unitWidth;
   bool useGraphUnits;
 
+  late Paint _barPaint;
+  late Paint _barStroke;
+
   BarPainter({
     required this.useGraphUnits,
-  });
+  }) {
+    _barPaint = Paint();
+    _barStroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+  }
 
   @override
   void paint(
@@ -53,7 +62,11 @@ class BarPainter implements CartesianPainter {
     var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
     for (var i = 0; i < _data.barData.length; i++) {
+      Timeline.startSync('Iteration');
+
+      Timeline.startSync('New BarGroup');
       final group = _data.barData[i];
+      Timeline.finishSync();
       if (group is SimpleBar) {
         // We have to paint a single bar
         _drawSimpleBar(canvas, chart, dx, group);
@@ -70,6 +83,7 @@ class BarPainter implements CartesianPainter {
       _drawGroupLabel(canvas, chart, dx, group);
 
       dx += _unitWidth;
+      Timeline.finishSync();
     }
     Timeline.finishSync();
   }
@@ -174,7 +188,7 @@ class BarPainter implements CartesianPainter {
       bottomRight: yValue.isNegative ? topRight : bottomRight,
     );
 
-    var barPaint = Paint()
+    var barPaint = _barPaint
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
       ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
           ?.toShader(bar.outerRect);
@@ -183,9 +197,7 @@ class BarPainter implements CartesianPainter {
 
     final strokeWidth = style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth;
     if (strokeWidth != null && strokeWidth > 0.0) {
-      var barStroke = Paint()
-        ..style = PaintingStyle.stroke
-        // ..strokeJoin = StrokeJoin.round
+      var barStroke = _barStroke
         ..strokeWidth = strokeWidth
         ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
       canvas.drawRRect(bar, barStroke); // draw stroke
@@ -198,6 +210,7 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     BarGroup group,
   ) {
+    Timeline.startSync('BarGroup Label');
     // We will draw the Label that the user had provided for our bar group
     if (group.label != null) {
       // TODO: rotate the text if it doesn't fit within the unitWidth
@@ -216,6 +229,7 @@ class BarPainter implements CartesianPainter {
         ),
       );
     }
+    Timeline.finishSync();
   }
 
   void _drawBarValues(

@@ -176,7 +176,7 @@ class _CartesianChartsState extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    Timeline.startSync('Creating Canvas');
+    Timeline.startSync('Main Paint');
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);

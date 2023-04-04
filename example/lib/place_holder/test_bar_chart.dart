@@ -100,8 +100,8 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(next(1, 10).toInt(), (index) {
-    if (rng.nextBool()) {
+  List<BarGroup> barSeries = List.generate(10, (index) {
+    if (true) {
       return SimpleBar(
         xValue: index + 1,
         label: (value) => 'Group ${index + 1}',

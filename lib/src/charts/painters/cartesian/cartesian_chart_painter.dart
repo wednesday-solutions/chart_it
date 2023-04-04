@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
@@ -166,12 +167,15 @@ class CartesianChartPainter {
     // Calculate constraints for the graph
     _calculateGraphConstraints(size);
 
+    Timeline.startSync('Painting Background');
     // Paint the background
     var bg = Paint()..color = style.backgroundColor;
     canvas.drawPaint(bg);
+    Timeline.finishSync();
 
     _drawGridLines(canvas, size);
 
+    Timeline.startSync('Looping Painters');
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
     for (var i = 0; i < targetData.length; i++) {
@@ -188,6 +192,7 @@ class CartesianChartPainter {
         );
       }
     }
+    Timeline.finishSync();
 
     // controller.targetData.forEachIndexed((index, series) {
     //   // get the painter for this data
@@ -207,6 +212,7 @@ class CartesianChartPainter {
   }
 
   void _drawGridLines(Canvas canvas, Size size) {
+    Timeline.startSync('Painting Grids');
     var border = Paint()
       ..color = style.gridStyle!.gridLineColor
       ..strokeWidth = style.gridStyle!.gridLineWidth
@@ -217,6 +223,7 @@ class CartesianChartPainter {
       ..strokeWidth = style.axisStyle!.tickWidth
       ..style = PaintingStyle.stroke;
 
+    Timeline.startSync('Vertical Lines');
     var x = graphPolygon.left;
     // create vertical lines
     for (var i = 0; i <= _xUnitsCount; i++) {
@@ -233,7 +240,9 @@ class CartesianChartPainter {
 
       x += graphUnitWidth;
     }
+    Timeline.finishSync();
 
+    Timeline.startSync('Horizontal Lines');
     // create horizontal lines
     for (var i = 0; i <= _yUnitsCount; i++) {
       var y = graphPolygon.bottom - graphUnitHeight * i;
@@ -249,9 +258,13 @@ class CartesianChartPainter {
         tickPaint,
       );
     }
+    Timeline.finishSync();
+
+    Timeline.finishSync();
   }
 
   void _drawAxis(Canvas canvas, Size size) {
+    Timeline.startSync('Painting Axis');
     var axisPaint = Paint()
       ..color = style.axisStyle!.axisColor
       ..strokeWidth = style.axisStyle!.axisWidth
@@ -278,6 +291,7 @@ class CartesianChartPainter {
 
     canvas.drawPath(axis, axisPaint);
     drawLabels(canvas);
+    Timeline.finishSync();
   }
 
   void drawLabels(Canvas canvas) {
@@ -287,6 +301,7 @@ class CartesianChartPainter {
     var showYLabels = style.axisStyle?.showYAxisLabels ?? true;
 
     for (var i = 0; i <= maxIterations; i++) {
+      Timeline.startSync('X-Axis Labels');
       // We will plot texts and point along both X & Y axis
       if (showXLabels && i <= _xUnitsCount) {
         ChartTextPainter.fromChartTextStyle(
@@ -302,7 +317,9 @@ class CartesianChartPainter {
         // increment by unitWidth every iteration along x
         x += graphUnitWidth;
       }
+      Timeline.finishSync();
 
+      Timeline.startSync('Y-Axis Labels');
       if (showYLabels && i <= _yUnitsCount) {
         final textStyle =
             style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
@@ -317,10 +334,12 @@ class CartesianChartPainter {
           ),
         );
       }
+      Timeline.finishSync();
     }
   }
 
   _calculateGraphConstraints(Size widgetSize) {
+    Timeline.startSync('Graph Constraints');
     // TODO: Calculate the effective width & height of the graph
     graphOrigin = Offset(widgetSize.width * 0.5, widgetSize.height * 0.5);
     graphWidth = widgetSize.width * 0.8;
@@ -358,5 +377,6 @@ class CartesianChartPainter {
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     axisOrigin = Offset(xOffset, yOffset);
+    Timeline.finishSync();
   }
 }

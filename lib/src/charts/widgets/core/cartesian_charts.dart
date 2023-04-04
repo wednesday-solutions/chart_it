@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
@@ -174,6 +176,7 @@ class _CartesianChartsState extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
+    Timeline.startSync('Creating Canvas');
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);
@@ -182,5 +185,6 @@ class _CartesianChartsState extends RenderBox {
       size,
     );
     canvas.restore();
+    Timeline.finishSync();
   }
 }

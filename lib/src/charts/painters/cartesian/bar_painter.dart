@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
@@ -36,6 +38,7 @@ class BarPainter implements CartesianPainter {
       config is BarSeriesConfig,
       "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
     );
+    Timeline.startSync('Bar Painter');
     // Setup the bar data
     _data = lerpSeries as BarSeries;
     // Setup the bar chart config
@@ -68,6 +71,7 @@ class BarPainter implements CartesianPainter {
 
       dx += _unitWidth;
     }
+    Timeline.finishSync();
   }
 
   _drawSimpleBar(
@@ -76,6 +80,7 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     SimpleBar group,
   ) {
+    Timeline.startSync('Simple Bar');
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var style = group.yValue.barStyle ??
@@ -96,6 +101,7 @@ class BarPainter implements CartesianPainter {
     );
     // Finally paint the y-labels for this bar
     _drawBarValues(canvas, chart, group.yValue);
+    Timeline.finishSync();
   }
 
   _drawBarSeries(
@@ -104,6 +110,7 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     MultiBar group,
   ) {
+    Timeline.startSync('Multi Bar');
     var barWidth = _unitWidth / _config.maxBarsInGroup;
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
@@ -130,6 +137,7 @@ class BarPainter implements CartesianPainter {
 
       x += groupWidth;
     }
+    Timeline.finishSync();
   }
 
   _drawBar(
@@ -215,6 +223,7 @@ class BarPainter implements CartesianPainter {
     CartesianChartPainter chart,
     BarData data,
   ) {
+    Timeline.startSync('Bar Label');
     if (data.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: data.label!(data.yValue),
@@ -229,5 +238,6 @@ class BarPainter implements CartesianPainter {
         ),
       );
     }
+    Timeline.finishSync();
   }
 }

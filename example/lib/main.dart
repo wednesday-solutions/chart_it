@@ -7,5 +7,5 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterDisplayMode.setHighRefreshRate();
   // runApp(const MyApp());
-  runApp(const ShowcaseApp());
+  runApp(const ShowcaseApp(testMode: true));
 }

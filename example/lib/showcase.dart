@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ShowcaseApp extends StatefulWidget {
-  const ShowcaseApp({Key? key}) : super(key: key);
+  final bool testMode;
+
+  const ShowcaseApp({
+    Key? key,
+    this.testMode = false,
+  }) : super(key: key);
 
   @override
   State<ShowcaseApp> createState() => _ShowcaseAppState();
@@ -22,7 +27,7 @@ class _ShowcaseAppState extends State<ShowcaseApp> {
           themeMode: ThemeMode.system,
           darkTheme: darkTheme,
           theme: lightTheme,
-          home: const MultiPlatformContent(),
+          home: MultiPlatformContent(isTestMode: widget.testMode),
         );
       },
     );

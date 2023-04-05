@@ -12,10 +12,10 @@ class BarChart extends StatefulWidget {
   final Text? title;
 
   /// Width of the Chart
-  final double? chartWidth;
+  final double? width;
 
   /// Height of the Chart
-  final double? chartHeight;
+  final double? height;
 
   /// Animates the Charts from zero values to given Data when the
   /// Chart loads for the first time.
@@ -50,8 +50,8 @@ class BarChart extends StatefulWidget {
   const BarChart({
     Key? key,
     this.title,
-    this.chartWidth,
-    this.chartHeight,
+    this.width,
+    this.height,
     this.animateOnLoad = true,
     this.animateOnUpdate = true,
     this.animationDuration = const Duration(milliseconds: 500),
@@ -124,8 +124,8 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       builder: (context, _) {
         var style = widget.chartStyle ?? defaultCartesianChartStyle;
         return CartesianRenderer(
-          width: widget.chartWidth,
-          height: widget.chartHeight,
+          width: widget.width,
+          height: widget.height,
           style: style.copyWith(
             gridStyle: style.gridStyle!.copyWith(
               // Unless the user is trying to play around with the xUnitValue,

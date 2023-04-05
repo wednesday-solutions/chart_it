@@ -2,7 +2,7 @@ import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
-import 'package:chart_it/src/charts/widgets/core/cartesian_charts.dart';
+import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -123,7 +123,7 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       animation: _controller,
       builder: (context, _) {
         var style = widget.chartStyle ?? defaultCartesianChartStyle;
-        return CartesianCharts(
+        return CartesianRenderer(
           width: widget.chartWidth,
           height: widget.chartHeight,
           style: style.copyWith(

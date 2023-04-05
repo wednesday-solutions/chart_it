@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
@@ -9,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class CartesianCharts extends LeafRenderObjectWidget {
+class CartesianRenderer extends LeafRenderObjectWidget {
   final double? width;
   final double? height;
 
@@ -21,7 +19,7 @@ class CartesianCharts extends LeafRenderObjectWidget {
   final Map<CartesianSeries, CartesianConfig> configs;
   final CartesianDataMixin cartesianRangeData;
 
-  const CartesianCharts({
+  const CartesianRenderer({
     Key? key,
     this.width,
     this.height,
@@ -35,7 +33,7 @@ class CartesianCharts extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _CartesianChartsState(
+    return CartesianRenderBox(
       width: width,
       height: height,
       style: style,
@@ -48,10 +46,9 @@ class CartesianCharts extends LeafRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant RenderObject renderObject) {
-    assert(renderObject is _CartesianChartsState);
-    (renderObject as _CartesianChartsState)
+  void updateRenderObject(BuildContext context, RenderObject renderObject) {
+    assert(renderObject is CartesianRenderBox);
+    (renderObject as CartesianRenderBox)
       ..width = width
       ..height = height
       ..style = style
@@ -62,7 +59,7 @@ class CartesianCharts extends LeafRenderObjectWidget {
   }
 }
 
-class _CartesianChartsState extends RenderBox {
+class CartesianRenderBox extends RenderBox {
   double? _width;
 
   set width(double? value) {
@@ -115,7 +112,7 @@ class _CartesianChartsState extends RenderBox {
   late TapGestureRecognizer _tapGestureRecognizer;
   final _doubleTapGestureRecognizer = DoubleTapGestureRecognizer();
 
-  _CartesianChartsState({
+  CartesianRenderBox({
     double? width,
     double? height,
     required CartesianChartStyle style,
@@ -143,20 +140,13 @@ class _CartesianChartsState extends RenderBox {
   }
 
   @override
-  Size computeDryLayout(BoxConstraints constraints) {
-    double? height = _height;
-    double? width = _width;
+  void performLayout() => size = computeDryLayout(constraints);
 
-    if (width != null && width > constraints.maxWidth) {
-      width = constraints.maxWidth;
-    }
-
-    if (height != null && height > constraints.maxHeight) {
-      height = constraints.maxHeight;
-    }
-
-    return Size(width ?? constraints.maxWidth, height ?? constraints.maxHeight);
-  }
+  @override
+  Size computeDryLayout(BoxConstraints constraints) => Size(
+        _width ?? constraints.maxWidth,
+        _height ?? constraints.maxHeight,
+      );
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -170,21 +160,11 @@ class _CartesianChartsState extends RenderBox {
   }
 
   @override
-  void performLayout() {
-    size = computeDryLayout(constraints);
-  }
-
-  @override
   void paint(PaintingContext context, Offset offset) {
-    Timeline.startSync('Main Paint');
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);
-    _painter.paint(
-      canvas,
-      size,
-    );
+    _painter.paint(canvas, size);
     canvas.restore();
-    Timeline.finishSync();
   }
 }

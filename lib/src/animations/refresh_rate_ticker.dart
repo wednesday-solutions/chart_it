@@ -1,22 +1,19 @@
-import 'dart:async';
-
-import 'package:flutter/animation.dart';
 import 'package:flutter/scheduler.dart';
 
-class FpsTicker extends Ticker {
-  FpsTicker(super._onTick);
+// class RefreshRateTicker extends Ticker {
+//   RefreshRateTicker(super._onTick);
+//
+//   tick(Duration duration) {}
+// }
 
-  tic(Duration dur) {}
-}
-
-class FpsTickerProvider extends TickerProvider {
-  Function(Duration)? onTick;
+class RefreshRateTickerProvider extends TickerProvider {
   final int fps;
-  Ticker? _ticker;
+  Function(Duration)? onTick;
 
+  Ticker? _ticker;
   Duration _duration = const Duration();
 
-  FpsTickerProvider({required this.fps});
+  RefreshRateTickerProvider({required this.fps});
 
   @override
   Ticker createTicker(TickerCallback onTick) {
@@ -32,10 +29,9 @@ class FpsTickerProvider extends TickerProvider {
       return;
     }
 
-    if (diff.inMilliseconds >= 1000/fps) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        _onTick(duration);
-      });
+    if (diff.inMilliseconds >= 1000 / fps) {
+      SchedulerBinding.instance
+          .addPostFrameCallback((timeStamp) => _onTick(duration));
       _duration = duration;
     }
   }

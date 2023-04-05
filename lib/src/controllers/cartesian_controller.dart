@@ -1,40 +1,25 @@
-import 'dart:math';
-
-import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/chart_animations.dart';
+import 'package:chart_it/src/charts/data/bars/bar_series.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
-
-abstract class ChartController {
-  VoidCallback? _listener;
-
-  void addListener(VoidCallback listener) {
-    _listener = listener;
-  }
-
-  void notifyListener() {
-    _listener?.call();
-  }
-
-  @mustCallSuper
-  void dispose() {
-    _listener = null;
-  }
-}
 
 /// The Animation and Data Controller for a Cartesian Chart.
 ///
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [CartesianSeries].
-class CartesianController extends ChartController
-    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries>, InteractionDispatcher {
+class CartesianController extends ChangeNotifier
+    with
+        CartesianDataMixin,
+        ChartAnimationsMixin<CartesianSeries>,
+        InteractionDispatcher {
   /// Holds a map of configs for every data series.
-  final Map<CartesianSeries, CartesianConfig> configCache = {};
+  final Map<CartesianSeries, CartesianConfig> cachedConfigs = {};
 
   /// Holds a map of painters for every series type.
   final Map<int, CartesianPainter> painters = {};
@@ -102,7 +87,8 @@ class CartesianController extends ChartController
   // Values to keep updating when scrolling
   Offset? pointer;
 
-  CartesianRangeContext? rangeContext;
+  //
+  // CartesianRangeContext? rangeContext;
 
   /// The Animation and Data Controller for a Cartesian Chart.
   ///
@@ -113,7 +99,7 @@ class CartesianController extends ChartController
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
-    this.rangeContext,
+    // this.rangeContext,
     required this.calculateRange,
   }) {
     animateDataUpdates();
@@ -126,11 +112,11 @@ class CartesianController extends ChartController
     AnimationController? animation,
     bool? animateOnUpdate,
     bool? animateOnLoad,
-    CartesianRangeContext? rangeContext,
+    // CartesianRangeContext? rangeContext,
   }) {
-    if (rangeContext != null && this.rangeContext != rangeContext) {
-      this.rangeContext = rangeContext;
-    }
+    // if (rangeContext != null && this.rangeContext != rangeContext) {
+    //   this.rangeContext = rangeContext;
+    // }
 
     if (animateOnLoad != null && this.animateOnLoad != animateOnLoad) {
       this.animateOnLoad = animateOnLoad;
@@ -150,38 +136,55 @@ class CartesianController extends ChartController
     }
   }
 
-  bool shouldRepaint(CartesianController changedValue) {
-    if (minXValue != changedValue.minXValue ||
-        maxXValue != changedValue.maxXValue ||
-        minYValue != changedValue.minYValue ||
-        maxYValue != changedValue.maxYValue ||
-        minXRange != changedValue.minXRange ||
-        maxXRange != changedValue.maxXRange ||
-        minYRange != changedValue.minYRange ||
-        maxYRange != changedValue.maxYRange ||
-        pointer != changedValue.pointer) return true;
-
-    return false;
-  }
+  // bool shouldRepaint(CartesianController changedValue) {
+  //   if (minXValue != changedValue.minXValue ||
+  //       maxXValue != changedValue.maxXValue ||
+  //       minYValue != changedValue.minYValue ||
+  //       maxYValue != changedValue.maxYValue ||
+  //       minXRange != changedValue.minXRange ||
+  //       maxXRange != changedValue.maxXRange ||
+  //       minYRange != changedValue.minYRange ||
+  //       maxYRange != changedValue.maxYRange ||
+  //       pointer != changedValue.pointer) return true;
+  //
+  //   return false;
+  // }
 
   _invalidatePainters(List<CartesianSeries> data) {
     // For every distinct Cartesian Series, we will construct a painter for it
-    for (var i = 0; i < data.length; i++) {
-      final series = data[i];
-      final painter = painters.getOrNull(i);
+    data.distinctTypes().forEach((series) {
+      // painters.createAndUpdate(series, onCreate: () {
+      //   return CartesianSeries.whenType(
+      //     series,
+      //     onBarSeries: (){
+      //       if (painter.runtimeType != BarPainter) {
+      //         painters[i] = BarPainter(useGraphUnits: data.length > 1);
+      //       } else {
+      //         (painter as BarPainter).useGraphUnits = data.length > 1;
+      //       }
+      //     },
+      //     orElse: () {
+      //       throw ArgumentError('No Painter defined for this type: $series');
+      //     },
+      //   );
+      // });
+      for (var i = 0; i < data.length; i++) {
+        final series = data[i];
+        final painter = painters.getOrNull(i);
 
-      series.when(onBarSeries: (barSeries) {
-        if (painter.runtimeType != BarPainter) {
-          painters[i] = BarPainter(useGraphUnits: data.length > 1);
-        } else {
-          (painter as BarPainter).useGraphUnits = data.length > 1;
-        }
-      });
-    }
+        series.when(onBarSeries: (barSeries) {
+          if (painter.runtimeType != BarPainter) {
+            painters[i] = BarPainter(useGraphUnits: data.length > 1);
+          } else {
+            (painter as BarPainter).useGraphUnits = data.length > 1;
+          }
+        });
+      }
+    });
   }
 
   _invalidateRangeValues() {
-    var rangeCtx = rangeContext ?? CartesianRangeContext(
+    var rangeCtx = CartesianRangeContext(
       maxX: maxXValue,
       maxY: maxYValue,
       minX: minXValue,
@@ -212,7 +215,7 @@ class CartesianController extends ChartController
   }
 
   @override
-  CartesianConfig? getConfig(CartesianSeries series) => configCache[series];
+  CartesianConfig? getConfig(CartesianSeries series) => cachedConfigs[series];
 
   @override
   List<Tween<CartesianSeries>> getTweens({
@@ -242,13 +245,14 @@ class CartesianController extends ChartController
         for (var j = 0; j < barSeries.barData.length; j++) {
           final barGroup = barSeries.barData[j];
           series.when(onBarSeries: (barSeries) {
-            var config = configCache.getOrNull(barSeries);
+            var config = cachedConfigs.getOrNull(barSeries);
             if (config == null) {
               config = BarSeriesConfig();
-              configCache[barSeries] = config;
+              cachedConfigs[barSeries] = config;
             }
             assert(config is BarSeriesConfig);
-            (config as BarSeriesConfig).updateEdges(barGroup, _updateMinMaxValues);
+            (config as BarSeriesConfig)
+                .updateEdges(barGroup, _updateMinMaxValues);
           });
         }
       });
@@ -287,19 +291,31 @@ class CartesianController extends ChartController
   }
 
   @override
-  void onInteraction(ChartInteractionType interactionType, Offset localPosition) {
+  void onInteraction(
+    ChartInteractionType interactionType,
+    Offset localPosition,
+  ) {
     // TODO: implement onInteraction
   }
 }
 
-abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
-  SERIES series;
-  CONFIG config;
-  PAINTER painter;
-
-  ChartPaintingContext({required this.series, required this.config, required this.painter});
-}
-
-class BarChartPaintingContext extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
-  BarChartPaintingContext({required super.series, required super.config, required super.painter});
-}
+// abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
+//   SERIES series;
+//   CONFIG config;
+//   PAINTER painter;
+//
+//   ChartPaintingContext({
+//     required this.series,
+//     required this.config,
+//     required this.painter,
+//   });
+// }
+//
+// class BarChartPaintingContext
+//     extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
+//   BarChartPaintingContext({
+//     required super.series,
+//     required super.config,
+//     required super.painter,
+//   });
+// }

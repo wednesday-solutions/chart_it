@@ -1,5 +1,4 @@
-import 'package:chart_it/src/animations/lerps.dart';
-import 'package:chart_it/src/controllers/cartesian_controller.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 /// call [animateDataUpdates].
 ///
 /// To update the tween when new data is available and animate to the new state call [updateDataSeries].
-mixin ChartAnimationsMixin<T> on ChartController {
+mixin ChartAnimationsMixin<T> on ChangeNotifier {
   @protected
   List<Tween<T>> get tweenSeries;
 
@@ -39,10 +38,10 @@ mixin ChartAnimationsMixin<T> on ChartController {
   void animateDataUpdates() {
     animation.addListener(() {
       setAnimatableData(
-        tweenSeries.map((series) => series.evaluate(animation)).toList(),
+        tweenSeries.fastMap((series) => series.evaluate(animation)),
       );
       // Finally trigger a rebuild for all the painters
-      notifyListener();
+      notifyListeners();
     });
   }
 
@@ -72,7 +71,7 @@ mixin ChartAnimationsMixin<T> on ChartController {
     } else {
       // We are to not animate the data updates
       setAnimatableData(newSeries);
-      notifyListener();
+      notifyListeners();
     }
   }
 

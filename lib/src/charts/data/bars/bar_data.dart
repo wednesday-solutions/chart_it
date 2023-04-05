@@ -5,6 +5,7 @@ import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:equatable/equatable.dart';
 
 /// Defines the Data of Each Individual Bar in a [MultiBar] group
@@ -13,11 +14,11 @@ import 'package:equatable/equatable.dart';
 class BarData extends Equatable {
   /// The LowerBound Value of Y-Axis. Only useful to control the Height
   /// of the drawn Bar in Stack Arrangement.
-  final double? startYFrom;
+  final num? startYFrom;
 
   /// The UpperBound Value that's to be plotted along the Y-Axis.
   /// This will be drawn as the Height of the Bar
-  final double yValue;
+  final num yValue;
 
   /// Callback for the label along the Y-Axis in this [BarData]
   /// The Y-Value is provided as a param, and a string is to be returned
@@ -46,7 +47,8 @@ class BarData extends Equatable {
   static BarData lerp(BarData? current, BarData? target, double t) {
     return BarData(
       startYFrom: lerpDouble(current?.startYFrom, target?.startYFrom, t),
-      yValue: lerpDouble(current?.yValue, target?.yValue, t) ?? 0,
+      yValue:
+          lerpDouble(current?.yValue, target?.yValue, t).asOrDefault<num>(0),
       label: target?.label,
       labelStyle: ChartTextStyle.lerp(
         current?.labelStyle,

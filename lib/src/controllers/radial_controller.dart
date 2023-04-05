@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
@@ -14,9 +13,8 @@ import 'package:flutter/material.dart';
 ///
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [RadialSeries].
-class RadialController extends ChangeNotifier
-    with RadialDataMixin
-        // ChartAnimationsMixin<RadialSeries>
+class RadialController extends ChangeNotifier with RadialDataMixin
+// ChartAnimationsMixin<RadialSeries>
 {
   /// Holds a map of configs for every data series.
   final Map<RadialSeries, RadialConfig> _seriesConfigs = {};

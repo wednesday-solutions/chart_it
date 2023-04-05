@@ -4,9 +4,9 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
 /// The Animation and Data Controller for a Cartesian Chart.
@@ -86,6 +86,7 @@ class CartesianController extends ChangeNotifier
 
   // Values to keep updating when scrolling
   Offset? pointer;
+
   //
   // CartesianRangeContext? rangeContext;
 
@@ -291,22 +292,30 @@ class CartesianController extends ChangeNotifier
 
   @override
   void onInteraction(
-      ChartInteractionType interactionType, Offset localPosition) {
+    ChartInteractionType interactionType,
+    Offset localPosition,
+  ) {
     // TODO: implement onInteraction
   }
 }
 
-abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
-  SERIES series;
-  CONFIG config;
-  PAINTER painter;
-
-  ChartPaintingContext(
-      {required this.series, required this.config, required this.painter});
-}
-
-class BarChartPaintingContext
-    extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
-  BarChartPaintingContext(
-      {required super.series, required super.config, required super.painter});
-}
+// abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
+//   SERIES series;
+//   CONFIG config;
+//   PAINTER painter;
+//
+//   ChartPaintingContext({
+//     required this.series,
+//     required this.config,
+//     required this.painter,
+//   });
+// }
+//
+// class BarChartPaintingContext
+//     extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
+//   BarChartPaintingContext({
+//     required super.series,
+//     required super.config,
+//     required super.painter,
+//   });
+// }

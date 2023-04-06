@@ -45,7 +45,7 @@ class BarChart extends StatefulWidget {
   /// The Data which will be Drawn as Bars
   final BarSeries data;
 
-  // final CartesianRangeContext? rangeContext;
+  final CartesianRangeContext? rangeContext;
 
   const BarChart({
     Key? key,
@@ -58,7 +58,7 @@ class BarChart extends StatefulWidget {
     this.animation,
     this.maxYValue,
     this.chartStyle,
-    // this.rangeContext,
+    this.rangeContext,
     required this.data,
   }) : super(key: key);
 
@@ -66,25 +66,30 @@ class BarChart extends StatefulWidget {
   State<BarChart> createState() => _BarChartState();
 }
 
-class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
+class _BarChartState extends State<BarChart>
+    with SingleTickerProviderStateMixin {
   late CartesianController _controller;
+  late AnimationController _defaultAnimation;
 
   @override
   void initState() {
     super.initState();
+    // Initialize default animation controller
+    _defaultAnimation = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
+
+    var gridStyle =
+        (widget.chartStyle?.gridStyle ?? defaultCartesianChartStyle.gridStyle)!;
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
       targetData: [widget.data],
+      animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
-      animation: widget.animation ??
-          AnimationController(
-            duration: widget.animationDuration,
-            vsync: this,
-          ),
+      rangeContext: widget.rangeContext,
       calculateRange: (context) {
-        var gridStyle = (widget.chartStyle?.gridStyle ??
-            defaultCartesianChartStyle.gridStyle)!;
         var maxXRange = widget.data.barData.length.toDouble();
         var maxYRange = widget.maxYValue ?? context.maxY;
         return CartesianRangeResult(
@@ -106,33 +111,30 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
     // We will update our Chart when new data is provided
     _controller.update(
       targetData: [widget.data],
+      animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
-      animation: widget.animation ??
-          AnimationController(
-            duration: widget.animationDuration,
-            vsync: this,
-          ),
-      // rangeContext: widget.rangeContext,
+      rangeContext: widget.rangeContext,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var validStyle = widget.chartStyle ?? defaultCartesianChartStyle;
+    var style = validStyle.copyWith(
+      gridStyle: validStyle.gridStyle!.copyWith(
+        // Unless the user is trying to play around with the xUnitValue,
+        // we will default it to the length of bar groups
+        xUnitValue: validStyle.gridStyle?.xUnitValue ?? _controller.maxXRange,
+      ),
+    );
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
-        var style = widget.chartStyle ?? defaultCartesianChartStyle;
         return CartesianRenderer(
           width: widget.width,
           height: widget.height,
-          style: style.copyWith(
-            gridStyle: style.gridStyle!.copyWith(
-              // Unless the user is trying to play around with the xUnitValue,
-              // we will default it to the length of bar groups
-              xUnitValue: style.gridStyle?.xUnitValue ?? _controller.maxXRange,
-            ),
-          ),
+          style: style,
           currentData: _controller.currentData,
           targetData: _controller.targetData,
           painters: _controller.painters,
@@ -142,4 +144,8 @@ class _BarChartState extends State<BarChart> with TickerProviderStateMixin {
       },
     );
   }
+
+  AnimationController _provideAnimation() =>
+      widget.animation ?? _defaultAnimation
+        ..duration = widget.animationDuration;
 }

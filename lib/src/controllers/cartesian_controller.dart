@@ -87,8 +87,7 @@ class CartesianController extends ChangeNotifier
   // Values to keep updating when scrolling
   Offset? pointer;
 
-  //
-  // CartesianRangeContext? rangeContext;
+  CartesianRangeContext? rangeContext;
 
   /// The Animation and Data Controller for a Cartesian Chart.
   ///
@@ -99,7 +98,7 @@ class CartesianController extends ChangeNotifier
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
-    // this.rangeContext,
+    this.rangeContext,
     required this.calculateRange,
   }) {
     animateDataUpdates();
@@ -112,11 +111,11 @@ class CartesianController extends ChangeNotifier
     AnimationController? animation,
     bool? animateOnUpdate,
     bool? animateOnLoad,
-    // CartesianRangeContext? rangeContext,
+    CartesianRangeContext? rangeContext,
   }) {
-    // if (rangeContext != null && this.rangeContext != rangeContext) {
-    //   this.rangeContext = rangeContext;
-    // }
+    if (rangeContext != null && this.rangeContext != rangeContext) {
+      this.rangeContext = rangeContext;
+    }
 
     if (animateOnLoad != null && this.animateOnLoad != animateOnLoad) {
       this.animateOnLoad = animateOnLoad;
@@ -215,6 +214,34 @@ class CartesianController extends ChangeNotifier
   }
 
   @override
+  void aggregateData(List<CartesianSeries> data) {
+    for (var i = 0; i < data.length; i++) {
+      final series = data[i];
+      series.when(onBarSeries: (barSeries) {
+        // Invalidate Painter for BarSeries
+        if (painters.getOrNull(i).runtimeType != BarPainter) {
+          painters[i] = BarPainter(useGraphUnits: false);
+        } else {
+          // Update if needed.
+        }
+
+        for (var j = 0; j < barSeries.barData.length; j++) {
+          final barGroup = barSeries.barData[j];
+
+          var config = cachedConfigs.getOrNull(barSeries);
+          if (config == null) {
+            config = BarSeriesConfig();
+            cachedConfigs[barSeries] = config;
+          }
+          assert(config is BarSeriesConfig);
+          (config as BarSeriesConfig)
+              .updateEdges(barGroup, _updateMinMaxValues);
+        }
+      });
+    }
+  }
+
+  @override
   CartesianConfig? getConfig(CartesianSeries series) => cachedConfigs[series];
 
   @override
@@ -234,29 +261,7 @@ class CartesianController extends ChangeNotifier
   @override
   void setData(List<CartesianSeries> data) {
     _resetRangeData();
-    for (var i = 0; i < data.length; i++) {
-      final series = data[i];
-      series.when(onBarSeries: (barSeries) {
-        if (painters.getOrNull(i).runtimeType != BarPainter) {
-          painters[i] = BarPainter(useGraphUnits: false);
-        } else {
-          // Update if needed.
-        }
-        for (var j = 0; j < barSeries.barData.length; j++) {
-          final barGroup = barSeries.barData[j];
-          series.when(onBarSeries: (barSeries) {
-            var config = cachedConfigs.getOrNull(barSeries);
-            if (config == null) {
-              config = BarSeriesConfig();
-              cachedConfigs[barSeries] = config;
-            }
-            assert(config is BarSeriesConfig);
-            (config as BarSeriesConfig)
-                .updateEdges(barGroup, _updateMinMaxValues);
-          });
-        }
-      });
-    }
+    aggregateData(data);
     _invalidateRangeValues();
     targetData = data;
   }

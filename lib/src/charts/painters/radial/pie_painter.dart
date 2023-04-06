@@ -15,18 +15,33 @@ class PiePainter implements RadialPainter {
   // late PieSeriesConfig _config;
   late PieSeries _data;
 
+  late Paint _canvasPaint;
+  late Paint _arcPaint;
+  late Paint _arcStroke;
+  late Paint _donutClipper;
+  late Paint _donutFill;
+
+  PiePainter() {
+    _canvasPaint = Paint();
+    _arcPaint = Paint();
+    _arcStroke = Paint()..style = PaintingStyle.stroke;
+    _donutClipper = Paint();
+    _donutFill = Paint();
+  }
+
   @override
   void paint(
     RadialSeries lerpSeries,
     RadialSeries targetSeries,
     Canvas canvas,
     RadialChartPainter chart,
+    RadialConfig config,
   ) {
     // Setup the pie chart data
     _data = lerpSeries as PieSeries;
 
     // Here: We will save the canvas layer and perform the XOR operations first
-    canvas.saveLayer(chart.graphConstraints, Paint());
+    canvas.saveLayer(chart.graphConstraints, _canvasPaint);
 
     var defaultStyle = defaultPieSeriesStyle;
     var seriesRadius = _data.seriesStyle?.radius ?? defaultStyle.radius;
@@ -51,8 +66,7 @@ class PiePainter implements RadialPainter {
           slice.style?.strokeColor ?? defaultStyle.strokeColor!;
 
       // Draw slice with color fill
-      var arcPaint = Paint()
-        ..style = PaintingStyle.fill
+      var arcPaint = _arcPaint
         ..color = sliceFill
         ..shader =
             (slice.style?.gradient ?? defaultPieSeriesStyle.gradient)?.toShader(
@@ -73,11 +87,9 @@ class PiePainter implements RadialPainter {
 
       // Paint the stroke if visible width provided
       if (sliceStrokeWidth > 0.0) {
-        var strokePaint = Paint()
-          ..style = PaintingStyle.stroke
+        var strokePaint = _arcStroke
           ..color = sliceStrokeColor
           ..strokeWidth = sliceStrokeWidth
-          ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round;
 
         _drawArcWithCenter(
@@ -108,14 +120,11 @@ class PiePainter implements RadialPainter {
     if ((_data.donutRadius ?? 0) > 0.0) {
       var donutRadius = min(_data.donutRadius!, chart.maxRadius);
       // We have to draw a circle that will clip the slices to create a donut
-      var clipper = Paint()
-        ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.clear;
+      var clipper = _donutClipper..blendMode = BlendMode.clear;
       canvas.drawCircle(chart.graphOrigin, donutRadius, clipper);
 
-      var donutSpace = Paint()
-        ..color = _data.donutSpaceColor ?? Colors.transparent
-        ..style = PaintingStyle.fill;
+      var donutSpace = _donutFill
+        ..color = _data.donutSpaceColor ?? Colors.transparent;
       canvas.drawCircle(chart.graphOrigin, donutRadius, donutSpace);
 
       if (_data.donutLabel != null) {

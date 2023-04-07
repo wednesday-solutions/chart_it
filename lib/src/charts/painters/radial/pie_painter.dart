@@ -15,14 +15,12 @@ class PiePainter implements RadialPainter {
   // late PieSeriesConfig _config;
   late PieSeries _data;
 
-  late Paint _canvasPaint;
   late Paint _arcPaint;
   late Paint _arcStroke;
   late Paint _donutClipper;
   late Paint _donutFill;
 
   PiePainter() {
-    _canvasPaint = Paint();
     _arcPaint = Paint();
     _arcStroke = Paint()..style = PaintingStyle.stroke;
     _donutClipper = Paint();
@@ -40,30 +38,27 @@ class PiePainter implements RadialPainter {
     // Setup the pie chart data
     _data = lerpSeries as PieSeries;
 
-    // Here: We will save the canvas layer and perform the XOR operations first
-    canvas.saveLayer(chart.graphConstraints, _canvasPaint);
-
     var defaultStyle = defaultPieSeriesStyle;
     var seriesRadius = _data.seriesStyle?.radius ?? defaultStyle.radius;
 
     var total = _data.slices.fold(0.0, (prev, data) => (prev + data.value));
 
-    var startAngle = (chart.style.initAngle - 90.0);
-    var pointDegrees = 0.0;
+    var fillStartAngle = (chart.style.initAngle - 90.0);
+    var strokeStartAngle = (chart.style.initAngle - 90.0);
+
+    var fillPointDegrees = 0.0;
+    var strokePointDegrees = 0.0;
+
     for (var i = 0; i < _data.slices.length; i++) {
       final slice = _data.slices[i];
       var sliceRadius = slice.style?.radius ?? seriesRadius;
       // We need to ensure that user hasn't provided a radius value
       // that exceeds our max limit to draw a circle within given constraints
       sliceRadius = min(sliceRadius, chart.maxRadius);
-      pointDegrees = (slice.value / total) * 360;
+      fillPointDegrees = (slice.value / total) * 360;
 
       // Styling for Slices
       var sliceFill = slice.style?.color ?? defaultStyle.color!;
-      var sliceStrokeWidth =
-          slice.style?.strokeWidth ?? defaultStyle.strokeWidth!;
-      var sliceStrokeColor =
-          slice.style?.strokeColor ?? defaultStyle.strokeColor!;
 
       // Draw slice with color fill
       var arcPaint = _arcPaint
@@ -76,14 +71,44 @@ class PiePainter implements RadialPainter {
           ),
         );
 
-      _drawArcWithCenter(
+      _drawArcGroup(
         canvas,
         arcPaint,
+        _donutFill..color = _data.donutSpaceColor ?? Colors.transparent,
         center: chart.graphOrigin,
         radius: sliceRadius,
-        startAngle: startAngle,
-        sweepDegrees: pointDegrees,
+        startAngle: fillStartAngle,
+        sweepDegrees: fillPointDegrees,
+        donutRadius: min(_data.donutRadius ?? 0, chart.maxRadius),
+        isDonut: (_data.donutRadius ?? 0) > 0.0,
       );
+
+      if (slice.label != null) {
+        _drawSliceLabels(
+          canvas,
+          center: chart.graphOrigin,
+          length: sliceRadius + 25,
+          sweepAngle: fillStartAngle + (fillPointDegrees * 0.5),
+          text: slice.label!(slice.value / total, slice.value),
+          style: slice.labelStyle ?? _data.labelStyle!,
+        );
+      }
+
+      fillStartAngle += fillPointDegrees;
+    }
+
+    for (var i = 0; i < _data.slices.length; i++) {
+      final slice = _data.slices[i];
+      var sliceRadius = slice.style?.radius ?? seriesRadius;
+      // We need to ensure that user hasn't provided a radius value
+      // that exceeds our max limit to draw a circle within given constraints
+      sliceRadius = min(sliceRadius, chart.maxRadius);
+      strokePointDegrees = (slice.value / total) * 360;
+
+      var sliceStrokeWidth =
+          slice.style?.strokeWidth ?? defaultStyle.strokeWidth!;
+      var sliceStrokeColor =
+          slice.style?.strokeColor ?? defaultStyle.strokeColor!;
 
       // Paint the stroke if visible width provided
       if (sliceStrokeWidth > 0.0) {
@@ -92,51 +117,30 @@ class PiePainter implements RadialPainter {
           ..strokeWidth = sliceStrokeWidth
           ..strokeJoin = StrokeJoin.round;
 
-        _drawArcWithCenter(
+        _drawArcBorder(
           canvas,
           strokePaint,
           center: chart.graphOrigin,
           radius: sliceRadius,
-          startAngle: startAngle,
-          sweepDegrees: pointDegrees,
+          startAngle: strokeStartAngle,
+          sweepDegrees: strokePointDegrees,
+          donutRadius: min(_data.donutRadius ?? 0, chart.maxRadius),
+          isDonut: (_data.donutRadius ?? 0) > 0.0,
         );
       }
 
-      if (slice.label != null) {
-        _drawSliceLabels(
-          canvas,
-          center: chart.graphOrigin,
-          length: sliceRadius + 25,
-          sweepAngle: startAngle + (pointDegrees * 0.5),
-          text: slice.label!(slice.value / total, slice.value),
-          style: slice.labelStyle ?? _data.labelStyle!,
-        );
-      }
-
-      startAngle += pointDegrees;
+      strokeStartAngle += strokePointDegrees;
     }
 
-    // Draw a clipping Circle or a Fill to convert into donut chart
-    if ((_data.donutRadius ?? 0) > 0.0) {
-      var donutRadius = min(_data.donutRadius!, chart.maxRadius);
-      // We have to draw a circle that will clip the slices to create a donut
-      var clipper = _donutClipper..blendMode = BlendMode.clear;
-      canvas.drawCircle(chart.graphOrigin, donutRadius, clipper);
-
-      var donutSpace = _donutFill
-        ..color = _data.donutSpaceColor ?? Colors.transparent;
-      canvas.drawCircle(chart.graphOrigin, donutRadius, donutSpace);
-
-      if (_data.donutLabel != null) {
-        _drawDonutLabel(
-          canvas: canvas,
-          text: _data.donutLabel!(),
-          style: _data.donutLabelStyle,
-          offset: chart.graphOrigin,
-        );
-      }
+    // Draw a label in the Circle donut chart
+    if (_data.donutLabel != null) {
+      _drawDonutLabel(
+        canvas: canvas,
+        text: _data.donutLabel!(),
+        style: _data.donutLabelStyle,
+        offset: chart.graphOrigin,
+      );
     }
-    canvas.restore();
   }
 
   void _drawArcWithCenter(
@@ -154,6 +158,106 @@ class PiePainter implements RadialPainter {
       true,
       paint,
     );
+  }
+
+  _drawArcGroup(
+    Canvas canvas,
+    Paint slicePaint,
+    Paint? donutPaint, {
+    required Offset center,
+    required double radius,
+    startAngle = 0.0,
+    sweepDegrees = 360,
+    donutRadius = 0.0,
+    isDonut = false,
+  }) {
+    // Step 1. Draw our Pie Slice
+    var slicePath = Path();
+    slicePath.moveTo(center.dx, center.dy);
+    slicePath.arcTo(
+      Rect.fromCircle(center: center, radius: radius),
+      vm.radians(startAngle),
+      vm.radians(sweepDegrees),
+      false,
+    );
+    slicePath.close();
+
+    if (isDonut && donutRadius > 0.0) {
+      // Step 2. Chop the Donut Slice from Pie Piece
+      var clippingPath = Path();
+      clippingPath.moveTo(center.dx, center.dy);
+      clippingPath.arcTo(
+        Rect.fromCircle(center: center, radius: donutRadius),
+        vm.radians(startAngle),
+        vm.radians(sweepDegrees),
+        false,
+      );
+      clippingPath.close();
+
+      canvas.drawPath(
+        Path.combine(PathOperation.difference, slicePath, clippingPath),
+        slicePaint,
+      );
+
+      // Provide fill to the donut piece if available
+      if (donutPaint != null) {
+        var donutFillPath = Path();
+        donutFillPath.moveTo(center.dx, center.dy);
+        donutFillPath.arcTo(
+          Rect.fromCircle(center: center, radius: donutRadius),
+          vm.radians(startAngle),
+          vm.radians(sweepDegrees),
+          false,
+        );
+        donutFillPath.close();
+
+        canvas.drawPath(donutFillPath, donutPaint);
+      }
+    } else {
+      canvas.drawPath(slicePath, slicePaint);
+    }
+  }
+
+  _drawArcBorder(
+    Canvas canvas,
+    Paint sliceBorder, {
+    required Offset center,
+    required double radius,
+    startAngle = 0.0,
+    sweepDegrees = 360,
+    donutRadius = 0.0,
+    isDonut = false,
+  }) {
+    // Step 1. Draw our Pie Slice
+    var slicePath = Path();
+    slicePath.moveTo(center.dx, center.dy);
+    slicePath.arcTo(
+      Rect.fromCircle(center: center, radius: radius),
+      vm.radians(startAngle),
+      vm.radians(sweepDegrees),
+      false,
+    );
+    // slicePath.close();
+
+    if (isDonut && donutRadius > 0.0) {
+      // Step 2. Chop the Donut Slice from Pie Piece
+      var clippingPath = Path();
+      clippingPath.moveTo(center.dx, center.dy);
+      clippingPath.arcTo(
+        Rect.fromCircle(center: center, radius: donutRadius),
+        vm.radians(startAngle),
+        vm.radians(sweepDegrees),
+        false,
+      );
+      clippingPath.close();
+
+      canvas.drawPath(
+        Path.combine(PathOperation.xor, slicePath, clippingPath),
+        sliceBorder,
+      );
+    } else {
+      canvas.drawPath(slicePath, sliceBorder);
+    }
   }
 
   void _drawSliceLabels(

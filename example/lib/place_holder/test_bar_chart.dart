@@ -14,7 +14,6 @@ class TestBarChart extends StatefulWidget {
 }
 
 class _TestBarChartState extends State<TestBarChart> {
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);

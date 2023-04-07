@@ -3,6 +3,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -17,7 +18,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   final List<CartesianSeries> targetData;
   final Map<int, CartesianPainter> painters;
   final Map<CartesianSeries, CartesianConfig> configs;
-  final CartesianDataMixin cartesianRangeData;
+  final CartesianMinMaxData cartesianRangeData;
 
   const CartesianRenderer({
     Key? key,
@@ -55,7 +56,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..currentData = currentData
       ..targetData = targetData
       ..painters = painters
-      ..configs = configs;
+      ..configs = configs
+      ..rangeData = cartesianRangeData;
   }
 }
 
@@ -98,14 +100,20 @@ class CartesianRenderBox extends RenderBox {
   }
 
   set painters(Map<int, CartesianPainter> value) {
-    if (_painter.painters != value) return;
+    if (_painter.painters == value) return;
     _painter.painters = value;
     markNeedsPaint();
   }
 
   set configs(Map<CartesianSeries, CartesianConfig> value) {
-    if (_painter.configs != value) return;
+    if (_painter.configs == value) return;
     _painter.configs = value;
+    markNeedsPaint();
+  }
+
+  set rangeData(CartesianMinMaxData minMaxData) {
+    if (_painter.rangeData == minMaxData) return;
+    _painter.rangeData = minMaxData;
     markNeedsPaint();
   }
 
@@ -116,7 +124,7 @@ class CartesianRenderBox extends RenderBox {
     double? width,
     double? height,
     required CartesianChartStyle style,
-    required CartesianDataMixin rangeData,
+    required CartesianMinMaxData rangeData,
     required List<CartesianSeries> currentData,
     required List<CartesianSeries> targetData,
     required Map<int, CartesianPainter> painters,

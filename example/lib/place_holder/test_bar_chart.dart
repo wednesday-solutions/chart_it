@@ -86,7 +86,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(10, (index) {
+  List<BarGroup> barSeries = List.generate(next(2, 10).toInt(), (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,

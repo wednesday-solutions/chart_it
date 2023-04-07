@@ -8,6 +8,19 @@ import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
+class Unit {
+  const Unit._();
+
+  static const unit = Unit._();
+}
+
+class UnitTween extends Tween<Unit> {
+  @override
+  Unit lerp(double t) {
+    return Unit.unit;
+  }
+}
+
 /// The Animation and Data Controller for a Radial Chart.
 ///
 /// Encapsulates the required Chart Data, Animatable Data, Configs
@@ -15,7 +28,7 @@ import 'package:flutter/material.dart';
 class RadialController extends ChangeNotifier
     with
         RadialDataMixin,
-        ChartAnimationsMixin<RadialSeries>,
+        ChartAnimationsMixin<RadialSeries, Unit>,
         InteractionDispatcher {
   /// Holds a map of configs for every data series.
   final Map<RadialSeries, RadialConfig> cachedConfigs = {};
@@ -137,7 +150,7 @@ class RadialController extends ChangeNotifier
   RadialConfig? getConfig(RadialSeries series) => cachedConfigs[series];
 
   @override
-  List<Tween<RadialSeries>> getTweens({
+  List<Tween<RadialSeries>> getSeriesTweens({
     required List<RadialSeries> newSeries,
     required bool isInitPhase,
   }) =>
@@ -148,13 +161,14 @@ class RadialController extends ChangeNotifier
       List.empty();
 
   @override
-  void setAnimatableData(List<RadialSeries> data) => currentData = data;
+  void setAnimatableData(List<RadialSeries> data, _) => currentData = data;
 
   @override
-  void setData(List<RadialSeries> data) {
+  Unit setData(List<RadialSeries> data) {
     _resetRangeData();
     aggregateData(data);
     targetData = data;
+    return Unit.unit;
   }
 
   _updateMinMaxValues(value) {
@@ -178,5 +192,11 @@ class RadialController extends ChangeNotifier
     Offset localPosition,
   ) {
     // TODO: implement onInteraction
+  }
+
+  @override
+  Tween<Unit> getMinMaxTween(Unit minMaxData, _) {
+    // TODO: implement getMinMaxTween
+    throw UnimplementedError();
   }
 }

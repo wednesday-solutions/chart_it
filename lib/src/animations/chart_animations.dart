@@ -7,11 +7,10 @@ import 'package:flutter/material.dart';
 /// call [animateDataUpdates].
 ///
 /// To update the tween when new data is available and animate to the new state call [updateDataSeries].
-mixin ChartAnimationsMixin<T> on ChangeNotifier {
+mixin ChartAnimationsMixin<T, M> on ChangeNotifier {
   @protected
-  List<Tween<T>> get tweenSeries;
-
-  set tweenSeries(List<Tween<T>> newTweens);
+  late List<Tween<T>> tweenSeries;
+  late Tween<M> minMaxTween;
 
   AnimationController get animation;
 
@@ -19,14 +18,16 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
 
   bool get animateOnUpdate;
 
-  void setData(List<T> data);
+  M setData(List<T> data);
 
-  void setAnimatableData(List<T> data);
+  void setAnimatableData(List<T> data, M minMax);
 
-  List<Tween<T>> getTweens({
+  List<Tween<T>> getSeriesTweens({
     required List<T> newSeries,
     required bool isInitPhase,
   });
+
+  Tween<M> getMinMaxTween(M minMaxData, bool isInitPhase);
 
   /// **Should be called in the constructor of the class using [ChartAnimations].**
   ///
@@ -39,6 +40,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     animation.addListener(() {
       setAnimatableData(
         tweenSeries.fastMap((series) => series.evaluate(animation)),
+        minMaxTween.evaluate(animation)
       );
       // Finally trigger a rebuild for all the painters
       notifyListeners();
@@ -57,9 +59,10 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     bool isInitPhase = false,
   }) {
     // Tween a List of Tweens for CartesianSeries
-    tweenSeries = getTweens(newSeries: newSeries, isInitPhase: isInitPhase);
+    tweenSeries = getSeriesTweens(newSeries: newSeries, isInitPhase: isInitPhase);
     // Update the Target Data to the newest value
-    setData(newSeries);
+    final minMaxData = setData(newSeries);
+    minMaxTween = getMinMaxTween(minMaxData, isInitPhase);
     // Finally animate the differences
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
     final shouldAnimateOnUpdate = !isInitPhase && animateOnUpdate;
@@ -70,7 +73,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
         ..forward();
     } else {
       // We are to not animate the data updates
-      setAnimatableData(newSeries);
+      setAnimatableData(newSeries, minMaxData);
       notifyListeners();
     }
   }

@@ -125,9 +125,10 @@ class _BarChartState extends State<BarChart>
       gridStyle: validStyle.gridStyle!.copyWith(
         // Unless the user is trying to play around with the xUnitValue,
         // we will default it to the length of bar groups
-        xUnitValue: validStyle.gridStyle?.xUnitValue ?? _controller.maxXRange,
+        xUnitValue: validStyle.gridStyle?.xUnitValue ?? _controller.targetMinMaxData.maxXRange,
       ),
     );
+    print(_controller.minMaxData);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -139,7 +140,7 @@ class _BarChartState extends State<BarChart>
           targetData: _controller.targetData,
           painters: _controller.painters,
           configs: _controller.cachedConfigs,
-          cartesianRangeData: _controller,
+          cartesianRangeData: _controller.minMaxData,
         );
       },
     );

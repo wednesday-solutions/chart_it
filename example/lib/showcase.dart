@@ -22,8 +22,8 @@ class _ShowcaseAppState extends State<ShowcaseApp> {
           title: 'Flutter Charts',
           debugShowCheckedModeBanner: false,
           themeMode: ThemeMode.system,
-          darkTheme: darkTheme,
-          theme: lightTheme,
+          theme: ThemeData(useMaterial3: true, colorScheme: lightTheme),
+          darkTheme: ThemeData(useMaterial3: true, colorScheme: darkTheme),
           home: const MultiPlatformContent(),
         );
       },

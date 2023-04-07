@@ -18,6 +18,10 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 2,
+        title: const Text("Material Theme Builder"),
+      ),
       // For mobile devices, we can directly have a navigation drawer
       // drawer: Device.isMobile ? _getDrawer() : null,
       body: LayoutBuilder(

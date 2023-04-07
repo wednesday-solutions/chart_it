@@ -55,41 +55,43 @@ class PiePainter implements RadialPainter {
       sliceRadius = min(sliceRadius, chart.maxRadius);
       fillPointDegrees = (slice.value / total) * 360;
 
-      // Styling for Slices
-      var sliceFill = slice.style?.color ?? defaultStyle.color!;
+      if (slice.value > 0) {
+        // Styling for Slices
+        var sliceFill = slice.style?.color ?? defaultStyle.color!;
 
-      // Draw slice with color fill
-      var arcPaint = _arcPaint
-        ..color = sliceFill
-        ..shader =
-            (slice.style?.gradient ?? defaultPieSeriesStyle.gradient)?.toShader(
-          Rect.fromCircle(
-            center: chart.graphOrigin,
-            radius: sliceRadius,
-          ),
-        );
+        // Draw slice with color fill
+        var arcPaint = _arcPaint
+          ..color = sliceFill
+          ..shader = (slice.style?.gradient ?? defaultPieSeriesStyle.gradient)
+              ?.toShader(
+            Rect.fromCircle(
+              center: chart.graphOrigin,
+              radius: sliceRadius,
+            ),
+          );
 
-      _drawArcGroup(
-        canvas,
-        arcPaint,
-        _donutFill..color = _data.donutSpaceColor ?? Colors.transparent,
-        center: chart.graphOrigin,
-        radius: sliceRadius,
-        startAngle: fillStartAngle,
-        sweepDegrees: fillPointDegrees,
-        donutRadius: min(_data.donutRadius, chart.maxRadius),
-        isDonut: _data.donutRadius > 0.0,
-      );
-
-      if (slice.label != null) {
-        _drawSliceLabels(
+        _drawArcGroup(
           canvas,
+          arcPaint,
+          _donutFill..color = _data.donutSpaceColor ?? Colors.transparent,
           center: chart.graphOrigin,
-          length: sliceRadius + 25,
-          sweepAngle: fillStartAngle + (fillPointDegrees * 0.5),
-          text: slice.label!(slice.value / total, slice.value),
-          style: slice.labelStyle ?? _data.labelStyle!,
+          radius: sliceRadius,
+          startAngle: fillStartAngle,
+          sweepDegrees: fillPointDegrees,
+          donutRadius: min(_data.donutRadius, chart.maxRadius),
+          isDonut: _data.donutRadius > 0.0,
         );
+
+        if (slice.label != null) {
+          _drawSliceLabels(
+            canvas,
+            center: chart.graphOrigin,
+            length: sliceRadius + 25,
+            sweepAngle: fillStartAngle + (fillPointDegrees * 0.5),
+            text: slice.label!(slice.value / total, slice.value),
+            style: slice.labelStyle ?? _data.labelStyle!,
+          );
+        }
       }
 
       fillStartAngle += fillPointDegrees;
@@ -103,28 +105,30 @@ class PiePainter implements RadialPainter {
       sliceRadius = min(sliceRadius, chart.maxRadius);
       strokePointDegrees = (slice.value / total) * 360;
 
-      var sliceStrokeWidth =
-          slice.style?.strokeWidth ?? defaultStyle.strokeWidth!;
-      var sliceStrokeColor =
-          slice.style?.strokeColor ?? defaultStyle.strokeColor!;
+      if (slice.value > 0) {
+        var sliceStrokeWidth =
+            slice.style?.strokeWidth ?? defaultStyle.strokeWidth!;
+        var sliceStrokeColor =
+            slice.style?.strokeColor ?? defaultStyle.strokeColor!;
 
-      // Paint the stroke if visible width provided
-      if (sliceStrokeWidth > 0.0) {
-        var strokePaint = _arcStroke
-          ..color = sliceStrokeColor
-          ..strokeWidth = sliceStrokeWidth
-          ..strokeJoin = StrokeJoin.round;
+        // Paint the stroke if visible width provided
+        if (sliceStrokeWidth > 0.0) {
+          var strokePaint = _arcStroke
+            ..color = sliceStrokeColor
+            ..strokeWidth = sliceStrokeWidth
+            ..strokeJoin = StrokeJoin.round;
 
-        _drawArcBorder(
-          canvas,
-          strokePaint,
-          center: chart.graphOrigin,
-          radius: sliceRadius,
-          startAngle: strokeStartAngle,
-          sweepDegrees: strokePointDegrees,
-          donutRadius: min(_data.donutRadius, chart.maxRadius),
-          isDonut: _data.donutRadius > 0.0,
-        );
+          _drawArcBorder(
+            canvas,
+            strokePaint,
+            center: chart.graphOrigin,
+            radius: sliceRadius,
+            startAngle: strokeStartAngle,
+            sweepDegrees: strokePointDegrees,
+            donutRadius: min(_data.donutRadius, chart.maxRadius),
+            isDonut: _data.donutRadius > 0.0,
+          );
+        }
       }
 
       strokeStartAngle += strokePointDegrees;

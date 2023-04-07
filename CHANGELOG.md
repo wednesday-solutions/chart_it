@@ -1,3 +1,8 @@
+## 0.0.3
+
+* Bug Fixes for BarChart widget.
+* Performance Optimizations for All Chart Widgets.
+
 ## 0.0.2
 
 * Added Animation for Bar Chart

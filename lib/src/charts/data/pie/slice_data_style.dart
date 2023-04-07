@@ -49,11 +49,13 @@ class SliceDataStyle extends Equatable {
   static SliceDataStyle? lerp(
     SliceDataStyle? current,
     SliceDataStyle? target,
+    double donutRadius,
     double t,
   ) {
     if (target != null) {
+      var beginRadius = (donutRadius > 0.0) ? donutRadius : current?.radius;
       return SliceDataStyle(
-        radius: lerpDouble(current?.radius, target.radius, t) ?? 0,
+        radius: lerpDouble(beginRadius, target.radius, t) ?? 0,
         color: Color.lerp(current?.color, target.color, t),
         gradient: Gradient.lerp(current?.gradient, target.gradient, t),
         strokeWidth: lerpDouble(current?.strokeWidth, target.strokeWidth, t),

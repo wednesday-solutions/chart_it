@@ -14,16 +14,6 @@ class TestBarChart extends StatefulWidget {
 }
 
 class _TestBarChartState extends State<TestBarChart> {
-  late final AnimationController _animationController;
-
-  @override
-  void initState() {
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: RefreshRateTickerProvider(fps: 60),
-    );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +23,6 @@ class _TestBarChartState extends State<TestBarChart> {
         BarChart(
           height: 400,
           // maxYValue: 100,
-          // animation: _animationController,
           title: const Text('Demo Chart'),
           chartStyle: CartesianChartStyle(
             backgroundColor: theme.canvasColor,
@@ -99,7 +88,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
   List<BarGroup> barSeries = List.generate(10, (index) {
-    if (true) {
+    if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,
         label: (value) => 'Group ${index + 1}',

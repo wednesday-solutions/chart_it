@@ -132,12 +132,12 @@ class RadialRenderBox extends RenderBox {
           configs: configs,
         );
 
-  _registerGestureRecognizers() {
-    _tapGestureRecognizer = TapGestureRecognizer()
-      ..onTapUp = (details) {
-        // _painter.controller.onTapUp(details.localPosition);
-      };
-  }
+  // _registerGestureRecognizers() {
+  //   _tapGestureRecognizer = TapGestureRecognizer()
+  //     ..onTapUp = (details) {
+  //       // _painter.controller.onTapUp(details.localPosition);
+  //     };
+  // }
 
   @override
   void performLayout() => size = computeDryLayout(constraints);

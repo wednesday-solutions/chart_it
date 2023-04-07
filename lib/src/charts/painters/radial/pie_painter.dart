@@ -17,13 +17,11 @@ class PiePainter implements RadialPainter {
 
   late Paint _arcPaint;
   late Paint _arcStroke;
-  late Paint _donutClipper;
   late Paint _donutFill;
 
   PiePainter() {
     _arcPaint = Paint();
     _arcStroke = Paint()..style = PaintingStyle.stroke;
-    _donutClipper = Paint();
     _donutFill = Paint();
   }
 
@@ -79,8 +77,8 @@ class PiePainter implements RadialPainter {
         radius: sliceRadius,
         startAngle: fillStartAngle,
         sweepDegrees: fillPointDegrees,
-        donutRadius: min(_data.donutRadius ?? 0, chart.maxRadius),
-        isDonut: (_data.donutRadius ?? 0) > 0.0,
+        donutRadius: min(_data.donutRadius, chart.maxRadius),
+        isDonut: _data.donutRadius > 0.0,
       );
 
       if (slice.label != null) {
@@ -124,8 +122,8 @@ class PiePainter implements RadialPainter {
           radius: sliceRadius,
           startAngle: strokeStartAngle,
           sweepDegrees: strokePointDegrees,
-          donutRadius: min(_data.donutRadius ?? 0, chart.maxRadius),
-          isDonut: (_data.donutRadius ?? 0) > 0.0,
+          donutRadius: min(_data.donutRadius, chart.maxRadius),
+          isDonut: _data.donutRadius > 0.0,
         );
       }
 
@@ -141,23 +139,6 @@ class PiePainter implements RadialPainter {
         offset: chart.graphOrigin,
       );
     }
-  }
-
-  void _drawArcWithCenter(
-    Canvas canvas,
-    Paint paint, {
-    required Offset center,
-    required double radius,
-    startAngle = 0.0,
-    sweepDegrees = 360,
-  }) {
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      vm.radians(startAngle),
-      vm.radians(sweepDegrees),
-      true,
-      paint,
-    );
   }
 
   _drawArcGroup(

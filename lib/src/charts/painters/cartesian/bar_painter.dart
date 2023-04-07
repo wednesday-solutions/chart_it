@@ -18,6 +18,7 @@ class BarPainter implements CartesianPainter {
 
   late double _vRatio;
   late double _unitWidth;
+  late double _barWidth;
   bool useGraphUnits;
 
   late Paint _barPaint;
@@ -48,6 +49,7 @@ class BarPainter implements CartesianPainter {
     _config = config as BarSeriesConfig;
 
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
+    _barWidth = _unitWidth / _config.maxBarsInGroup;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
     // compute the vertical pixel value for each data point
@@ -90,14 +92,13 @@ class BarPainter implements CartesianPainter {
         defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
-    var barWidth = _unitWidth / _config.maxBarsInGroup;
     _drawBar(
       canvas,
       chart,
       style,
-      dxOffset + (_unitWidth * 0.5) - (barWidth * 0.5),
+      dxOffset + (_unitWidth * 0.5) - (_barWidth * 0.5),
       // dx pos to start the bar from
-      barWidth,
+      _barWidth,
       group.yValue.yValue,
     );
     // Finally paint the y-labels for this bar
@@ -110,7 +111,6 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     MultiBar group,
   ) {
-    var barWidth = _unitWidth / _config.maxBarsInGroup;
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;
@@ -128,7 +128,7 @@ class BarPainter implements CartesianPainter {
         chart,
         style,
         x, // dx pos to start the bar in this group
-        barWidth,
+        _barWidth,
         barData.yValue,
       );
       // Finally paint the y-labels for this bar

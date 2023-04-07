@@ -98,41 +98,6 @@ class RadialController extends ChangeNotifier
     }
   }
 
-  // bool shouldRepaint(RadialController changedValue) {
-  //   if (maxValue != changedValue.maxValue ||
-  //       minValue != changedValue.minValue ||
-  //       pointer != changedValue.pointer) return true;
-  //
-  //   return false;
-  // }
-
-  _invalidatePainters(List<RadialSeries> data) {
-    // For every distinct Cartesian Series, we will construct a painter for it
-    data.distinctTypes().forEach((series) {
-      // painters.createAndUpdate(series, onCreate: () {
-      //   return RadialSeries.whenType(
-      //     series,
-      //     onPieSeries: () => PiePainter(),
-      //     orElse: () {
-      //       throw ArgumentError('No Painter defined for this type: $series');
-      //     },
-      //   );
-      // });
-      for (var i = 0; i < data.length; i++) {
-        final series = data[i];
-        final painter = painters.getOrNull(i);
-
-        series.when(onPieSeries: (pieSeries) {
-          if (painter.runtimeType != PiePainter) {
-            painters[i] = PiePainter();
-          } else {
-            // Update if needed.
-          }
-        });
-      }
-    });
-  }
-
   @override
   void aggregateData(List<RadialSeries> data) {
     for (var i = 0; i < data.length; i++) {
@@ -189,7 +154,6 @@ class RadialController extends ChangeNotifier
   void setData(List<RadialSeries> data) {
     _resetRangeData();
     aggregateData(data);
-    // _invalidatePainters(data);
     targetData = data;
   }
 

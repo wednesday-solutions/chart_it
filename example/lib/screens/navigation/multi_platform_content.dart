@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class MultiPlatformContent extends StatefulWidget {
-  final isTestMode;
+  final bool isTestMode;
 
   const MultiPlatformContent({
     Key? key,

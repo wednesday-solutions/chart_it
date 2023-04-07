@@ -57,19 +57,6 @@ class RadialChartPainter {
         );
       }
     }
-
-    // controller.targetData.forEachIndexed((index, series) {
-    //   // get the painter for this data
-    //   var painter = controller.painters[series.runtimeType];
-    //   if (painter != null) {
-    //     // and paint the chart for given series
-    //     painter.paint(controller.currentData[index], series, canvas, this);
-    //   } else {
-    //     throw ArgumentError(
-    //       'Illegal State: No painter found for series type: ${series.runtimeType}',
-    //     );
-    //   }
-    // });
   }
 
   _calculateGraphConstraints(Size widgetSize) {

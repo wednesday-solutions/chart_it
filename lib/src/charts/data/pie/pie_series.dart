@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data.dart';
@@ -19,7 +17,7 @@ typedef DonutLabel = String Function();
 /// See Also: [RadialSeries]
 class PieSeries extends RadialSeries with EquatableMixin {
   /// The size of the Donut Circle. Defaults to zero.
-  final double? donutRadius;
+  final double donutRadius;
 
   /// Color of the Donut Circle. Defaults to [Colors.transparent]
   final Color? donutSpaceColor;
@@ -59,7 +57,11 @@ class PieSeries extends RadialSeries with EquatableMixin {
     this.labelStyle = const ChartTextStyle(),
     this.seriesStyle,
     required this.slices,
-  });
+  })  : assert(donutRadius >= 0.0, 'Donut Radius cannot be Negative!'),
+        assert(
+          donutLabel != null ? donutRadius > 0.0 : true,
+          'To display a Donut Label, Donut Radius must be greater than Zero!',
+        );
 
   /// Constructs a Factory Instance of [PieSeries] without any Data.
   factory PieSeries.zero() => PieSeries(slices: List.empty());
@@ -81,11 +83,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
     double t,
   ) {
     return PieSeries(
-      donutRadius: lerpDouble(
-        current?.donutRadius,
-        target.donutRadius,
-        t,
-      ),
+      donutRadius: target.donutRadius,
       donutSpaceColor: Color.lerp(
         current?.donutSpaceColor,
         target.donutSpaceColor,
@@ -105,9 +103,15 @@ class PieSeries extends RadialSeries with EquatableMixin {
       seriesStyle: SliceDataStyle.lerp(
         current?.seriesStyle,
         target.seriesStyle,
+        target.donutRadius,
         t,
       ),
-      slices: SliceData.lerpSliceDataList(current?.slices, target.slices, t),
+      slices: SliceData.lerpSliceDataList(
+        current?.slices,
+        target.slices,
+        target.donutRadius,
+        t,
+      ),
     );
   }
 }

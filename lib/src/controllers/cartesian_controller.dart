@@ -135,53 +135,6 @@ class CartesianController extends ChangeNotifier
     }
   }
 
-  // bool shouldRepaint(CartesianController changedValue) {
-  //   if (minXValue != changedValue.minXValue ||
-  //       maxXValue != changedValue.maxXValue ||
-  //       minYValue != changedValue.minYValue ||
-  //       maxYValue != changedValue.maxYValue ||
-  //       minXRange != changedValue.minXRange ||
-  //       maxXRange != changedValue.maxXRange ||
-  //       minYRange != changedValue.minYRange ||
-  //       maxYRange != changedValue.maxYRange ||
-  //       pointer != changedValue.pointer) return true;
-  //
-  //   return false;
-  // }
-
-  _invalidatePainters(List<CartesianSeries> data) {
-    // For every distinct Cartesian Series, we will construct a painter for it
-    data.distinctTypes().forEach((series) {
-      // painters.createAndUpdate(series, onCreate: () {
-      //   return CartesianSeries.whenType(
-      //     series,
-      //     onBarSeries: (){
-      //       if (painter.runtimeType != BarPainter) {
-      //         painters[i] = BarPainter(useGraphUnits: data.length > 1);
-      //       } else {
-      //         (painter as BarPainter).useGraphUnits = data.length > 1;
-      //       }
-      //     },
-      //     orElse: () {
-      //       throw ArgumentError('No Painter defined for this type: $series');
-      //     },
-      //   );
-      // });
-      for (var i = 0; i < data.length; i++) {
-        final series = data[i];
-        final painter = painters.getOrNull(i);
-
-        series.when(onBarSeries: (barSeries) {
-          if (painter.runtimeType != BarPainter) {
-            painters[i] = BarPainter(useGraphUnits: data.length > 1);
-          } else {
-            (painter as BarPainter).useGraphUnits = data.length > 1;
-          }
-        });
-      }
-    });
-  }
-
   _invalidateRangeValues() {
     var rangeCtx = CartesianRangeContext(
       maxX: maxXValue,

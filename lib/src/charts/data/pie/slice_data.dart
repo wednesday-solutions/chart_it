@@ -38,7 +38,12 @@ class SliceData extends Equatable {
   List<Object?> get props => [style, label, labelStyle, value];
 
   /// Lerps between two [SliceData] values for a factor [t]
-  static SliceData lerp(SliceData? current, SliceData target, double t) {
+  static SliceData lerp(
+    SliceData? current,
+    SliceData target,
+    double donutRadius,
+    double t,
+  ) {
     return SliceData(
       value: lerpDouble(current?.value, target.value, t) as num,
       labelStyle: ChartTextStyle.lerp(
@@ -47,7 +52,7 @@ class SliceData extends Equatable {
         t,
       ),
       label: target.label,
-      style: SliceDataStyle.lerp(current?.style, target.style, t),
+      style: SliceDataStyle.lerp(current?.style, target.style, donutRadius, t),
     );
   }
 
@@ -55,7 +60,10 @@ class SliceData extends Equatable {
   static List<SliceData> lerpSliceDataList(
     List<SliceData>? current,
     List<SliceData> target,
+    double donutRadius,
     double t,
   ) =>
-      lerpList(current, target, t, lerp: lerp);
+      lerpList(current, target, t, lerp: (begin, end, t) {
+        return SliceData.lerp(begin, end, donutRadius, t);
+      });
 }

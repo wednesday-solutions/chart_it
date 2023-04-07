@@ -1,11 +1,5 @@
 import 'package:flutter/scheduler.dart';
 
-// class RefreshRateTicker extends Ticker {
-//   RefreshRateTicker(super._onTick);
-//
-//   tick(Duration duration) {}
-// }
-
 class RefreshRateTickerProvider extends TickerProvider {
   final int fps;
   Function(Duration)? onTick;

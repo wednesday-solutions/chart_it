@@ -1,9 +1,10 @@
+import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
+import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
-import 'package:chart_it/src/controllers/radial_controller.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:flutter/material.dart';
 
-class RadialChartPainter extends CustomPainter {
+class RadialChartPainter {
   late double graphWidth;
   late double graphHeight;
   late Offset graphOrigin;
@@ -13,41 +14,49 @@ class RadialChartPainter extends CustomPainter {
 
   late double unitStep;
 
-  final RadialChartStyle style;
-  final RadialController controller;
+  RadialChartStyle style;
+  List<RadialSeries> currentData;
+  List<RadialSeries> targetData;
+  Map<int, RadialPainter> painters;
+  Map<RadialSeries, RadialConfig> configs;
+  RadialDataMixin rangeData;
+
+  late Paint _bgPaint;
 
   RadialChartPainter({
     required this.style,
-    required this.controller,
-  }) : super(repaint: controller);
+    required this.currentData,
+    required this.targetData,
+    required this.painters,
+    required this.configs,
+    required this.rangeData,
+  }) {
+    _bgPaint = Paint()..color = style.backgroundColor;
+  }
 
-  @override
-  bool shouldRepaint(RadialChartPainter oldDelegate) =>
-      controller.shouldRepaint(oldDelegate.controller);
-
-  @override
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
     _calculateGraphConstraints(size);
     // TODO: Construct a radial grid for polar or radar charts if required
     // Paint the background
-    var bg = Paint()..color = style.backgroundColor;
-    canvas.drawPaint(bg);
+    canvas.drawPaint(_bgPaint);
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    controller.targetData.forEachIndexed((index, series) {
-      // get the painter for this data
-      var painter = controller.painters[series.runtimeType];
-      if (painter != null) {
-        // and paint the chart for given series
-        painter.paint(controller.currentData[index], series, canvas, this);
-      } else {
-        throw ArgumentError(
-          'Illegal State: No painter found for series type: ${series.runtimeType}',
+    for (var i = 0; i < targetData.length; i++) {
+      final target = targetData[i];
+      var painter = painters[i];
+      var config = configs[target];
+      if (painter != null && config != null) {
+        painter.paint(
+          currentData[i],
+          target,
+          canvas,
+          this,
+          config,
         );
       }
-    });
+    }
   }
 
   _calculateGraphConstraints(Size widgetSize) {

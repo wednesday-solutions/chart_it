@@ -8,5 +8,6 @@ abstract class RadialPainter {
     RadialSeries target,
     Canvas canvas,
     RadialChartPainter chart,
+    RadialConfig config,
   );
 }

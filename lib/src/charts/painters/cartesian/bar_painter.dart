@@ -1,10 +1,15 @@
-import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data.dart';
+import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
+import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/bar_series.dart';
+import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
+import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter {
@@ -13,11 +18,18 @@ class BarPainter implements CartesianPainter {
 
   late double _vRatio;
   late double _unitWidth;
-  final bool useGraphUnits;
+  late double _barWidth;
+  bool useGraphUnits;
+
+  late Paint _barPaint;
+  late Paint _barStroke;
 
   BarPainter({
     required this.useGraphUnits,
-  });
+  }) {
+    _barPaint = Paint();
+    _barStroke = Paint()..style = PaintingStyle.stroke;
+  }
 
   @override
   void paint(
@@ -25,18 +37,19 @@ class BarPainter implements CartesianPainter {
     CartesianSeries targetSeries,
     Canvas canvas,
     CartesianChartPainter chart,
+    CartesianConfig config,
   ) {
+    assert(
+      config is BarSeriesConfig,
+      "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
+    );
     // Setup the bar data
     _data = lerpSeries as BarSeries;
     // Setup the bar chart config
-    var config = chart.controller.getConfig(targetSeries);
-    if (config == null) {
-      throw ArgumentError('Invalid State! Couldn\'t find a config for $_data');
-    } else {
-      _config = config.asOrNull<BarSeriesConfig>()!;
-    }
+    _config = config as BarSeriesConfig;
 
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
+    _barWidth = _unitWidth / _config.maxBarsInGroup;
     // We need to compute the RATIO between the chart height (in pixels) and
     // the range of data! This will come in handy later when we have to
     // compute the vertical pixel value for each data point
@@ -79,13 +92,13 @@ class BarPainter implements CartesianPainter {
         defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
-    var barWidth = _unitWidth / _config.maxBarsInGroup;
     _drawBar(
       canvas,
       chart,
       style,
-      dxOffset, // dx pos to start the bar from
-      barWidth,
+      dxOffset + (_unitWidth * 0.5) - (_barWidth * 0.5),
+      // dx pos to start the bar from
+      _barWidth,
       group.yValue.yValue,
     );
     // Finally paint the y-labels for this bar
@@ -98,7 +111,6 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     MultiBar group,
   ) {
-    var barWidth = _unitWidth / _config.maxBarsInGroup;
     var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var x = dxOffset;
@@ -116,7 +128,7 @@ class BarPainter implements CartesianPainter {
         chart,
         style,
         x, // dx pos to start the bar in this group
-        barWidth,
+        _barWidth,
         barData.yValue,
       );
       // Finally paint the y-labels for this bar
@@ -151,7 +163,7 @@ class BarPainter implements CartesianPainter {
     var bar = RRect.fromLTRBAndCorners(
       dxCenter + padding, // start X + padding
       chart.axisOrigin.dy - y, // axisOrigin's dY - yValue
-      dxCenter + barWidth, // startX + barWidth
+      dxCenter + barWidth - padding, // startX + barWidth
       chart.axisOrigin.dy, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
       topLeft: yValue.isNegative ? bottomLeft : topLeft,
@@ -160,20 +172,20 @@ class BarPainter implements CartesianPainter {
       bottomRight: yValue.isNegative ? topRight : bottomRight,
     );
 
-    var barPaint = Paint()
+    var barPaint = _barPaint
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
       ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
           ?.toShader(bar.outerRect);
 
-    var barStroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = (style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth)!
-      ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
-
     canvas.drawRRect(bar, barPaint); // draw fill
-    canvas.drawRRect(bar, barStroke); // draw stroke
+
+    final strokeWidth = style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth;
+    if (strokeWidth != null && strokeWidth > 0.0) {
+      var barStroke = _barStroke
+        ..strokeWidth = strokeWidth
+        ..color = (style?.strokeColor ?? defaultBarSeriesStyle.strokeColor)!;
+      canvas.drawRRect(bar, barStroke); // draw stroke
+    }
   }
 
   void _drawGroupLabel(

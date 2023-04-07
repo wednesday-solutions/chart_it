@@ -1,3 +1,4 @@
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -37,7 +38,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
   void animateDataUpdates() {
     animation.addListener(() {
       setAnimatableData(
-        tweenSeries.map((series) => series.evaluate(animation)).toList(),
+        tweenSeries.fastMap((series) => series.evaluate(animation)),
       );
       // Finally trigger a rebuild for all the painters
       notifyListeners();
@@ -50,6 +51,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
   /// 1. Updates the [tweenSeries] with tween created from the [newSeries] data.
   /// 2. [setData] with the [newSeries].
   /// 3. Starts the [animation] if applicable.
+  @protected
   void updateDataSeries(
     List<T> newSeries, {
     bool isInitPhase = false,

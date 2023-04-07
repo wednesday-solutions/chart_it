@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class MultiPlatformContent extends StatefulWidget {
-  const MultiPlatformContent({Key? key}) : super(key: key);
+  const MultiPlatformContent({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MultiPlatformContent> createState() => _MultiPlatformContentState();
@@ -36,14 +38,11 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
           _currentIndex = index;
         }),
         items: [
-          /// Home
           SalomonBottomBarItem(
             icon: const Icon(Icons.bar_chart_rounded),
             title: const Text("Bar Chart"),
             selectedColor: const Color(0xFF191FC8),
           ),
-
-          /// Likes
           SalomonBottomBarItem(
             icon: const Icon(Icons.pie_chart_outline),
             title: const Text("Pie Chart"),

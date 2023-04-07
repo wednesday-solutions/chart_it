@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ShowcaseApp extends StatefulWidget {
-  const ShowcaseApp({Key? key}) : super(key: key);
+  const ShowcaseApp({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ShowcaseApp> createState() => _ShowcaseAppState();

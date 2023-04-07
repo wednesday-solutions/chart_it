@@ -1,5 +1,6 @@
 library chart_it;
 
+export 'src/animations/refresh_rate_ticker.dart';
 export 'src/charts/data/bars/bar_data.dart';
 export 'src/charts/data/bars/bar_data_style.dart';
 export 'src/charts/data/bars/bar_group.dart';

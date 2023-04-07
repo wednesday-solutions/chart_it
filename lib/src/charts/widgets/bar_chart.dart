@@ -1,7 +1,8 @@
-import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/constants/defaults.dart';
+import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
-import 'package:chart_it/src/charts/widgets/core/cartesian_charts.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +12,10 @@ class BarChart extends StatefulWidget {
   final Text? title;
 
   /// Width of the Chart
-  final double? chartWidth;
+  final double? width;
 
   /// Height of the Chart
-  final double? chartHeight;
+  final double? height;
 
   /// Animates the Charts from zero values to given Data when the
   /// Chart loads for the first time.
@@ -44,17 +45,20 @@ class BarChart extends StatefulWidget {
   /// The Data which will be Drawn as Bars
   final BarSeries data;
 
+  final CartesianRangeContext? rangeContext;
+
   const BarChart({
     Key? key,
     this.title,
-    this.chartWidth,
-    this.chartHeight,
+    this.width,
+    this.height,
     this.animateOnLoad = true,
     this.animateOnUpdate = true,
     this.animationDuration = const Duration(milliseconds: 500),
     this.animation,
     this.maxYValue,
     this.chartStyle,
+    this.rangeContext,
     required this.data,
   }) : super(key: key);
 
@@ -65,23 +69,27 @@ class BarChart extends StatefulWidget {
 class _BarChartState extends State<BarChart>
     with SingleTickerProviderStateMixin {
   late CartesianController _controller;
+  late AnimationController _defaultAnimation;
 
   @override
   void initState() {
     super.initState();
+    // Initialize default animation controller
+    _defaultAnimation = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
+
+    var gridStyle =
+        (widget.chartStyle?.gridStyle ?? defaultCartesianChartStyle.gridStyle)!;
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
       targetData: [widget.data],
+      animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
-      animation: widget.animation ??
-          AnimationController(
-            duration: widget.animationDuration,
-            vsync: this,
-          ),
+      rangeContext: widget.rangeContext,
       calculateRange: (context) {
-        var gridStyle = (widget.chartStyle?.gridStyle ??
-            defaultCartesianChartStyle.gridStyle)!;
         var maxXRange = widget.data.barData.length.toDouble();
         var maxYRange = widget.maxYValue ?? context.maxY;
         return CartesianRangeResult(
@@ -101,24 +109,43 @@ class _BarChartState extends State<BarChart>
   void didUpdateWidget(covariant BarChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
-    _controller.updateDataSeries([widget.data]);
+    _controller.update(
+      targetData: [widget.data],
+      animation: _provideAnimation(),
+      animateOnLoad: widget.animateOnLoad,
+      animateOnUpdate: widget.animateOnUpdate,
+      rangeContext: widget.rangeContext,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var style = widget.chartStyle ?? defaultCartesianChartStyle;
-    return CartesianCharts(
-      controller: _controller,
-      width: widget.chartWidth,
-      height: widget.chartHeight,
-      uMaxYValue: widget.maxYValue,
-      style: style.copyWith(
-        gridStyle: style.gridStyle!.copyWith(
-          // Unless the user is trying to play around with the xUnitValue,
-          // we will default it to the length of bar groups
-          xUnitValue: style.gridStyle?.xUnitValue ?? _controller.maxXRange,
-        ),
+    var validStyle = widget.chartStyle ?? defaultCartesianChartStyle;
+    var style = validStyle.copyWith(
+      gridStyle: validStyle.gridStyle!.copyWith(
+        // Unless the user is trying to play around with the xUnitValue,
+        // we will default it to the length of bar groups
+        xUnitValue: validStyle.gridStyle?.xUnitValue ?? _controller.maxXRange,
       ),
     );
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return CartesianRenderer(
+          width: widget.width,
+          height: widget.height,
+          style: style,
+          currentData: _controller.currentData,
+          targetData: _controller.targetData,
+          painters: _controller.painters,
+          configs: _controller.cachedConfigs,
+          cartesianRangeData: _controller,
+        );
+      },
+    );
   }
+
+  AnimationController _provideAnimation() =>
+      widget.animation ?? _defaultAnimation
+        ..duration = widget.animationDuration;
 }

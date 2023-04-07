@@ -76,7 +76,7 @@ class _TestBarChartState extends State<TestBarChart> {
               onPressed: () => setState(() {}),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -86,7 +86,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(next(1, 10).toInt(), (index) {
+  List<BarGroup> barSeries = List.generate(10, (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,

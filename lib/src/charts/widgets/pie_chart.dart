@@ -1,7 +1,7 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
-import 'package:chart_it/src/charts/widgets/core/radial_charts.dart';
+import 'package:chart_it/src/charts/renderers/radial_renderer.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +11,10 @@ class PieChart extends StatefulWidget {
   final Text? title;
 
   /// Width of the Chart
-  final double? chartWidth;
+  final double? width;
 
   /// Height of the Chart
-  final double? chartHeight;
+  final double? height;
 
   /// Animates the Charts from zero values to given Data when the
   /// Chart loads for the first time.
@@ -43,8 +43,8 @@ class PieChart extends StatefulWidget {
   const PieChart({
     Key? key,
     this.title,
-    this.chartWidth,
-    this.chartHeight,
+    this.width,
+    this.height,
     this.animateOnLoad = true,
     this.animateOnUpdate = true,
     this.animationDuration = const Duration(milliseconds: 500),
@@ -60,20 +60,22 @@ class PieChart extends StatefulWidget {
 class _PieChartState extends State<PieChart>
     with SingleTickerProviderStateMixin {
   late RadialController _controller;
+  late AnimationController _defaultAnimation;
 
   @override
   void initState() {
     super.initState();
+    // Initialize default animation controller
+    _defaultAnimation = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
     // provide the chart details to the controller
     _controller = RadialController(
       targetData: [widget.data],
+      animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
-      animation: widget.animation ??
-          AnimationController(
-            duration: widget.animationDuration,
-            vsync: this,
-          ),
     );
   }
 
@@ -81,17 +83,35 @@ class _PieChartState extends State<PieChart>
   void didUpdateWidget(covariant PieChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
-    _controller.updateDataSeries([widget.data]);
+    _controller.update(
+      targetData: [widget.data],
+      animation: _provideAnimation(),
+      animateOnLoad: widget.animateOnLoad,
+      animateOnUpdate: widget.animateOnUpdate,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var style = widget.chartStyle ?? defaultRadialChartStyle;
-    return RadialCharts(
-      controller: _controller,
-      width: widget.chartWidth,
-      height: widget.chartHeight,
-      style: style,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return RadialRenderer(
+          width: widget.width,
+          height: widget.height,
+          style: style,
+          currentData: _controller.currentData,
+          targetData: _controller.targetData,
+          painters: _controller.painters,
+          configs: _controller.cachedConfigs,
+          radialRangeData: _controller,
+        );
+      },
     );
   }
+
+  AnimationController _provideAnimation() =>
+      widget.animation ?? _defaultAnimation
+        ..duration = widget.animationDuration;
 }

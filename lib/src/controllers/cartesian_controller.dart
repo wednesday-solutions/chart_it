@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
@@ -7,8 +5,8 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
-import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
 /// The Animation and Data Controller for a Cartesian Chart.
@@ -16,12 +14,15 @@ import 'package:flutter/material.dart';
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [CartesianSeries].
 class CartesianController extends ChangeNotifier
-    with CartesianDataMixin, ChartAnimationsMixin<CartesianSeries> {
+    with
+        CartesianDataMixin,
+        ChartAnimationsMixin<CartesianSeries>,
+        InteractionDispatcher {
   /// Holds a map of configs for every data series.
-  final Map<CartesianSeries, CartesianConfig> _seriesConfigs = {};
+  final Map<CartesianSeries, CartesianConfig> cachedConfigs = {};
 
   /// Holds a map of painters for every series type.
-  final Map<Type, CartesianPainter> painters = {};
+  final Map<int, CartesianPainter> painters = {};
 
   /// The Current Data which will be lerped across every animation tick.
   List<CartesianSeries> currentData = List.empty();
@@ -71,20 +72,22 @@ class CartesianController extends ChangeNotifier
 
   /// The Animation Controller to drive the charts animations.
   @override
-  final AnimationController animation;
+  AnimationController animation;
 
   /// Sets if the chart should animate or not, when loaded for the first time.
   /// Defaults to true.
   @override
-  final bool animateOnLoad;
+  bool animateOnLoad;
 
   /// Sets if the chart should animate or not, when the data is updated.
   /// Defaults to true.
   @override
-  final bool animateOnUpdate;
+  bool animateOnUpdate;
 
   // Values to keep updating when scrolling
   Offset? pointer;
+
+  CartesianRangeContext? rangeContext;
 
   /// The Animation and Data Controller for a Cartesian Chart.
   ///
@@ -95,6 +98,7 @@ class CartesianController extends ChangeNotifier
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
+    this.rangeContext,
     required this.calculateRange,
   }) {
     animateDataUpdates();
@@ -102,33 +106,33 @@ class CartesianController extends ChangeNotifier
     updateDataSeries(targetData, isInitPhase: true);
   }
 
-  bool shouldRepaint(CartesianController changedValue) {
-    if (minXValue != changedValue.minXValue ||
-        maxXValue != changedValue.maxXValue ||
-        minYValue != changedValue.minYValue ||
-        maxYValue != changedValue.maxYValue ||
-        minXRange != changedValue.minXRange ||
-        maxXRange != changedValue.maxXRange ||
-        minYRange != changedValue.minYRange ||
-        maxYRange != changedValue.maxYRange ||
-        pointer != changedValue.pointer) return true;
+  update({
+    List<CartesianSeries>? targetData,
+    AnimationController? animation,
+    bool? animateOnUpdate,
+    bool? animateOnLoad,
+    CartesianRangeContext? rangeContext,
+  }) {
+    if (rangeContext != null && this.rangeContext != rangeContext) {
+      this.rangeContext = rangeContext;
+    }
 
-    return false;
-  }
+    if (animateOnLoad != null && this.animateOnLoad != animateOnLoad) {
+      this.animateOnLoad = animateOnLoad;
+    }
 
-  _invalidatePainters(List<CartesianSeries> data) {
-    // For every distinct Cartesian Series, we will construct a painter for it
-    data.distinctTypes().forEach((series) {
-      painters.createAndUpdate(series, onCreate: () {
-        return CartesianSeries.whenType(
-          series,
-          onBarSeries: () => BarPainter(useGraphUnits: false),
-          orElse: () {
-            throw ArgumentError('No Painter defined for this type: $series');
-          },
-        );
-      });
-    });
+    if (animateOnUpdate != null && this.animateOnUpdate != animateOnUpdate) {
+      this.animateOnUpdate = animateOnUpdate;
+    }
+
+    if (animation != null && this.animation != animation) {
+      this.animation = animation;
+      animateDataUpdates();
+    }
+
+    if (targetData != null && this.targetData != targetData) {
+      updateDataSeries(targetData, isInitPhase: false);
+    }
   }
 
   _invalidateRangeValues() {
@@ -164,46 +168,34 @@ class CartesianController extends ChangeNotifier
 
   @override
   void aggregateData(List<CartesianSeries> data) {
-    _resetRangeData();
-    // How many times we may need to iterate over our data
-    var iterations = data.maxIterations();
-    for (var i = 0; i < iterations; i++) {
-      // iterate over the n'th index of every series
-      for (var j = 0; j < data.length; j++) {
-        final series = data[j];
-        series.when(
-          onBarSeries: (series) {
-            if (i < series.barData.length) {
-              // We Know the index. We have to get the min/max values
-              //  from the 'i'th element (BarGroup) in this series
-              _seriesConfigs.createAndUpdate(
-                series,
-                onCreate: () => BarSeriesConfig(),
-                onUpdate: (config) {
-                  var barConfig = config.asOrNull<BarSeriesConfig>();
-                  // Run the min & max calculations
-                  barConfig?.updateEdges(
-                    series.barData[i],
-                    (minX, maxX, minY, maxY) {
-                      minXValue = min(minXValue, minX);
-                      maxXValue = max(maxXValue, maxX);
-                      minYValue = min(minYValue, minY);
-                      maxYValue = max(maxYValue, maxY);
-                    },
-                  );
-                },
-              );
-            }
-          },
-        );
-      }
+    for (var i = 0; i < data.length; i++) {
+      final series = data[i];
+      series.when(onBarSeries: (barSeries) {
+        // Invalidate Painter for BarSeries
+        if (painters.getOrNull(i).runtimeType != BarPainter) {
+          painters[i] = BarPainter(useGraphUnits: false);
+        } else {
+          // Update if needed.
+        }
+
+        for (var j = 0; j < barSeries.barData.length; j++) {
+          final barGroup = barSeries.barData[j];
+
+          var config = cachedConfigs.getOrNull(barSeries);
+          if (config == null) {
+            config = BarSeriesConfig();
+            cachedConfigs[barSeries] = config;
+          }
+          assert(config is BarSeriesConfig);
+          (config as BarSeriesConfig)
+              .updateEdges(barGroup, _updateMinMaxValues);
+        }
+      });
     }
-    // Finally we are ready to calculate the ranges
-    _invalidateRangeValues();
   }
 
   @override
-  CartesianConfig? getConfig(CartesianSeries series) => _seriesConfigs[series];
+  CartesianConfig? getConfig(CartesianSeries series) => cachedConfigs[series];
 
   @override
   List<Tween<CartesianSeries>> getTweens({
@@ -221,9 +213,28 @@ class CartesianController extends ChangeNotifier
 
   @override
   void setData(List<CartesianSeries> data) {
-    _invalidatePainters(data);
+    _resetRangeData();
     aggregateData(data);
+    _invalidateRangeValues();
     targetData = data;
+  }
+
+  _updateMinMaxValues(minX, maxX, minY, maxY) {
+    if (minX < minXValue) {
+      minXValue = minX;
+    }
+
+    if (maxX > maxXValue) {
+      maxXValue = maxX;
+    }
+
+    if (minY < minYValue) {
+      minYValue = minY;
+    }
+
+    if (maxY > maxYValue) {
+      maxYValue = maxY;
+    }
   }
 
   _resetRangeData() {
@@ -236,4 +247,33 @@ class CartesianController extends ChangeNotifier
     minXRange = 0.0;
     minYRange = 0.0;
   }
+
+  @override
+  void onInteraction(
+    ChartInteractionType interactionType,
+    Offset localPosition,
+  ) {
+    // TODO: implement onInteraction
+  }
 }
+
+// abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
+//   SERIES series;
+//   CONFIG config;
+//   PAINTER painter;
+//
+//   ChartPaintingContext({
+//     required this.series,
+//     required this.config,
+//     required this.painter,
+//   });
+// }
+//
+// class BarChartPaintingContext
+//     extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
+//   BarChartPaintingContext({
+//     required super.series,
+//     required super.config,
+//     required super.painter,
+//   });
+// }

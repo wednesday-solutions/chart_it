@@ -1,12 +1,14 @@
 import 'dart:math';
 
-import 'package:chart_it/chart_it.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
-import 'package:chart_it/src/controllers/cartesian_controller.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
-class CartesianChartPainter extends CustomPainter {
+class CartesianChartPainter {
   late Rect graphPolygon;
   late double graphHeight;
   late double graphWidth;
@@ -27,67 +29,74 @@ class CartesianChartPainter extends CustomPainter {
   late double _yUnitsCount;
   late double totalYRange;
 
-  final double? uMinXValue;
-  final double? uMaxXValue;
-  final double? uMinYValue;
-  final double? uMaxYValue;
+  CartesianChartStyle style;
+  List<CartesianSeries> currentData;
+  List<CartesianSeries> targetData;
+  Map<int, CartesianPainter> painters;
+  Map<CartesianSeries, CartesianConfig> configs;
+  CartesianDataMixin rangeData;
 
-  final CartesianChartStyle style;
-  final CartesianController controller;
+  late Paint _bgPaint;
+  late Paint _gridBorder;
+  late Paint _gridTick;
+  late Paint _axisPaint;
 
   CartesianChartPainter({
-    this.uMinXValue,
-    this.uMaxXValue,
-    this.uMinYValue,
-    this.uMaxYValue,
     required this.style,
-    required this.controller,
-  }) : super(repaint: controller);
+    required this.currentData,
+    required this.targetData,
+    required this.painters,
+    required this.configs,
+    required this.rangeData,
+  }) {
+    _bgPaint = Paint()..color = style.backgroundColor;
+    _gridBorder = Paint()..style = PaintingStyle.stroke;
+    _gridTick = Paint()..style = PaintingStyle.stroke;
+    _axisPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
+  }
 
-  @override
-  bool shouldRepaint(CartesianChartPainter oldDelegate) =>
-      controller.shouldRepaint(oldDelegate.controller);
-
-  @override
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
     _calculateGraphConstraints(size);
 
     // Paint the background
-    var bg = Paint()..color = style.backgroundColor;
-    canvas.drawPaint(bg);
+    // var bg = Paint()..color = style.backgroundColor;
+    canvas.drawPaint(_bgPaint);
 
     _drawGridLines(canvas, size);
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    controller.targetData.forEachIndexed((index, series) {
-      // get the painter for this data
-      var painter = controller.painters[series.runtimeType];
-      if (painter != null) {
-        // and paint the chart for given series
-        painter.paint(controller.currentData[index], series, canvas, this);
-      } else {
-        throw ArgumentError(
-          'Illegal State: No painter found for series type: ${series.runtimeType}',
+    for (var i = 0; i < targetData.length; i++) {
+      final target = targetData[i];
+      var painter = painters[i];
+      var config = configs[target];
+      if (painter != null && config != null) {
+        painter.paint(
+          currentData[i],
+          target,
+          canvas,
+          this,
+          config,
         );
       }
-    });
+    }
 
     // We will draw axis on top of the painted chart data.
     _drawAxis(canvas, size);
   }
 
   void _drawGridLines(Canvas canvas, Size size) {
-    var border = Paint()
+    var border = _gridBorder
       ..color = style.gridStyle!.gridLineColor
-      ..strokeWidth = style.gridStyle!.gridLineWidth
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = style.gridStyle!.gridLineWidth;
 
-    var tickPaint = Paint()
+    var tickPaint = _gridTick
       ..color = style.axisStyle!.tickColor
-      ..strokeWidth = style.axisStyle!.tickWidth
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = style.axisStyle!.tickWidth;
 
     var x = graphPolygon.left;
     // create vertical lines
@@ -124,12 +133,9 @@ class CartesianChartPainter extends CustomPainter {
   }
 
   void _drawAxis(Canvas canvas, Size size) {
-    var axisPaint = Paint()
+    var axisPaint = _axisPaint
       ..color = style.axisStyle!.axisColor
-      ..strokeWidth = style.axisStyle!.axisWidth
-      ..strokeJoin = StrokeJoin.round
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = style.axisStyle!.axisWidth;
 
     // We will use a L shaped path for the Axes
     var axis = Path();
@@ -137,13 +143,13 @@ class CartesianChartPainter extends CustomPainter {
     axis.lineTo(axisOrigin.dx, axisOrigin.dy); // +ve y axis
     axis.lineTo(graphPolygon.right, axisOrigin.dy); // +ve x axis
 
-    if (controller.minYRange.isNegative) {
+    if (rangeData.minYRange.isNegative) {
       // Paint negative Y-axis if we have negative values
       axis.moveTo(graphPolygon.bottomLeft.dx, graphPolygon.bottomLeft.dy);
       axis.lineTo(axisOrigin.dx, axisOrigin.dy); // -ve y axis
     }
 
-    if (controller.minXRange.isNegative) {
+    if (rangeData.minXRange.isNegative) {
       // Paint negative X-axis if we have Negative values
       axis.lineTo(graphPolygon.left, axisOrigin.dy); // -ve x axis
     }
@@ -179,7 +185,7 @@ class CartesianChartPainter extends CustomPainter {
         final textStyle =
             style.axisStyle?.tickLabelStyle ?? const ChartTextStyle();
         ChartTextPainter.fromChartTextStyle(
-          text: (controller.minYRange + (yUnitValue * i)).toString(),
+          text: (rangeData.minYRange + (yUnitValue * i)).toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
         ).paint(
           canvas: canvas,
@@ -207,10 +213,10 @@ class CartesianChartPainter extends CustomPainter {
     xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
     yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
 
-    totalXRange = controller.maxXRange.abs() + controller.minXRange.abs();
+    totalXRange = rangeData.maxXRange.abs() + rangeData.minXRange.abs();
     _xUnitsCount = totalXRange / xUnitValue;
 
-    totalYRange = controller.maxYRange.abs() + controller.minYRange.abs();
+    totalYRange = rangeData.maxYRange.abs() + rangeData.minYRange.abs();
     _yUnitsCount = totalYRange / yUnitValue;
 
     // We will get unitWidth & unitHeight by dividing the
@@ -224,9 +230,9 @@ class CartesianChartPainter extends CustomPainter {
 
     // Calculate the Offset for Axis Origin
     var negativeXRange =
-        (controller.minXRange.abs() / xUnitValue) * graphUnitWidth;
+        (rangeData.minXRange.abs() / xUnitValue) * graphUnitWidth;
     var negativeYRange =
-        (controller.minYRange.abs() / yUnitValue) * graphUnitHeight;
+        (rangeData.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     axisOrigin = Offset(xOffset, yOffset);

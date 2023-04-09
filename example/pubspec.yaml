@@ -15,6 +15,7 @@ dependencies:
   google_fonts: ^4.0.3
   universal_platform: ^1.0.0+1
   responsive_sizer: ^3.1.1
+  sidebarx: ^0.15.0
   salomon_bottom_bar: ^3.3.1
   flutter_displaymode:
 

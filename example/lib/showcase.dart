@@ -2,7 +2,6 @@ import 'package:example/screens/navigation/multi_platform_content.dart';
 import 'package:example/themes/dark_theme.dart';
 import 'package:example/themes/light_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ShowcaseApp extends StatefulWidget {
@@ -22,20 +21,20 @@ class _ShowcaseAppState extends State<ShowcaseApp> {
         return MaterialApp(
           title: 'Flutter Charts',
           debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.system,
+          themeMode: ThemeMode.light,
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: lightTheme,
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
-            ),
+            // textTheme: GoogleFonts.poppinsTextTheme(
+            //   Theme.of(context).textTheme,
+            // ),
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             colorScheme: darkTheme,
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
-            ),
+            // textTheme: GoogleFonts.poppinsTextTheme(
+            //   Theme.of(context).textTheme,
+            // ),
           ),
           home: const MultiPlatformContent(),
         );

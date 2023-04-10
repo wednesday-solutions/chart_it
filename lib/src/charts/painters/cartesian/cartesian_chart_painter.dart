@@ -49,7 +49,7 @@ class CartesianChartPainter {
     required this.configs,
     required this.rangeData,
   }) {
-    _bgPaint = Paint()..color = style.backgroundColor;
+    _bgPaint = Paint();
     _gridBorder = Paint()..style = PaintingStyle.stroke;
     _gridTick = Paint()..style = PaintingStyle.stroke;
     _axisPaint = Paint()
@@ -64,7 +64,8 @@ class CartesianChartPainter {
 
     // Paint the background
     // var bg = Paint()..color = style.backgroundColor;
-    canvas.drawPaint(_bgPaint);
+    canvas.clipRect(Offset.zero & size);
+    canvas.drawPaint(_bgPaint..color = style.backgroundColor);
 
     _drawGridLines(canvas, size);
 

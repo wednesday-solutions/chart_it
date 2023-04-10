@@ -36,6 +36,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       // For mobile devices, we can directly have a navigation drawer
       // drawer: Device.isMobile ? _getDrawer() : null,
@@ -48,23 +49,28 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
             // footerBuilder: (context, isExtended) {
             //
             // },
-            footerDivider: const Divider(color: Colors.blueGrey, height: 1),
+            footerDivider: Divider(
+              color: colorScheme.onPrimaryContainer,
+              height: 1,
+            ),
             extendIcon: Icons.arrow_forward_ios_rounded,
             collapseIcon: Icons.arrow_back_ios_rounded,
             items: _sidebarItems,
           ),
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, _) {
-              switch (_controller.selectedIndex) {
-                case 0:
-                  return const TestBarChart();
-                case 1:
-                  return const TestPieChart();
-                default:
-                  return const Text('No Page Found');
-              }
-            },
+          Expanded(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                switch (_controller.selectedIndex) {
+                  case 0:
+                    return const TestBarChart();
+                  case 1:
+                    return const TestPieChart();
+                  default:
+                    return const Text('No Page Found');
+                }
+              },
+            ),
           ),
         ],
       ),

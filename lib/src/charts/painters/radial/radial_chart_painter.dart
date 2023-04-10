@@ -31,7 +31,7 @@ class RadialChartPainter {
     required this.configs,
     required this.rangeData,
   }) {
-    _bgPaint = Paint()..color = style.backgroundColor;
+    _bgPaint = Paint();
   }
 
   void paint(Canvas canvas, Size size) {
@@ -39,7 +39,8 @@ class RadialChartPainter {
     _calculateGraphConstraints(size);
     // TODO: Construct a radial grid for polar or radar charts if required
     // Paint the background
-    canvas.drawPaint(_bgPaint);
+    canvas.clipRect(Offset.zero & size);
+    canvas.drawPaint(_bgPaint..color = style.backgroundColor);
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart

@@ -23,7 +23,7 @@ class _TestBarChartState extends State<TestBarChart> {
           child: BarChart(
             title: const Text('Demo Chart'),
             chartStyle: CartesianChartStyle(
-              backgroundColor: theme.canvasColor,
+              backgroundColor: theme.colorScheme.surface,
               alignment: CartesianChartAlignment.spaceEvenly,
               orientation: CartesianChartOrientation.vertical,
               axisStyle: CartesianAxisStyle(
@@ -86,7 +86,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(10, (index) {
+  List<BarGroup> barSeries = List.generate(5, (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,

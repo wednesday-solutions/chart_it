@@ -2,6 +2,7 @@ import 'package:example/screens/bar_charts.dart';
 import 'package:example/screens/pie_charts.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sidebarx/sidebarx.dart';
 
@@ -110,6 +111,18 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
       showToggleButton: !CurrentDevice.isMobile,
       theme: _collapsedBarTheme(context),
       extendedTheme: _drawerBarTheme(context),
+      headerBuilder: (context, isExtended) {
+        var logo = 'graphics/main_logo.svg';
+        var shortHand = 'graphics/main_logo_shorthand.svg';
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20.px, horizontal: 10.px),
+          child: SvgPicture.asset(
+            isExtended ? logo : shortHand,
+            height: 50.px,
+            color: colors.primary,
+          ),
+        );
+      },
       footerDivider: Divider(
         color: colors.onPrimaryContainer,
         height: 1,

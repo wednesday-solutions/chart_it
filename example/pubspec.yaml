@@ -12,6 +12,7 @@ dependencies:
   chart_it:
     path: ../
   cupertino_icons: ^1.0.5
+  flutter_svg: ^2.0.4
   google_fonts: ^4.0.3
   universal_platform: ^1.0.0+1
   responsive_sizer: ^3.1.1
@@ -26,6 +27,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - graphics/main_logo.svg
+    - graphics/main_logo_shorthand.svg
   fonts:
     - family: Zangezi
       fonts:

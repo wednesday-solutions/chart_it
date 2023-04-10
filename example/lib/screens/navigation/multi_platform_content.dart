@@ -22,13 +22,6 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
     selectedIndex: 0,
   );
 
-  // final Shader titleGradient = const LinearGradient(
-  //   colors: <Color>[
-  //     Color(0xFF3B1D71),
-  //     Color(0xFFE39F56),
-  //   ],
-  // ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
-
   late List<SidebarXItem> _sidebarItems;
 
   @override
@@ -61,7 +54,6 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
                   'Chart_It',
                   style: TextStyle(
                     color: colorScheme.primary,
-                    // foreground: Paint()..shader = titleGradient,
                     fontFamily: 'Zangezi',
                     fontSize: 24.sp,
                   ),

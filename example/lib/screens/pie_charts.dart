@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
-import 'package:example/themes/dark_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -16,6 +15,21 @@ class TestPieCharts extends StatefulWidget {
 }
 
 class _TestPieChartsState extends State<TestPieCharts> {
+  final LinearGradient titleGradient = const LinearGradient(
+    begin: Alignment.bottomLeft,
+    end: Alignment.topRight,
+    stops: [
+      0.1,
+      0.4,
+      0.95,
+    ],
+    colors: <Color>[
+      Color(0xFFE39F56),
+      Color(0xFFBDA2F4),
+      Color(0xFFE39F56),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -30,12 +44,17 @@ class _TestPieChartsState extends State<TestPieCharts> {
             alignment: Alignment.centerLeft,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Text(
-                'Pie & Donut Charts',
-                style: TextStyle(
-                  color: darkTheme.tertiary,
-                  fontSize: 26.sp,
-                  fontWeight: FontWeight.bold,
+              child: ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (Rect bounds) => titleGradient.createShader(
+                  Rect.fromLTWH(0.0, 0.0, bounds.width, bounds.height),
+                ),
+                child: Text(
+                  'Pie & Donut Charts',
+                  style: TextStyle(
+                    fontSize: 26.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

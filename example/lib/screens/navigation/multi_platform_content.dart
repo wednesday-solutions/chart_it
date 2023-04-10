@@ -107,6 +107,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
     var colors = Theme.of(context).colorScheme;
     return SidebarX(
       controller: _controller,
+      showToggleButton: !CurrentDevice.isMobile,
       theme: _collapsedBarTheme(context),
       extendedTheme: _drawerBarTheme(context),
       footerDivider: Divider(

@@ -20,6 +20,14 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
     extended: CurrentDevice.isMobile ? true : false,
     selectedIndex: 0,
   );
+
+  // final Shader titleGradient = const LinearGradient(
+  //   colors: <Color>[
+  //     Color(0xFF3B1D71),
+  //     Color(0xFFE39F56),
+  //   ],
+  // ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
+
   late List<SidebarXItem> _sidebarItems;
 
   @override
@@ -46,7 +54,18 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
       key: _key,
       appBar: CurrentDevice.isMobile
           ? AppBar(
-              title: const Text('Chart_It'),
+              title: Padding(
+                padding: EdgeInsets.only(top: 10.px),
+                child: Text(
+                  'Chart_It',
+                  style: TextStyle(
+                    color: colorScheme.primary,
+                    // foreground: Paint()..shader = titleGradient,
+                    fontFamily: 'Zangezi',
+                    fontSize: 24.sp,
+                  ),
+                ),
+              ),
               leading: IconButton(
                 icon: Icon(
                   Icons.menu_rounded,
@@ -103,7 +122,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
   SidebarXTheme _drawerBarTheme(BuildContext context) {
     var colors = Theme.of(context).colorScheme;
     return SidebarXTheme(
-      width: 200,
+      width: 250.px,
       margin: const EdgeInsets.only(right: 10),
       decoration: BoxDecoration(
         color: colors.secondaryContainer,
@@ -119,9 +138,14 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
         size: 20.px,
       ),
       // Selected Item Styling
-      selectedItemMargin:
-          EdgeInsets.symmetric(horizontal: 10.px, vertical: 10.px),
-      selectedTextStyle: TextStyle(color: colors.onTertiaryContainer),
+      selectedItemMargin: EdgeInsets.symmetric(
+        horizontal: 10.px,
+        vertical: 10.px,
+      ),
+      selectedTextStyle: TextStyle(
+        color: colors.onTertiaryContainer,
+        fontWeight: FontWeight.bold,
+      ),
       selectedItemTextPadding: EdgeInsets.symmetric(horizontal: 20.px),
       selectedIconTheme: IconThemeData(
         color: colors.onTertiaryContainer,
@@ -147,8 +171,10 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
         size: 20.px,
       ),
       // Selected Item Styling
-      selectedItemMargin:
-          EdgeInsets.symmetric(vertical: 5.px, horizontal: 5.px),
+      selectedItemMargin: EdgeInsets.symmetric(
+        vertical: 5.px,
+        horizontal: 5.px,
+      ),
       selectedTextStyle: TextStyle(color: colors.onTertiaryContainer),
       selectedItemDecoration: BoxDecoration(
         color: colors.tertiaryContainer,

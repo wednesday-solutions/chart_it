@@ -16,7 +16,6 @@ dependencies:
   universal_platform: ^1.0.0+1
   responsive_sizer: ^3.1.1
   sidebarx: ^0.15.0
-  salomon_bottom_bar: ^3.3.1
   flutter_displaymode:
 
 dev_dependencies:
@@ -27,3 +26,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Zangezi
+      fonts:
+        - asset: fonts/zangezi_regular.otf
+          weight: 700

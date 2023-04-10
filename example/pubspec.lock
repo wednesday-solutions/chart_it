@@ -274,14 +274,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
-  salomon_bottom_bar:
-    dependency: "direct main"
-    description:
-      name: salomon_bottom_bar
-      sha256: "13c875cb025ab96a8eb7c0c4087b9a0e04aff17a23b56e048c7f94b33e0d991e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.1"
   sidebarx:
     dependency: "direct main"
     description:

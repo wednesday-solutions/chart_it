@@ -39,12 +39,15 @@ class _TestPieChartState extends State<TestPieChart> {
           ),
         ),
         Center(
-          child: SizedBox(
-            width: 200,
-            height: 50,
-            child: ElevatedButton(
-              child: const Text('Randomize Data'),
-              onPressed: () => setState(() {}),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SizedBox(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                child: const Text('Randomize Data'),
+                onPressed: () => setState(() {}),
+              ),
             ),
           ),
         ),

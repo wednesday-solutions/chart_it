@@ -119,7 +119,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
           child: SvgPicture.asset(
             isExtended ? logo : shortHand,
             height: 50.px,
-            color: colors.primary,
+            colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn),
           ),
         );
       },

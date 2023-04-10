@@ -1,5 +1,5 @@
-import 'package:example/place_holder/test_bar_chart.dart';
-import 'package:example/place_holder/test_pie_chart.dart';
+import 'package:example/screens/bar_charts.dart';
+import 'package:example/screens/pie_charts.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -89,9 +89,9 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
               builder: (context, _) {
                 switch (_controller.selectedIndex) {
                   case 0:
-                    return const TestBarChart();
+                    return const TestBarCharts();
                   case 1:
-                    return const TestPieChart();
+                    return const TestPieCharts();
                   default:
                     return const Text('No Page Found');
                 }

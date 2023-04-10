@@ -6,14 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 var rng = Random();
 
-class TestPieChart extends StatefulWidget {
-  const TestPieChart({Key? key}) : super(key: key);
+class TestPieCharts extends StatefulWidget {
+  const TestPieCharts({Key? key}) : super(key: key);
 
   @override
-  State<TestPieChart> createState() => _TestPieChartState();
+  State<TestPieCharts> createState() => _TestPieChartsState();
 }
 
-class _TestPieChartState extends State<TestPieChart> {
+class _TestPieChartsState extends State<TestPieCharts> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);

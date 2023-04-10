@@ -17,70 +17,63 @@ class _TestBarChartsState extends State<TestBarCharts> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return Column(
-      children: [
-        Expanded(
-          child: BarChart(
-            title: const Text('Demo Chart'),
-            chartStyle: CartesianChartStyle(
-              backgroundColor: theme.colorScheme.surface,
-              alignment: CartesianChartAlignment.spaceEvenly,
-              orientation: CartesianChartOrientation.vertical,
-              axisStyle: CartesianAxisStyle(
-                axisWidth: 3.0,
-                showXAxisLabels: false,
-                axisColor: theme.colorScheme.onBackground,
-                tickColor: theme.colorScheme.onBackground,
-                tickLabelStyle: ChartTextStyle(
-                  textStyle: GoogleFonts.poppins(
-                    color: theme.colorScheme.inverseSurface,
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.large(
+        child: const Icon(Icons.refresh_rounded),
+        onPressed: () => setState(() {}),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: BarChart(
+              title: const Text('Demo Chart'),
+              chartStyle: CartesianChartStyle(
+                backgroundColor: theme.colorScheme.surface,
+                alignment: CartesianChartAlignment.spaceEvenly,
+                orientation: CartesianChartOrientation.vertical,
+                axisStyle: CartesianAxisStyle(
+                  axisWidth: 3.0,
+                  showXAxisLabels: false,
+                  axisColor: theme.colorScheme.onBackground,
+                  tickColor: theme.colorScheme.onBackground,
+                  tickLabelStyle: ChartTextStyle(
+                    textStyle: GoogleFonts.poppins(
+                      color: theme.colorScheme.inverseSurface,
+                    ),
                   ),
                 ),
-              ),
-              gridStyle: CartesianGridStyle(
-                show: true,
-                gridLineWidth: 1.0,
-                gridLineColor: theme.colorScheme.onBackground,
-                yUnitValue: 10.0,
-              ),
-            ),
-            data: BarSeries(
-              seriesStyle: const BarDataStyle(
-                barWidth: 10.0,
-                barColor: Color(0xFF6D71EE),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFF191FC8),
-                    Color(0xFF4247E8),
-                  ],
-                ),
-                strokeWidth: 3.0,
-                strokeColor: Color(0xFF6D71EE),
-                cornerRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5.0),
-                  topRight: Radius.circular(5.0),
+                gridStyle: CartesianGridStyle(
+                  show: true,
+                  gridLineWidth: 1.0,
+                  gridLineColor: theme.colorScheme.onBackground,
+                  yUnitValue: 10.0,
                 ),
               ),
-              barData: makeGroupData(context),
-            ),
-          ),
-        ),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SizedBox(
-              width: 200,
-              height: 50,
-              child: ElevatedButton(
-                child: const Text('Randomize Data'),
-                onPressed: () => setState(() {}),
+              data: BarSeries(
+                seriesStyle: const BarDataStyle(
+                  barWidth: 10.0,
+                  barColor: Color(0xFF6D71EE),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Color(0xFF191FC8),
+                      Color(0xFF4247E8),
+                    ],
+                  ),
+                  strokeWidth: 3.0,
+                  strokeColor: Color(0xFF6D71EE),
+                  cornerRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5.0),
+                    topRight: Radius.circular(5.0),
+                  ),
+                ),
+                barData: makeGroupData(context),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

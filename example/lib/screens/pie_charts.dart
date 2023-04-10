@@ -17,41 +17,34 @@ class _TestPieChartsState extends State<TestPieCharts> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return Column(
-      children: [
-        Expanded(
-          child: PieChart(
-            title: const Text('Demo Chart'),
-            chartStyle: RadialChartStyle(
-              backgroundColor: theme.canvasColor,
-            ),
-            data: PieSeries(
-              donutRadius: 50.0,
-              donutSpaceColor: Colors.transparent,
-              donutLabelStyle: ChartTextStyle(
-                textStyle: GoogleFonts.poppins(
-                  color: theme.colorScheme.inverseSurface,
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.large(
+        child: const Icon(Icons.refresh_rounded),
+        onPressed: () => setState(() {}),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PieChart(
+              title: const Text('Demo Chart'),
+              chartStyle: RadialChartStyle(
+                backgroundColor: theme.canvasColor,
+              ),
+              data: PieSeries(
+                donutRadius: 50.0,
+                donutSpaceColor: Colors.transparent,
+                donutLabelStyle: ChartTextStyle(
+                  textStyle: GoogleFonts.poppins(
+                    color: theme.colorScheme.inverseSurface,
+                  ),
                 ),
-              ),
-              donutLabel: () => 'Crypto',
-              slices: makeSliceData(context),
-            ),
-          ),
-        ),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SizedBox(
-              width: 200,
-              height: 50,
-              child: ElevatedButton(
-                child: const Text('Randomize Data'),
-                onPressed: () => setState(() {}),
+                donutLabel: () => 'Crypto',
+                slices: makeSliceData(context),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

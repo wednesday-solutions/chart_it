@@ -7,6 +7,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/animation.dart';
 
@@ -16,7 +17,7 @@ import 'package:flutter/animation.dart';
 /// The BarSeries is **mandatory** to be provided to the [BarChart] widget.
 ///
 /// See Also: [CartesianSeries]
-class BarSeries extends CartesianSeries with EquatableMixin {
+class BarSeries extends CartesianSeries<BarChartInteractionResult> with EquatableMixin {
   /// Sets uniform styling for All the Bars in this [BarSeries].
   ///
   /// {@macro bar_styling_order}
@@ -43,6 +44,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     this.labelStyle = const ChartTextStyle(),
     this.seriesStyle,
     required this.barData,
+    super.interactionConfig = const BarInteractionConfig(isEnabled: false),
   });
 
   /// Constructs a Factory Instance of [BarSeries] without any Data.
@@ -69,6 +71,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
         t,
       ),
       barData: BarGroup.lerpBarGroupList(current?.barData, target.barData, t),
+      interactionConfig: target.interactionConfig,
     );
   }
 }
@@ -143,4 +146,71 @@ class BarSeriesTween extends Tween<BarSeries> {
 
   @override
   BarSeries lerp(double t) => BarSeries.lerp(begin, end!, t);
+}
+
+abstract class ChartInteractionConfig<T extends ChartInteractionResult> {
+  final bool isEnabled;
+  final void Function(T interactionResult)? onRawInteraction;
+  final void Function(T interactionResult)? onTap;
+  final void Function(T interactionResult)? onDoubleTap;
+  final void Function(T interactionResult)? onDragStart;
+  final void Function(T interactionResult)? onDrag;
+  final void Function(T interactionResult)? onDragEnd;
+
+  const ChartInteractionConfig({
+    this.onRawInteraction,
+    required this.onTap,
+    required this.onDoubleTap,
+    required this.onDragStart,
+    required this.onDrag,
+    required this.onDragEnd,
+    required this.isEnabled,
+  });
+
+  void onInteraction(T interactionResult) {
+    switch (interactionResult.interactionType) {
+      case ChartInteractionType.tap:
+        onTap?.call(interactionResult);
+        break;
+      case ChartInteractionType.doubleTap:
+        onDoubleTap?.call(interactionResult);
+        break;
+      case ChartInteractionType.drag:
+        onDragStart?.call(interactionResult);
+        break;
+      case ChartInteractionType.dragStart:
+        onDrag?.call(interactionResult);
+        break;
+      case ChartInteractionType.dragEnd:
+        onDragEnd?.call(interactionResult);
+        break;
+    }
+  }
+
+  bool get shouldHitTest =>
+      isEnabled &&
+      (onRawInteraction != null ||
+          onTap != null ||
+          onDoubleTap != null ||
+          onDragStart != null ||
+          onDragEnd != null ||
+          onDrag != null);
+}
+
+class BarInteractionConfig extends ChartInteractionConfig<BarChartInteractionResult> {
+  const BarInteractionConfig({
+    required super.isEnabled,
+    super.onTap,
+    super.onDoubleTap,
+    super.onRawInteraction,
+    super.onDragStart,
+    super.onDrag,
+    super.onDragEnd,
+  });
+}
+
+abstract class ChartInteractionBehaviour {}
+
+class CrossHairOnDrag extends ChartInteractionBehaviour {
+
 }

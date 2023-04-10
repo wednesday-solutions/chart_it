@@ -3,6 +3,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/interactions/hit_test/interaction_dispatcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,6 +19,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   final Map<int, CartesianPainter> painters;
   final Map<CartesianSeries, CartesianConfig> configs;
   final CartesianDataMixin cartesianRangeData;
+  final InteractionDispatcher interactionDispatcher;
 
   const CartesianRenderer({
     Key? key,
@@ -42,6 +44,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       painters: painters,
       configs: configs,
       rangeData: cartesianRangeData,
+      interactionDispatcher: interactionDispatcher,
     );
   }
 
@@ -110,7 +113,8 @@ class CartesianRenderBox extends RenderBox {
   }
 
   late TapGestureRecognizer _tapGestureRecognizer;
-  final _doubleTapGestureRecognizer = DoubleTapGestureRecognizer();
+  late DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
+  late PanGestureRecognizer _panGestureRecognizer;
 
   CartesianRenderBox({
     double? width,
@@ -121,7 +125,9 @@ class CartesianRenderBox extends RenderBox {
     required List<CartesianSeries> targetData,
     required Map<int, CartesianPainter> painters,
     required Map<CartesianSeries, CartesianConfig> configs,
-  })  : _width = width,
+    required InteractionDispatcher interactionDispatcher,
+  })
+      : _width = width,
         _height = height,
         _painter = CartesianChartPainter(
           style: style,
@@ -130,20 +136,30 @@ class CartesianRenderBox extends RenderBox {
           targetData: targetData,
           painters: painters,
           configs: configs,
+          interactionDispatcher: interactionDispatcher,
         );
 
-  // _registerGestureRecognizers() {
-  //   _tapGestureRecognizer = TapGestureRecognizer()
-  //     ..onTapUp = (details) {
-  //       // _painter.controller.onTapUp(details.localPosition);
-  //     };
-  // }
+  _registerGestureRecognizers() {
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTapUp = (details) {
+        _painter.interactionDispatcher.onTapUp(details.localPosition);
+      };
+
+    _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
+      ..onDoubleTapDown = (details) {
+        _painter.interactionDispatcher.onDoubleTapDown(details.localPosition);
+      }
+      ..onDoubleTap = () {
+        _painter.interactionDispatcher.onDoubleTap();
+      };
+  }
 
   @override
   void performLayout() => size = computeDryLayout(constraints);
 
   @override
-  Size computeDryLayout(BoxConstraints constraints) => Size(
+  Size computeDryLayout(BoxConstraints constraints) =>
+      Size(
         _width ?? constraints.maxWidth,
         _height ?? constraints.maxHeight,
       );
@@ -166,5 +182,17 @@ class CartesianRenderBox extends RenderBox {
       ..translate(offset.dx, offset.dy);
     _painter.paint(canvas, size);
     canvas.restore();
+  }
+
+  @override
+  void attach(covariant PipelineOwner owner) {
+    super.attach(owner);
+    _registerGestureRecognizers();
+  }
+
+  @override
+  void detach() {
+    _tapGestureRecognizer.dispose();
+    super.detach();
   }
 }

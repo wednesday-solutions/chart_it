@@ -10,6 +10,7 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.d
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:chart_it/src/interactions/data/chart_interactions.dart';
 import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter {
@@ -233,5 +234,13 @@ class BarPainter implements CartesianPainter {
         ),
       );
     }
+  }
+
+  @override
+  BarChartInteractionResult? hitTest(ChartInteractionType type, Offset offset) {
+    // for (i) {
+    //   // contains - fastest
+    //   // left
+    // }
   }
 }

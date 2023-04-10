@@ -1,8 +1,9 @@
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/interactions/data/chart_interactions.dart';
 import 'package:flutter/material.dart';
 
-abstract class CartesianPainter {
+abstract class CartesianPainter<T extends ChartInteractionResult> {
   void paint(
     CartesianSeries lerp,
     CartesianSeries target,
@@ -10,4 +11,6 @@ abstract class CartesianPainter {
     CartesianChartPainter chart,
     CartesianConfig config,
   );
+
+  T? hitTest(ChartInteractionType type, Offset offset);
 }

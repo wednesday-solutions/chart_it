@@ -45,6 +45,10 @@ class _TestBarChartState extends State<TestBarChart> {
               ),
             ),
             data: BarSeries(
+              interactionConfig: BarInteractionConfig(isEnabled: true, onTap: (result) {
+                // Data goes down
+                // Events go up
+              }),
               seriesStyle: const BarDataStyle(
                 barWidth: 10.0,
                 barColor: Color(0xFF6D71EE),

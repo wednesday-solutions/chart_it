@@ -253,27 +253,50 @@ class CartesianController extends ChangeNotifier
     ChartInteractionType interactionType,
     Offset localPosition,
   ) {
-    // TODO: implement onInteraction
+    switch (interactionType) {
+      case ChartInteractionType.tap:
+        // Ask all painter if something was hit
+        painters.forEach((key, value) {
+          final result = (value as BarPainter).hitTest(interactionType, localPosition);
+          // if you get a result, then notify the corresponding series with hit test details
+          if (result != null) {
+            targetData[key].interactionConfig.onInteraction(result);
+          }
+        });
+        break;
+      case ChartInteractionType.doubleTap:
+        // TODO: Handle this case.
+        break;
+      case ChartInteractionType.dragStart:
+        // TODO: Handle this case.
+        break;
+      case ChartInteractionType.drag:
+        // TODO: Handle this case.
+        break;
+      case ChartInteractionType.dragEnd:
+        // TODO: Handle this case.
+        break;
+    }
   }
 }
 
-// abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
-//   SERIES series;
-//   CONFIG config;
-//   PAINTER painter;
-//
-//   ChartPaintingContext({
-//     required this.series,
-//     required this.config,
-//     required this.painter,
-//   });
-// }
-//
-// class BarChartPaintingContext
-//     extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
-//   BarChartPaintingContext({
-//     required super.series,
-//     required super.config,
-//     required super.painter,
-//   });
-// }
+abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
+  SERIES series;
+  CONFIG config;
+  PAINTER painter;
+
+  ChartPaintingContext({
+    required this.series,
+    required this.config,
+    required this.painter,
+  });
+}
+
+class BarChartPaintingContext
+    extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
+  BarChartPaintingContext({
+    required super.series,
+    required super.config,
+    required super.painter,
+  });
+}

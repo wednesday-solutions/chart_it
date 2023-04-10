@@ -6,6 +6,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/src/interactions/hit_test/interaction_dispatcher.dart';
 import 'package:flutter/material.dart';
 
 class CartesianChartPainter {
@@ -35,6 +36,7 @@ class CartesianChartPainter {
   Map<int, CartesianPainter> painters;
   Map<CartesianSeries, CartesianConfig> configs;
   CartesianDataMixin rangeData;
+  InteractionDispatcher interactionDispatcher;
 
   late Paint _bgPaint;
   late Paint _gridBorder;
@@ -48,6 +50,7 @@ class CartesianChartPainter {
     required this.painters,
     required this.configs,
     required this.rangeData,
+    required this.interactionDispatcher,
   }) {
     _bgPaint = Paint()..color = style.backgroundColor;
     _gridBorder = Paint()..style = PaintingStyle.stroke;

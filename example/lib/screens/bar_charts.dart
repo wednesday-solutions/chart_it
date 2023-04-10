@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
+import 'package:example/themes/dark_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 var rng = Random();
 
@@ -24,6 +26,20 @@ class _TestBarChartsState extends State<TestBarCharts> {
       ),
       body: Column(
         children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'Bar Charts',
+                style: TextStyle(
+                  color: darkTheme.tertiary,
+                  fontSize: 26.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
           Expanded(
             child: BarChart(
               title: const Text('Demo Chart'),

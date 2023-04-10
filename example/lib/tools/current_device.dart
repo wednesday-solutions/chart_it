@@ -1,7 +1,7 @@
 import 'package:responsive_sizer/responsive_sizer.dart' as rz;
 import 'package:universal_platform/universal_platform.dart';
 
-class Device {
+class CurrentDevice {
   static bool get isMobile =>
       _isMobileOS && rz.Device.screenType == rz.ScreenType.mobile;
 

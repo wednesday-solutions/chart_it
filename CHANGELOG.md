@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Bug Fixes for Chart Widgets Styling options.
+
 ## 0.0.3
 
 * Bug Fixes for BarChart widget.

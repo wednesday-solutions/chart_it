@@ -129,15 +129,15 @@ String getCryptoName(int index) {
 Color getColorForPiece(int index) {
   switch (index) {
     case 0:
-      return const Color(0xFF6D71EE);
+      return const Color(0xFFBDA2F4);
     case 1:
-      return const Color(0xFF9295F2);
+      return const Color(0xFF7136E7);
     case 2:
-      return const Color(0xFF0D116D);
+      return const Color(0xFF693C00);
     case 3:
-      return const Color(0xFF191FC8);
+      return const Color(0xFF9295F2);
     case 4:
-      return Colors.deepPurple;
+      return const Color(0xFFFFB86E);
     default:
       return Colors.transparent;
   }

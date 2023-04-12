@@ -112,10 +112,13 @@ class BarPainter implements CartesianPainter {
     double dxOffset,
     MultiBar group,
   ) {
-    var groupWidth = _unitWidth / group.yValues.length;
+    // var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
-    var x = dxOffset;
-    for (var i = 0; i < group.yValues.length; i++) {
+    var groupCount = group.yValues.length; // No. of groups for this multibar
+    // Start Offset
+    var x = dxOffset + (_unitWidth * 0.5) - (_barWidth * groupCount * 0.5);
+
+    for (var i = 0; i < groupCount; i++) {
       final barData = group.yValues[i];
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
@@ -128,7 +131,8 @@ class BarPainter implements CartesianPainter {
         canvas,
         chart,
         style,
-        x, // dx pos to start the bar in this group
+        x,
+        // dx pos to start the bar in this group
         _barWidth,
         group.groupSpacing,
         barData.yValue,
@@ -136,7 +140,7 @@ class BarPainter implements CartesianPainter {
       // Finally paint the y-labels for this bar
       _drawBarValues(canvas, chart, barData);
 
-      x += groupWidth;
+      x += _barWidth;
     }
   }
 

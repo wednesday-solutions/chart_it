@@ -7,7 +7,7 @@ Chart_It is a fully written in dart, strongly customizable and seamlessly animat
 Add the `chart_it` package to your project's `pubspec.yaml` file:
 ```yaml
 dependencies:
-  chart_it: ^0.0.3
+  chart_it: ^0.0.4
 ```
 Alternatively, you can also run the following command in your Flutter Project:
 ```shell
@@ -56,7 +56,7 @@ Pick a Chart Widget for the type of Chart you want to draw and provide the neces
      ),
    ),
    ```
-   For Advanced usecases, Check out our Docs [here]().
+   For Advanced usecases, Check out our Docs [here](https://flutter.wednesday.is/charts/guides/bar-chart).
 2. **Donut Charts**
    ```dart
    ...
@@ -93,7 +93,7 @@ Pick a Chart Widget for the type of Chart you want to draw and provide the neces
      ),
    ),
    ```
-   For Advanced usecases, Check out our Docs [here]().
+   For Advanced usecases, Check out our Docs [here](https://flutter.wednesday.is/charts/guides/pie-and-donut-chart).
 
 The **default** animation behaviour for Chart Widgets is it:
 - animates when the widget loads for the first time.

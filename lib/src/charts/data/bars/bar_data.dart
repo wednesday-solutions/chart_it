@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:chart_it/src/animations/lerps.dart';
+import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
@@ -39,7 +40,7 @@ class BarData extends Equatable {
     this.startYFrom,
     required this.yValue,
     this.label,
-    this.labelStyle = const ChartTextStyle(),
+    this.labelStyle = defaultChartTextStyle,
     this.barStyle,
   });
 

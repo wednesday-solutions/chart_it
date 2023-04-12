@@ -17,7 +17,7 @@ class RadialChartStyle extends Equatable {
   final RadialAxis? axis;
 
   const RadialChartStyle({
-    this.backgroundColor = const Color(0xFFFFECD9),
+    this.backgroundColor = const Color(0xFFF7FFF7),
     this.initAngle = 0.0,
     this.axis,
   }) : assert(

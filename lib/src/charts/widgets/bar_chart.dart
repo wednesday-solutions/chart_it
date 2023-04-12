@@ -81,7 +81,7 @@ class _BarChartState extends State<BarChart>
     );
 
     var gridStyle =
-        (widget.chartStyle?.gridStyle ?? defaultCartesianChartStyle.gridStyle)!;
+        (widget.chartStyle?.gridStyle ?? defaultBarChartStyle.gridStyle)!;
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
       targetData: [widget.data],
@@ -120,7 +120,7 @@ class _BarChartState extends State<BarChart>
 
   @override
   Widget build(BuildContext context) {
-    var validStyle = widget.chartStyle ?? defaultCartesianChartStyle;
+    var validStyle = widget.chartStyle ?? defaultBarChartStyle;
     var style = validStyle.copyWith(
       gridStyle: validStyle.gridStyle!.copyWith(
         // Unless the user is trying to play around with the xUnitValue,

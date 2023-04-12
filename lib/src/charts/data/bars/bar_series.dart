@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
@@ -40,7 +41,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   ///
   /// See Also: [CartesianSeries]
   BarSeries({
-    this.labelStyle = const ChartTextStyle(),
+    this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.barData,
   });

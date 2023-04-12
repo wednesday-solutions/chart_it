@@ -99,6 +99,7 @@ class BarPainter implements CartesianPainter {
       dxOffset + (_unitWidth * 0.5) - (_barWidth * 0.5),
       // dx pos to start the bar from
       _barWidth,
+      group.barSpacing,
       group.yValue.yValue,
     );
     // Finally paint the y-labels for this bar
@@ -129,6 +130,7 @@ class BarPainter implements CartesianPainter {
         style,
         x, // dx pos to start the bar in this group
         _barWidth,
+        group.groupSpacing,
         barData.yValue,
       );
       // Finally paint the y-labels for this bar
@@ -144,9 +146,10 @@ class BarPainter implements CartesianPainter {
     BarDataStyle? style,
     double dxCenter,
     double barWidth,
+    double barSpacing,
     num yValue,
   ) {
-    var padding = 5.0;
+    var padding = (barSpacing * 0.5);
     // The first thing to do is to get the data point into the range!
     // This is because we don't want our bar to exceed the min/max values
     // we then multiply it by the vRatio to get the vertical pixel value!
@@ -179,7 +182,7 @@ class BarPainter implements CartesianPainter {
 
     canvas.drawRRect(bar, barPaint); // draw fill
 
-    final strokeWidth = style?.strokeWidth ?? defaultBarSeriesStyle.strokeWidth;
+    final strokeWidth = style?.strokeWidth;
     if (strokeWidth != null && strokeWidth > 0.0) {
       var barStroke = _barStroke
         ..strokeWidth = strokeWidth

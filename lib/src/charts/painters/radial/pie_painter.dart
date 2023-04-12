@@ -57,7 +57,9 @@ class PiePainter implements RadialPainter {
 
       if (slice.value > 0) {
         // Styling for Slices
-        var sliceFill = slice.style?.color ?? defaultStyle.color!;
+        var sliceFill = slice.style?.color ??
+            _data.seriesStyle?.color ??
+            defaultStyle.color!;
 
         // Draw slice with color fill
         var arcPaint = _arcPaint
@@ -83,10 +85,13 @@ class PiePainter implements RadialPainter {
         );
 
         if (slice.label != null) {
+          var labelPos = slice.style?.labelPosition ??
+              _data.seriesStyle?.labelPosition ??
+              (sliceRadius + 30);
           _drawSliceLabels(
             canvas,
             center: chart.graphOrigin,
-            length: sliceRadius + 25,
+            length: labelPos,
             sweepAngle: fillStartAngle + (fillPointDegrees * 0.5),
             text: slice.label!(slice.value / total, slice.value),
             style: slice.labelStyle ?? _data.labelStyle!,
@@ -106,10 +111,12 @@ class PiePainter implements RadialPainter {
       strokePointDegrees = (slice.value / total) * 360;
 
       if (slice.value > 0) {
-        var sliceStrokeWidth =
-            slice.style?.strokeWidth ?? defaultStyle.strokeWidth!;
-        var sliceStrokeColor =
-            slice.style?.strokeColor ?? defaultStyle.strokeColor!;
+        var sliceStrokeWidth = slice.style?.strokeWidth ??
+            _data.seriesStyle?.strokeWidth ??
+            defaultStyle.strokeWidth!;
+        var sliceStrokeColor = slice.style?.strokeColor ??
+            _data.seriesStyle?.strokeColor ??
+            defaultStyle.strokeColor!;
 
         // Paint the stroke if visible width provided
         if (sliceStrokeWidth > 0.0) {
@@ -222,7 +229,7 @@ class PiePainter implements RadialPainter {
       vm.radians(sweepDegrees),
       false,
     );
-    // slicePath.close();
+    slicePath.close();
 
     if (isDonut && donutRadius > 0.0) {
       // Step 2. Chop the Donut Slice from Pie Piece
@@ -275,7 +282,7 @@ class PiePainter implements RadialPainter {
     required Offset offset,
   }) {
     final textPainter = ChartTextPainter.fromChartTextStyle(
-      chartTextStyle: style ?? const ChartTextStyle(),
+      chartTextStyle: style ?? defaultChartTextStyle,
       text: text,
     );
     textPainter.paint(canvas: canvas, offset: offset);

@@ -1,3 +1,4 @@
+import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data.dart';
@@ -53,8 +54,8 @@ class PieSeries extends RadialSeries with EquatableMixin {
     this.donutRadius = 0.0,
     this.donutSpaceColor = Colors.transparent,
     this.donutLabel,
-    this.donutLabelStyle = const ChartTextStyle(),
-    this.labelStyle = const ChartTextStyle(),
+    this.donutLabelStyle = defaultChartTextStyle,
+    this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.slices,
   })  : assert(donutRadius >= 0.0, 'Donut Radius cannot be Negative!'),

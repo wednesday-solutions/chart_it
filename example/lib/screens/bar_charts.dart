@@ -87,17 +87,9 @@ class _TestBarChartsState extends State<TestBarCharts> {
               data: BarSeries(
                 seriesStyle: const BarDataStyle(
                   barWidth: 10.0,
-                  barColor: Color(0xFF6D71EE),
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Color(0xFF191FC8),
-                      Color(0xFF4247E8),
-                    ],
-                  ),
+                  barColor: Color(0xFFBDA2F4),
                   strokeWidth: 3.0,
-                  strokeColor: Color(0xFF6D71EE),
+                  strokeColor: Color(0xFF7136E7),
                   cornerRadius: BorderRadius.only(
                     topLeft: Radius.circular(5.0),
                     topRight: Radius.circular(5.0),
@@ -132,6 +124,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
     } else {
       return MultiBar(
         xValue: index + 1,
+        groupSpacing: 10.0,
         label: (value) => 'Group ${index + 1}',
         labelStyle: ChartTextStyle(
           textStyle: GoogleFonts.poppins(
@@ -145,12 +138,12 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  Color(0xFF6D71EE),
-                  Color(0xFF9295F2),
+                  Color(0xFFBDA2F4),
+                  Color(0xFF7136E7),
                 ],
               ),
               strokeWidth: 3.0,
-              strokeColor: Color(0xFF0D116D),
+              strokeColor: Color(0xFFBDA2F4),
               cornerRadius: BorderRadius.only(
                 topLeft: Radius.circular(5.0),
                 topRight: Radius.circular(5.0),
@@ -164,12 +157,12 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  Color(0xFF4247E8),
-                  Color(0xFF6D71EE),
+                  Color(0xFFE39F56),
+                  Color(0xFFBDA2F4),
                 ],
               ),
               strokeWidth: 3.0,
-              strokeColor: Color(0xFF191FC8),
+              strokeColor: Color(0xFFE39F56),
               cornerRadius: BorderRadius.only(
                 topLeft: Radius.circular(5.0),
                 topRight: Radius.circular(5.0),

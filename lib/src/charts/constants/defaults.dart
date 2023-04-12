@@ -26,14 +26,14 @@ const defaultRadialChartStyle = RadialChartStyle();
 
 const defaultBarSeriesStyle = BarDataStyle(
   barWidth: 1.0,
-  barColor: Color(0x80CBB6F7),
+  barColor: Color(0xFFCBB6F7),
   strokeWidth: 2.0,
   strokeColor: Color(0xFF6A4FA3),
 );
 
 const defaultPieSeriesStyle = SliceDataStyle(
   radius: 200.0,
-  color: Color(0x80CBB6F7),
+  color: Color(0xFFCBB6F7),
   strokeWidth: 2.0,
   strokeColor: Color(0xFF6A4FA3),
 );

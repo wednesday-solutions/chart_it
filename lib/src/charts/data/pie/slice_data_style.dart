@@ -19,6 +19,10 @@ class SliceDataStyle extends Equatable {
   /// will prevent Slice to Clip Out of Bounds
   final double radius;
 
+  /// Defines the Position of the Label for Slice
+  /// Along the length of the radius.
+  final double? labelPosition;
+
   /// The color of the slice
   final Color? color;
 
@@ -35,6 +39,7 @@ class SliceDataStyle extends Equatable {
   /// {@macro slice_styling_order}
   const SliceDataStyle({
     required this.radius,
+    this.labelPosition,
     this.color = Colors.amber,
     this.gradient,
     this.strokeColor = Colors.deepOrange,
@@ -56,8 +61,11 @@ class SliceDataStyle extends Equatable {
       var shouldLerpFromDonut =
           donutRadius > 0.0 && donutRadius > (current?.radius ?? 0);
       var beginRadius = shouldLerpFromDonut ? donutRadius : current?.radius;
+      var beginLabel =
+          shouldLerpFromDonut ? donutRadius : current?.labelPosition;
       return SliceDataStyle(
         radius: lerpDouble(beginRadius, target.radius, t) ?? 0,
+        labelPosition: lerpDouble(beginLabel, target.labelPosition, t),
         color: Color.lerp(current?.color, target.color, t),
         gradient: Gradient.lerp(current?.gradient, target.gradient, t),
         strokeWidth: lerpDouble(current?.strokeWidth, target.strokeWidth, t),

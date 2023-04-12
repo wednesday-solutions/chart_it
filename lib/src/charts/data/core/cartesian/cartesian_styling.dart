@@ -24,7 +24,7 @@ class CartesianChartStyle extends Equatable {
   final CartesianAxisStyle? axisStyle;
 
   const CartesianChartStyle({
-    this.backgroundColor = const Color(0xFFFFECD9),
+    this.backgroundColor = const Color(0xFFF7FFF7),
     this.alignment = CartesianChartAlignment.spaceEvenly,
     this.orientation = CartesianChartOrientation.vertical,
     this.gridStyle,

@@ -14,24 +14,30 @@ const defaultCartesianChartStyle = CartesianChartStyle(
   axisStyle: CartesianAxisStyle(),
 );
 
+const defaultBarChartStyle = CartesianChartStyle(
+  gridStyle: CartesianGridStyle(
+    show: true,
+    yUnitValue: 10.0,
+  ),
+  axisStyle: CartesianAxisStyle(),
+);
+
 const defaultRadialChartStyle = RadialChartStyle();
 
 const defaultBarSeriesStyle = BarDataStyle(
   barWidth: 1.0,
-  barColor: Colors.amber,
-  strokeWidth: 0.0,
-  strokeColor: Colors.pink,
-  cornerRadius: BorderRadius.only(
-    topLeft: Radius.circular(5.0),
-    topRight: Radius.circular(5.0),
-  ),
+  barColor: Color(0x80CBB6F7),
+  strokeWidth: 2.0,
+  strokeColor: Color(0xFF6A4FA3),
 );
 
 const defaultPieSeriesStyle = SliceDataStyle(
   radius: 200.0,
-  color: Color(0xFF4247E8),
-  strokeColor: Color(0xFF9295F2),
-  strokeWidth: 0.0,
+  color: Color(0x80CBB6F7),
+  strokeWidth: 2.0,
+  strokeColor: Color(0xFF6A4FA3),
 );
 
-const defaultChartTextStyle = ChartTextStyle();
+const defaultChartTextStyle = ChartTextStyle(
+  textStyle: TextStyle(color: Colors.black45),
+);

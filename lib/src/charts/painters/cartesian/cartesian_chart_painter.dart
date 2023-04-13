@@ -1,9 +1,7 @@
 import 'dart:math';
 
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:flutter/material.dart';

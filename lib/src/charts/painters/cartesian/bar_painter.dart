@@ -1,11 +1,6 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/bars/bar_data.dart';
-import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
-import 'package:chart_it/src/charts/data/bars/bar_group.dart';
-import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
-import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
+import 'package:chart_it/src/charts/data/bars.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';

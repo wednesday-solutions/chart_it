@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
-import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/pie.dart';
 import 'package:chart_it/src/charts/renderers/radial_renderer.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,6 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/data/bars.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';

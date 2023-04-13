@@ -1,6 +1,4 @@
-import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:flutter/material.dart';
 

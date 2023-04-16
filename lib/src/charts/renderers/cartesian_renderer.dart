@@ -1,6 +1,7 @@
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,6 +17,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   final Map<int, CartesianPainter> painters;
   final Map<CartesianSeries, CartesianConfig> configs;
   final CartesianDataMixin cartesianRangeData;
+  final InteractionDispatcher interactionDispatcher;
 
   const CartesianRenderer({
     Key? key,
@@ -27,6 +29,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
     required this.painters,
     required this.configs,
     required this.cartesianRangeData,
+    required this.interactionDispatcher,
   }) : super(key: key);
 
   @override
@@ -40,6 +43,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       painters: painters,
       configs: configs,
       rangeData: cartesianRangeData,
+      interactionDispatcher: interactionDispatcher,
     );
   }
 
@@ -75,6 +79,7 @@ class CartesianRenderBox extends RenderBox {
   }
 
   final CartesianChartPainter _painter;
+  final InteractionDispatcher interactionDispatcher;
 
   // Mandatory Fields
   set style(CartesianChartStyle value) {
@@ -107,8 +112,9 @@ class CartesianRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  late TapGestureRecognizer _tapGestureRecognizer;
-  final _doubleTapGestureRecognizer = DoubleTapGestureRecognizer();
+  late final TapGestureRecognizer _tapGestureRecognizer;
+  late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
+  late final PanGestureRecognizer _panGestureRecognizer;
 
   CartesianRenderBox({
     double? width,
@@ -119,6 +125,7 @@ class CartesianRenderBox extends RenderBox {
     required List<CartesianSeries> targetData,
     required Map<int, CartesianPainter> painters,
     required Map<CartesianSeries, CartesianConfig> configs,
+    required this.interactionDispatcher,
   })  : _width = width,
         _height = height,
         _painter = CartesianChartPainter(
@@ -130,12 +137,22 @@ class CartesianRenderBox extends RenderBox {
           configs: configs,
         );
 
-  // _registerGestureRecognizers() {
-  //   _tapGestureRecognizer = TapGestureRecognizer()
-  //     ..onTapUp = (details) {
-  //       // _painter.controller.onTapUp(details.localPosition);
-  //     };
-  // }
+  _registerGestureRecognizers() {
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTapUp = interactionDispatcher.onTapUp;
+
+    _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
+      ..onDoubleTap = interactionDispatcher.onDoubleTap
+      ..onDoubleTapDown = interactionDispatcher.onDoubleTapDown
+      ..onDoubleTapCancel = interactionDispatcher.onDoubleTapCancel;
+
+    _panGestureRecognizer = PanGestureRecognizer()
+      ..onStart = interactionDispatcher.onPanStart
+      ..onUpdate = interactionDispatcher.onPanUpdate
+      ..onCancel = interactionDispatcher.onPanCancel
+      ..onEnd = interactionDispatcher.onPanEnd;
+  }
+
 
   @override
   void performLayout() => size = computeDryLayout(constraints);
@@ -150,11 +167,30 @@ class CartesianRenderBox extends RenderBox {
   bool hitTestSelf(Offset position) => true;
 
   @override
+  void attach(PipelineOwner owner) {
+    super.attach(owner);
+    _registerGestureRecognizers();
+  }
+
+  @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
       _tapGestureRecognizer.addPointer(event);
       _doubleTapGestureRecognizer.addPointer(event);
+      _panGestureRecognizer.addPointer(event);
+    } else if (event is PointerHoverEvent) {
+      // TODO: Handle onHover() for Web & Desktops
+    } else if (event is PointerScrollEvent || event is PointerScaleEvent) {
+      // TODO: Handle onScaleUp/onScaleDown events
     }
+  }
+
+  @override
+  void detach() {
+    super.detach();
+    _tapGestureRecognizer.dispose();
+    _doubleTapGestureRecognizer.dispose();
+    _panGestureRecognizer.dispose();
   }
 
   @override

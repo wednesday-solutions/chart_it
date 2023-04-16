@@ -1,4 +1,4 @@
-import 'package:chart_it/src/interactions/data/chart_interactions.dart';
+import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 import 'package:flutter/material.dart';
 
 mixin InteractionDispatcher {
@@ -7,47 +7,47 @@ mixin InteractionDispatcher {
 
   @protected
   void onInteraction(
-    ChartInteractionType interactionType,
+    TouchInteractionType interactionType,
     Offset localPosition,
   );
 
-  void onTapUp(Offset localPosition) {
-    onInteraction(ChartInteractionType.tap, localPosition);
+  void onTapUp(TapUpDetails details) {
+    onInteraction(TouchInteractionType.tap, details.localPosition);
   }
 
-  void onDoubleTapDown(Offset localPosition) {
-    _latestDoubleTapOffset = localPosition;
+  void onDoubleTap() {
+    final latestDoubleTapOffset = _latestDoubleTapOffset;
+    if (latestDoubleTapOffset != null) {
+      onInteraction(TouchInteractionType.doubleTap, latestDoubleTapOffset);
+    }
+  }
+
+  void onDoubleTapDown(TapDownDetails details) {
+    _latestDoubleTapOffset = details.localPosition;
   }
 
   void onDoubleTapCancel() {
     _latestDoubleTapOffset = null;
   }
 
-  void onDoubleTap() {
-    final latestDoubleTapOffset = _latestDoubleTapOffset;
-    if (latestDoubleTapOffset != null) {
-      onInteraction(ChartInteractionType.doubleTap, latestDoubleTapOffset);
-    }
+  void onPanStart(DragStartDetails details) {
+    _latestPanOffset = details.localPosition;
+    onInteraction(TouchInteractionType.dragUpdate, details.localPosition);
   }
 
-  void onPanStart(Offset localPosition) {
-    _latestPanOffset = localPosition;
-    onInteraction(ChartInteractionType.drag, localPosition);
-  }
-
-  void onPanUpdate(Offset localPosition) {
-    _latestPanOffset = localPosition;
-    onInteraction(ChartInteractionType.drag, localPosition);
+  void onPanUpdate(DragUpdateDetails details) {
+    _latestPanOffset = details.localPosition;
+    onInteraction(TouchInteractionType.dragUpdate, details.localPosition);
   }
 
   void onPanCancel() {
     _latestPanOffset = null;
   }
 
-  void onPanEnd() {
+  void onPanEnd(DragEndDetails details) {
     final latestPanOffset = _latestPanOffset;
     if (latestPanOffset != null) {
-      onInteraction(ChartInteractionType.dragEnd, latestPanOffset);
+      onInteraction(TouchInteractionType.dragEnd, latestPanOffset);
     }
     _latestPanOffset = null;
   }

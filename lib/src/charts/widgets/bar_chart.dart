@@ -139,6 +139,7 @@ class _BarChartState extends State<BarChart>
           painters: _controller.painters,
           configs: _controller.cachedConfigs,
           cartesianRangeData: _controller,
+          interactionDispatcher: _controller,
         );
       },
     );

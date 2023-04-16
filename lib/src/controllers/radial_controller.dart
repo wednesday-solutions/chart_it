@@ -174,7 +174,7 @@ class RadialController extends ChangeNotifier
 
   @override
   void onInteraction(
-    ChartInteractionType interactionType,
+    TouchInteractionType interactionType,
     Offset localPosition,
   ) {
     // TODO: implement onInteraction

@@ -250,10 +250,28 @@ class CartesianController extends ChangeNotifier
 
   @override
   void onInteraction(
-    ChartInteractionType interactionType,
+    TouchInteractionType interactionType,
     Offset localPosition,
   ) {
     // TODO: implement onInteraction
+    switch(interactionType) {
+      case TouchInteractionType.tap:
+        // Fire all painters to perform Hit Test
+
+        break;
+      case TouchInteractionType.doubleTap:
+        // TODO: Handle this case.
+        break;
+      case TouchInteractionType.dragStart:
+        // TODO: Handle this case.
+        break;
+      case TouchInteractionType.dragUpdate:
+        // TODO: Handle this case.
+        break;
+      case TouchInteractionType.dragEnd:
+        // TODO: Handle this case.
+        break;
+    }
   }
 }
 

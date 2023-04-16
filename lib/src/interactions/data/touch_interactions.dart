@@ -1,19 +1,19 @@
 import 'package:flutter/gestures.dart';
 
-abstract class ChartInteractionResult {
+abstract class TouchInteractionResult {
   final Offset? localPosition;
-  final ChartInteractionType interactionType;
+  final TouchInteractionType interactionType;
 
-  ChartInteractionResult({
+  TouchInteractionResult({
     required this.localPosition,
     required this.interactionType,
   });
 }
 
-enum ChartInteractionType {
+enum TouchInteractionType {
   tap,
   doubleTap,
   dragStart,
-  drag,
-  dragEnd;
+  dragUpdate,
+  dragEnd,
 }

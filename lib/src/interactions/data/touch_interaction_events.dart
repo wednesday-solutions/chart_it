@@ -1,6 +1,6 @@
-import 'package:chart_it/src/interactions/data/chart_interactions.dart';
+import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 
-abstract class ChartInteractionConfig<T extends ChartInteractionResult> {
+abstract class TouchInteractionEvents<T extends TouchInteractionResult> {
   final bool isEnabled;
   final void Function(T interactionResult)? onRawInteraction;
   final void Function(T interactionResult)? onTap;
@@ -9,31 +9,31 @@ abstract class ChartInteractionConfig<T extends ChartInteractionResult> {
   final void Function(T interactionResult)? onDrag;
   final void Function(T interactionResult)? onDragEnd;
 
-  const ChartInteractionConfig({
-    this.onRawInteraction,
-    required this.onTap,
-    required this.onDoubleTap,
-    required this.onDragStart,
-    required this.onDrag,
-    required this.onDragEnd,
+  const TouchInteractionEvents({
     required this.isEnabled,
+    this.onTap,
+    this.onDoubleTap,
+    this.onDragStart,
+    this.onDrag,
+    this.onDragEnd,
+    this.onRawInteraction,
   });
 
   void onInteraction(T interactionResult) {
     switch (interactionResult.interactionType) {
-      case ChartInteractionType.tap:
+      case TouchInteractionType.tap:
         onTap?.call(interactionResult);
         break;
-      case ChartInteractionType.doubleTap:
+      case TouchInteractionType.doubleTap:
         onDoubleTap?.call(interactionResult);
         break;
-      case ChartInteractionType.drag:
+      case TouchInteractionType.dragUpdate:
         onDragStart?.call(interactionResult);
         break;
-      case ChartInteractionType.dragStart:
+      case TouchInteractionType.dragStart:
         onDrag?.call(interactionResult);
         break;
-      case ChartInteractionType.dragEnd:
+      case TouchInteractionType.dragEnd:
         onDragEnd?.call(interactionResult);
         break;
     }

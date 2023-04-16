@@ -1,6 +1,7 @@
 import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
@@ -21,7 +22,12 @@ enum CartesianChartOrientation { vertical, horizontal }
 
 /// Base Series for any type of Data which can be plotted
 /// on a Cartesian Chart.
-abstract class CartesianSeries {
+abstract class CartesianSeries<R extends TouchInteractionResult> {
+
+  final TouchInteractionEvents<R> interactionEvents;
+
+  CartesianSeries({required this.interactionEvents});
+
   /// Checks the Subclass Type and returns the casted instance
   /// to the matched callback. All callbacks must be provided.
   T when<T>({

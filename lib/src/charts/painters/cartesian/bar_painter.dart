@@ -5,9 +5,10 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.d
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
-class BarPainter implements CartesianPainter {
+class BarPainter implements CartesianPainter<BarInteractionResult> {
   late BarSeriesConfig _config;
   late BarSeries _data;
 
@@ -24,6 +25,14 @@ class BarPainter implements CartesianPainter {
   }) {
     _barPaint = Paint();
     _barStroke = Paint()..style = PaintingStyle.stroke;
+  }
+
+  @override
+  BarInteractionResult? hitTest(
+    TouchInteractionType type,
+    Offset localPosition,
+  ) {
+    throw UnimplementedError();
   }
 
   @override

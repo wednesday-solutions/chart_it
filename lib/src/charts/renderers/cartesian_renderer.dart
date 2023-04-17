@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +12,12 @@ class CartesianRenderer extends LeafRenderObjectWidget {
 
   // Mandatory Fields
   final CartesianChartStyle style;
-  final List<CartesianSeries> currentData;
-  final List<CartesianSeries> targetData;
-  final Map<int, CartesianPainter> painters;
-  final Map<CartesianSeries, CartesianConfig> configs;
-  final CartesianDataMixin cartesianRangeData;
+  final List<PaintingState> states;
+  // final List<CartesianSeries> currentData;
+  // final List<CartesianSeries> targetData;
+  // final Map<int, CartesianPainter> painters;
+  // final Map<CartesianSeries, CartesianConfig> configs;
+  final CartesianRangeResult cartesianRangeData;
   final InteractionDispatcher interactionDispatcher;
 
   const CartesianRenderer({
@@ -24,10 +25,11 @@ class CartesianRenderer extends LeafRenderObjectWidget {
     this.width,
     this.height,
     required this.style,
-    required this.currentData,
-    required this.targetData,
-    required this.painters,
-    required this.configs,
+    // required this.currentData,
+    // required this.targetData,
+    // required this.painters,
+    // required this.configs,
+    required this.states,
     required this.cartesianRangeData,
     required this.interactionDispatcher,
   }) : super(key: key);
@@ -38,10 +40,11 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       width: width,
       height: height,
       style: style,
-      currentData: currentData,
-      targetData: targetData,
-      painters: painters,
-      configs: configs,
+      // currentData: currentData,
+      // targetData: targetData,
+      // painters: painters,
+      // configs: configs,
+      states: states,
       rangeData: cartesianRangeData,
       interactionDispatcher: interactionDispatcher,
     );
@@ -54,10 +57,12 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..width = width
       ..height = height
       ..style = style
-      ..currentData = currentData
-      ..targetData = targetData
-      ..painters = painters
-      ..configs = configs;
+      ..states = states
+      ..range = cartesianRangeData;
+      // ..currentData = currentData
+      // ..targetData = targetData
+      // ..painters = painters
+      // ..configs = configs;
   }
 }
 
@@ -88,29 +93,41 @@ class CartesianRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  set currentData(List<CartesianSeries> value) {
-    if (_painter.currentData == value) return;
-    _painter.currentData = value;
+  set states(List<PaintingState> value) {
+    if (_painter.states == value) return;
+    _painter.states = value;
     markNeedsPaint();
   }
 
-  set targetData(List<CartesianSeries> value) {
-    if (_painter.targetData == value) return;
-    _painter.targetData = value;
+  set range(CartesianRangeResult value) {
+    if (_painter.rangeData == value) return;
+    _painter.rangeData = value;
     markNeedsPaint();
   }
 
-  set painters(Map<int, CartesianPainter> value) {
-    if (_painter.painters != value) return;
-    _painter.painters = value;
-    markNeedsPaint();
-  }
-
-  set configs(Map<CartesianSeries, CartesianConfig> value) {
-    if (_painter.configs != value) return;
-    _painter.configs = value;
-    markNeedsPaint();
-  }
+  // set currentData(List<CartesianSeries> value) {
+  //   if (_painter.currentData == value) return;
+  //   _painter.currentData = value;
+  //   markNeedsPaint();
+  // }
+  //
+  // set targetData(List<CartesianSeries> value) {
+  //   if (_painter.targetData == value) return;
+  //   _painter.targetData = value;
+  //   markNeedsPaint();
+  // }
+  //
+  // set painters(Map<int, CartesianPainter> value) {
+  //   if (_painter.painters != value) return;
+  //   _painter.painters = value;
+  //   markNeedsPaint();
+  // }
+  //
+  // set configs(Map<CartesianSeries, CartesianConfig> value) {
+  //   if (_painter.configs != value) return;
+  //   _painter.configs = value;
+  //   markNeedsPaint();
+  // }
 
   late final TapGestureRecognizer _tapGestureRecognizer;
   late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
@@ -120,21 +137,23 @@ class CartesianRenderBox extends RenderBox {
     double? width,
     double? height,
     required CartesianChartStyle style,
-    required CartesianDataMixin rangeData,
-    required List<CartesianSeries> currentData,
-    required List<CartesianSeries> targetData,
-    required Map<int, CartesianPainter> painters,
-    required Map<CartesianSeries, CartesianConfig> configs,
+    required List<PaintingState> states,
+    required CartesianRangeResult rangeData,
+    // required List<CartesianSeries> currentData,
+    // required List<CartesianSeries> targetData,
+    // required Map<int, CartesianPainter> painters,
+    // required Map<CartesianSeries, CartesianConfig> configs,
     required this.interactionDispatcher,
   })  : _width = width,
         _height = height,
         _painter = CartesianChartPainter(
           style: style,
+          states: states,
           rangeData: rangeData,
-          currentData: currentData,
-          targetData: targetData,
-          painters: painters,
-          configs: configs,
+          // currentData: currentData,
+          // targetData: targetData,
+          // painters: painters,
+          // configs: configs,
         );
 
   _registerGestureRecognizers() {

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 abstract class CartesianPainter<T extends TouchInteractionResult> {
   void paint(
     CartesianSeries lerp,
-    CartesianSeries target,
+    // CartesianSeries target,
     Canvas canvas,
     CartesianChartPainter chart,
     CartesianConfig config,

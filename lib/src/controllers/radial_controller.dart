@@ -1,4 +1,3 @@
-import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
@@ -15,7 +14,7 @@ import 'package:flutter/material.dart';
 class RadialController extends ChangeNotifier
     with
         RadialDataMixin,
-        ChartAnimationsMixin<RadialSeries>,
+        // ChartAnimationsMixin<RadialSeries>,
         InteractionDispatcher {
   /// Holds a map of configs for every data series.
   final Map<RadialSeries, RadialConfig> cachedConfigs = {};
@@ -69,9 +68,9 @@ class RadialController extends ChangeNotifier
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
   }) {
-    animateDataUpdates();
+    // animateDataUpdates();
     // // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(targetData, isInitPhase: true);
+    // updateDataSeries(targetData, isInitPhase: true);
   }
 
   update({
@@ -90,11 +89,11 @@ class RadialController extends ChangeNotifier
 
     if (animation != null && this.animation != animation) {
       this.animation = animation;
-      animateDataUpdates();
+      // animateDataUpdates();
     }
 
     if (targetData != null && this.targetData != targetData) {
-      updateDataSeries(targetData, isInitPhase: false);
+      // updateDataSeries(targetData, isInitPhase: false);
     }
   }
 

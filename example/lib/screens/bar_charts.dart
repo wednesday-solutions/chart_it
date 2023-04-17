@@ -81,6 +81,7 @@ class _TestBarChartsState extends State<TestBarCharts> {
                   show: true,
                   gridLineWidth: 1.0,
                   gridLineColor: theme.colorScheme.onBackground,
+                  xUnitValue: 1.0,
                   yUnitValue: 10.0,
                 ),
               ),

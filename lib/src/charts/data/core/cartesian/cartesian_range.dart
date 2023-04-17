@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 /// Defines a Callback that returns a [CartesianRangeResult] for the
 /// provided [context] of type [CartesianRangeContext].
 typedef CalculateCartesianRange = CartesianRangeResult Function(
@@ -37,4 +39,19 @@ class CartesianRangeResult {
     required this.minXRange,
     required this.minYRange,
   });
+
+  static CartesianRangeResult lerp(
+    CartesianRangeResult? current,
+    CartesianRangeResult target,
+    double t,
+  ) {
+    return CartesianRangeResult(
+      xUnitValue: lerpDouble(current?.xUnitValue, target.xUnitValue, t) ?? 1,
+      yUnitValue: lerpDouble(current?.yUnitValue, target.yUnitValue, t) ?? 1,
+      maxXRange: lerpDouble(current?.maxXRange, target.maxXRange, t) ?? 0,
+      maxYRange: lerpDouble(current?.maxYRange, target.maxYRange, t) ?? 0,
+      minXRange: lerpDouble(current?.minXRange, target.minXRange, t) ?? 0,
+      minYRange: lerpDouble(current?.minYRange, target.minYRange, t) ?? 0,
+    );
+  }
 }

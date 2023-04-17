@@ -1,5 +1,7 @@
 import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +22,51 @@ enum CartesianChartAlignment {
 /// Orientation of the Chart
 enum CartesianChartOrientation { vertical, horizontal }
 
+class CartesianData {
+  List<PaintingState> state;
+  CartesianRangeResult range;
+
+  CartesianData({
+    required this.state,
+    required this.range,
+  });
+
+  factory CartesianData.zero(CartesianRangeResult targetRange) {
+    return CartesianData(
+      state: List.empty(),
+      range: targetRange,
+    );
+  }
+
+  static CartesianData lerp(
+    CartesianData? current,
+    CartesianData target,
+    double t,
+  ) {
+    return CartesianData(
+      state: PaintingState.lerpStateList(current?.state, target.state, t),
+      range: CartesianRangeResult.lerp(current?.range, target.range, t),
+    );
+  }
+}
+
+class CartesianDataTween extends Tween<CartesianData> {
+  /// A Tween to interpolate between two [CartesianData]
+  ///
+  /// [end] object must not be null.
+  CartesianDataTween({
+    required CartesianData? begin,
+    required CartesianData end,
+  }) : super(begin: begin, end: end);
+
+  @override
+  CartesianData lerp(double t) =>
+      CartesianData.lerp(begin, end!, t);
+}
+
 /// Base Series for any type of Data which can be plotted
 /// on a Cartesian Chart.
 abstract class CartesianSeries<R extends TouchInteractionResult> {
-
   final TouchInteractionEvents<R> interactionEvents;
 
   CartesianSeries({required this.interactionEvents});

@@ -5,6 +5,8 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/state/bar_series_state.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ import 'package:flutter/material.dart';
 class CartesianController extends ChangeNotifier
     with
         CartesianDataMixin,
-        ChartAnimationsMixin<CartesianSeries>,
+        ChartAnimationsMixin<CartesianData, CartesianSeries>,
         InteractionDispatcher {
   /// Holds a map of configs for every data series.
   final Map<CartesianSeries, CartesianConfig> cachedConfigs = {};
@@ -32,6 +34,8 @@ class CartesianController extends ChangeNotifier
 
   /// Callback to calculate the X & Y ranges after Data Aggregation.
   final CalculateCartesianRange calculateRange;
+
+  late CartesianData currData;
 
   /// The maximum value along X-Axis.
   @override
@@ -68,7 +72,7 @@ class CartesianController extends ChangeNotifier
   /// A List of [Tween] for evaluating every [CartesianSeries] when
   /// the chart animates.
   @override
-  late List<Tween<CartesianSeries>> tweenSeries;
+  late Tween<CartesianData> tweenData;
 
   /// The Animation Controller to drive the charts animations.
   @override
@@ -135,7 +139,7 @@ class CartesianController extends ChangeNotifier
     }
   }
 
-  _invalidateRangeValues() {
+  CartesianRangeResult _invalidateRangeValues() {
     var rangeCtx = CartesianRangeContext(
       maxX: maxXValue,
       maxY: maxYValue,
@@ -164,6 +168,54 @@ class CartesianController extends ChangeNotifier
     maxXRange = results.maxXRange;
     minYRange = results.minYRange;
     maxYRange = results.maxYRange;
+
+    return results;
+  }
+
+  @override
+  CartesianData constructState(List<CartesianSeries> newData) {
+    // TODO: New Data is our target data.
+    var states = <PaintingState>[];
+
+    for (var i = 0; i < newData.length; i++) {
+      final series = newData[i];
+      series.when(onBarSeries: (barSeries) {
+        // Invalidate Painter for BarSeries
+        var barPainter = BarPainter(useGraphUnits: false);
+        BarSeriesConfig? barConfig;
+
+        // if (painters.getOrNull(i).runtimeType != BarPainter) {
+        //   painters[i] = BarPainter(useGraphUnits: false);
+        // } else {
+        //   // Update if needed.
+        // }
+
+        for (var j = 0; j < barSeries.barData.length; j++) {
+          final barGroup = barSeries.barData[j];
+
+          // var config = cachedConfigs.getOrNull(barSeries);
+          barConfig ??= BarSeriesConfig();
+          // assert(barConfig is BarSeriesConfig);
+          barConfig.updateEdges(barGroup, _updateMinMaxValues);
+        }
+
+        assert(barConfig != null);
+
+        states.add(
+          BarSeriesState(
+            // currentData: currData.,
+            targetData: barSeries,
+            config: barConfig!,
+            painter: barPainter,
+          ),
+        );
+      });
+    }
+
+    // TODO: Invalidate the RangeData
+    var results = _invalidateRangeValues();
+
+    return CartesianData(state: states, range: results);
   }
 
   @override
@@ -198,25 +250,25 @@ class CartesianController extends ChangeNotifier
   CartesianConfig? getConfig(CartesianSeries series) => cachedConfigs[series];
 
   @override
-  List<Tween<CartesianSeries>> getTweens({
-    required List<CartesianSeries> newSeries,
+  Tween<CartesianData> getTweens({
+    required CartesianData newData,
     required bool isInitPhase,
   }) =>
-      toCartesianTweens(
-        isInitPhase ? List.empty() : currentData,
-        newSeries,
-      ) ??
-      List.empty();
+      CartesianDataTween(
+        begin: isInitPhase ? CartesianData.zero(newData.range) : currData,
+        end: newData,
+      );
 
   @override
-  void setAnimatableData(List<CartesianSeries> data) => currentData = data;
+  void setAnimatableData(CartesianData data) => currData = data;
 
   @override
-  void setData(List<CartesianSeries> data) {
-    _resetRangeData();
-    aggregateData(data);
-    _invalidateRangeValues();
+  CartesianData setData(List<CartesianSeries> data) {
+    // aggregateData(data);
+    // _invalidateRangeValues();
     targetData = data;
+    _resetRangeData();
+    return constructState(data);
   }
 
   _updateMinMaxValues(minX, maxX, minY, maxY) {
@@ -254,7 +306,7 @@ class CartesianController extends ChangeNotifier
     Offset localPosition,
   ) {
     // TODO: implement onInteraction
-    switch(interactionType) {
+    switch (interactionType) {
       case TouchInteractionType.tap:
         // Fire all painters to perform Hit Test
 

@@ -101,11 +101,8 @@ class _PieChartState extends State<PieChart>
           width: widget.width,
           height: widget.height,
           style: style,
-          currentData: _controller.currentData,
-          targetData: _controller.targetData,
-          painters: _controller.painters,
-          configs: _controller.cachedConfigs,
-          radialRangeData: _controller,
+          states: _controller.currentData.state,
+          interactionDispatcher: _controller,
         );
       },
     );

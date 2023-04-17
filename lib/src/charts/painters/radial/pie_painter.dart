@@ -27,7 +27,6 @@ class PiePainter implements RadialPainter {
   @override
   void paint(
     RadialSeries lerpSeries,
-    RadialSeries targetSeries,
     Canvas canvas,
     RadialChartPainter chart,
     RadialConfig config,

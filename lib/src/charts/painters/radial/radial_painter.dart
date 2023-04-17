@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 abstract class RadialPainter {
   void paint(
     RadialSeries lerp,
-    RadialSeries target,
     Canvas canvas,
     RadialChartPainter chart,
     RadialConfig config,

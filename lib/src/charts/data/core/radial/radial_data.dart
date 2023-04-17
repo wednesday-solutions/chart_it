@@ -1,12 +1,55 @@
 import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
 typedef SliceMapper = String Function(num percentage, num value);
+
+class RadialData {
+  List<PaintingState> state;
+
+  // CartesianRangeResult range;
+
+  RadialData({
+    required this.state,
+    // required this.range,
+  });
+
+  factory RadialData.zero() {
+    return RadialData(
+      state: List.empty(),
+      // range: targetRange,
+    );
+  }
+
+  static RadialData lerp(
+    RadialData? current,
+    RadialData target,
+    double t,
+  ) {
+    return RadialData(
+      state: PaintingState.lerpStateList(current?.state, target.state, t),
+      // range: CartesianRangeResult.lerp(current?.range, target.range, t),
+    );
+  }
+}
+
+class RadialDataTween extends Tween<RadialData> {
+  /// A Tween to interpolate between two [RadialData]
+  ///
+  /// [end] object must not be null.
+  RadialDataTween({
+    required RadialData? begin,
+    required RadialData end,
+  }) : super(begin: begin, end: end);
+
+  @override
+  RadialData lerp(double t) => RadialData.lerp(begin, end!, t);
+}
 
 /// Base Series for any type of Data which can be plotted
 /// on a Radial Type Chart.

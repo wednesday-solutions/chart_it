@@ -16,7 +16,6 @@ class CartesianController extends ChangeNotifier
     with
         ChartAnimationsMixin<CartesianData, CartesianSeries>,
         InteractionDispatcher {
-
   /// The Current Data which will be lerped across every animation tick.
   late CartesianData currentData;
 
@@ -50,8 +49,7 @@ class CartesianController extends ChangeNotifier
   /// The minimum range across Y-Axis.
   double minYRange = 0.0;
 
-  /// A List of [Tween] for evaluating every [CartesianSeries] when
-  /// the chart animates.
+  /// A [Tween] for evaluating every [CartesianSeries] when the chart animates.
   @override
   late Tween<CartesianData> tweenData;
 
@@ -180,7 +178,11 @@ class CartesianController extends ChangeNotifier
         assert(barConfig != null);
 
         states.add(
-          BarSeriesState(data: barSeries, config: barConfig!, painter: barPainter),
+          BarSeriesState(
+            data: barSeries,
+            config: barConfig!,
+            painter: barPainter,
+          ),
         );
       });
     }

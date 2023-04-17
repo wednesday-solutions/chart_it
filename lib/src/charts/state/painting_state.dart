@@ -1,5 +1,6 @@
 import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
+import 'package:chart_it/src/charts/state/pie_series_state.dart';
 
 abstract class PaintingState<SERIES, CONFIG, PAINTER> {
   // SERIES? currentData;
@@ -24,6 +25,7 @@ abstract class PaintingState<SERIES, CONFIG, PAINTER> {
             : current;
     return target._when(
       barState: () => BarSeriesState.lerp(currentValue, target, t),
+      pieState: () => PieSeriesState.lerp(currentValue, target, t),
     );
   }
 
@@ -39,10 +41,13 @@ abstract class PaintingState<SERIES, CONFIG, PAINTER> {
   /// [PaintingState] object, and provides callback method for the matching type.
   T _when<T>({
     required T Function() barState,
+    required T Function() pieState,
   }) {
     switch (runtimeType) {
       case BarSeriesState:
         return barState();
+      case PieSeriesState:
+        return pieState();
       default:
         throw TypeError();
     }

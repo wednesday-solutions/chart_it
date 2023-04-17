@@ -1,5 +1,6 @@
 import 'package:chart_it/src/charts/data/core.dart';
-import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/charts/state/pie_series_state.dart';
 import 'package:flutter/material.dart';
 
 class RadialChartPainter {
@@ -13,21 +14,13 @@ class RadialChartPainter {
   late double unitStep;
 
   RadialChartStyle style;
-  List<RadialSeries> currentData;
-  List<RadialSeries> targetData;
-  Map<int, RadialPainter> painters;
-  Map<RadialSeries, RadialConfig> configs;
-  RadialDataMixin rangeData;
+  List<PaintingState> states;
 
   late Paint _bgPaint;
 
   RadialChartPainter({
     required this.style,
-    required this.currentData,
-    required this.targetData,
-    required this.painters,
-    required this.configs,
-    required this.rangeData,
+    required this.states,
   }) {
     _bgPaint = Paint();
   }
@@ -42,18 +35,12 @@ class RadialChartPainter {
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
-    for (var i = 0; i < targetData.length; i++) {
-      final target = targetData[i];
-      var painter = painters[i];
-      var config = configs[target];
-      if (painter != null && config != null) {
-        painter.paint(
-          currentData[i],
-          target,
-          canvas,
-          this,
-          config,
-        );
+    for (var i = 0; i < states.length; i++) {
+      var state = states[i];
+      if (state is PieSeriesState) {
+        state.painter.paint(state.data, canvas, this, state.config);
+      } else {
+        throw ArgumentError('No State of this type exists!');
       }
     }
   }

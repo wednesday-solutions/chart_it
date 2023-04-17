@@ -13,11 +13,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   // Mandatory Fields
   final CartesianChartStyle style;
   final List<PaintingState> states;
-  // final List<CartesianSeries> currentData;
-  // final List<CartesianSeries> targetData;
-  // final Map<int, CartesianPainter> painters;
-  // final Map<CartesianSeries, CartesianConfig> configs;
-  final CartesianRangeResult cartesianRangeData;
+  final CartesianRangeResult rangeData;
   final InteractionDispatcher interactionDispatcher;
 
   const CartesianRenderer({
@@ -25,12 +21,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
     this.width,
     this.height,
     required this.style,
-    // required this.currentData,
-    // required this.targetData,
-    // required this.painters,
-    // required this.configs,
     required this.states,
-    required this.cartesianRangeData,
+    required this.rangeData,
     required this.interactionDispatcher,
   }) : super(key: key);
 
@@ -40,12 +32,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       width: width,
       height: height,
       style: style,
-      // currentData: currentData,
-      // targetData: targetData,
-      // painters: painters,
-      // configs: configs,
       states: states,
-      rangeData: cartesianRangeData,
+      rangeData: rangeData,
       interactionDispatcher: interactionDispatcher,
     );
   }
@@ -58,11 +46,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..height = height
       ..style = style
       ..states = states
-      ..range = cartesianRangeData;
-      // ..currentData = currentData
-      // ..targetData = targetData
-      // ..painters = painters
-      // ..configs = configs;
+      ..range = rangeData;
   }
 }
 
@@ -105,30 +89,6 @@ class CartesianRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  // set currentData(List<CartesianSeries> value) {
-  //   if (_painter.currentData == value) return;
-  //   _painter.currentData = value;
-  //   markNeedsPaint();
-  // }
-  //
-  // set targetData(List<CartesianSeries> value) {
-  //   if (_painter.targetData == value) return;
-  //   _painter.targetData = value;
-  //   markNeedsPaint();
-  // }
-  //
-  // set painters(Map<int, CartesianPainter> value) {
-  //   if (_painter.painters != value) return;
-  //   _painter.painters = value;
-  //   markNeedsPaint();
-  // }
-  //
-  // set configs(Map<CartesianSeries, CartesianConfig> value) {
-  //   if (_painter.configs != value) return;
-  //   _painter.configs = value;
-  //   markNeedsPaint();
-  // }
-
   late final TapGestureRecognizer _tapGestureRecognizer;
   late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
   late final PanGestureRecognizer _panGestureRecognizer;
@@ -139,10 +99,6 @@ class CartesianRenderBox extends RenderBox {
     required CartesianChartStyle style,
     required List<PaintingState> states,
     required CartesianRangeResult rangeData,
-    // required List<CartesianSeries> currentData,
-    // required List<CartesianSeries> targetData,
-    // required Map<int, CartesianPainter> painters,
-    // required Map<CartesianSeries, CartesianConfig> configs,
     required this.interactionDispatcher,
   })  : _width = width,
         _height = height,
@@ -150,10 +106,6 @@ class CartesianRenderBox extends RenderBox {
           style: style,
           states: states,
           rangeData: rangeData,
-          // currentData: currentData,
-          // targetData: targetData,
-          // painters: painters,
-          // configs: configs,
         );
 
   _registerGestureRecognizers() {
@@ -172,15 +124,12 @@ class CartesianRenderBox extends RenderBox {
       ..onEnd = interactionDispatcher.onPanEnd;
   }
 
-
   @override
   void performLayout() => size = computeDryLayout(constraints);
 
   @override
-  Size computeDryLayout(BoxConstraints constraints) => Size(
-        _width ?? constraints.maxWidth,
-        _height ?? constraints.maxHeight,
-      );
+  Size computeDryLayout(BoxConstraints constraints) =>
+      Size(_width ?? constraints.maxWidth, _height ?? constraints.maxHeight);
 
   @override
   bool hitTestSelf(Offset position) => true;

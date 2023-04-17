@@ -1,8 +1,6 @@
-import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
@@ -119,25 +117,3 @@ abstract class CartesianSeries<R extends TouchInteractionResult> {
 }
 
 abstract class CartesianConfig {}
-
-/// Converts [current] and [target] list of [CartesianSeries] to
-/// a list of [Tween] of type [CartesianSeries]
-List<Tween<CartesianSeries>>? toCartesianTweens(
-  List<CartesianSeries>? current,
-  List<CartesianSeries> target,
-) {
-  return buildTweens(current, target, builder: (current, target) {
-    final currentValue =
-        current == null || current.runtimeType != target.runtimeType
-            ? null
-            : current;
-    return target.when(
-      onBarSeries: (series) {
-        return BarSeriesTween(
-          begin: currentValue.asOrDefault(BarSeries.zero()),
-          end: series,
-        );
-      },
-    );
-  });
-}

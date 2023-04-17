@@ -43,8 +43,6 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     CartesianChartPainter chart,
     CartesianConfig config,
   ) {
-    print('Painting Bar Series!');
-    print('------------------------------');
     assert(
       config is BarSeriesConfig,
       "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
@@ -66,8 +64,6 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
     for (var i = 0; i < _data.barData.length; i++) {
-      print('Painting BarGroup Number ${i+1}');
-      print('------------------------------');
       final group = _data.barData[i];
       if (group is SimpleBar) {
         // We have to paint a single bar

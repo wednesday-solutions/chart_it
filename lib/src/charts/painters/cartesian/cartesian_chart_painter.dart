@@ -29,10 +29,6 @@ class CartesianChartPainter {
   late double totalYRange;
 
   CartesianChartStyle style;
-  // List<CartesianSeries> currentData;
-  // List<CartesianSeries> targetData;
-  // Map<int, CartesianPainter> painters;
-  // Map<CartesianSeries, CartesianConfig> configs;
   List<PaintingState> states;
   CartesianRangeResult rangeData;
 
@@ -43,10 +39,6 @@ class CartesianChartPainter {
 
   CartesianChartPainter({
     required this.style,
-    // required this.currentData,
-    // required this.targetData,
-    // required this.painters,
-    // required this.configs,
     required this.states,
     required this.rangeData,
   }) {
@@ -75,8 +67,7 @@ class CartesianChartPainter {
     for (var i = 0; i < states.length; i++) {
       var state = states[i];
       if (state is BarSeriesState) {
-        // assert(state.currentData != null);
-        state.painter.paint(state.targetData, canvas, this, state.config);
+        state.painter.paint(state.data, canvas, this, state.config);
       } else {
         throw ArgumentError('No State of this type exists!');
       }

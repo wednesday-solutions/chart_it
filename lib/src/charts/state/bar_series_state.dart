@@ -5,8 +5,7 @@ import 'package:chart_it/src/charts/state/painting_state.dart';
 class BarSeriesState
     extends PaintingState<BarSeries, BarSeriesConfig, BarPainter> {
   BarSeriesState({
-    // super.currentData,
-    required super.targetData,
+    required super.data,
     required super.config,
     required super.painter,
   });
@@ -17,8 +16,7 @@ class BarSeriesState
     double t,
   ) {
     return BarSeriesState(
-      // currentData: BarSeries.lerp(current?.targetData, target.targetData, t),
-      targetData: BarSeries.lerp(current?.targetData, target.targetData, t),
+      data: BarSeries.lerp(current?.data, target.data, t),
       config: target.config,
       painter: target.painter,
     );

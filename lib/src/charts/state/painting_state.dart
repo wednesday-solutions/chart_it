@@ -3,13 +3,12 @@ import 'package:chart_it/src/charts/state/bar_series_state.dart';
 
 abstract class PaintingState<SERIES, CONFIG, PAINTER> {
   // SERIES? currentData;
-  SERIES targetData;
+  SERIES data;
   CONFIG config;
   PAINTER painter;
 
   PaintingState({
-    // required this.currentData,
-    required this.targetData,
+    required this.data,
     required this.config,
     required this.painter,
   });

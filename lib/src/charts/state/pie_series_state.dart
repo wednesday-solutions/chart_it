@@ -11,10 +11,10 @@ class PieSeriesState
   });
 
   static PieSeriesState lerp(
-      PaintingState? current,
-      PaintingState target,
-      double t,
-      ) {
+    PaintingState? current,
+    PaintingState target,
+    double t,
+  ) {
     return PieSeriesState(
       data: PieSeries.lerp(current?.data, target.data, t),
       config: target.config,

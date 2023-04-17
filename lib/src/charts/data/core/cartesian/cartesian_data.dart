@@ -58,8 +58,7 @@ class CartesianDataTween extends Tween<CartesianData> {
   }) : super(begin: begin, end: end);
 
   @override
-  CartesianData lerp(double t) =>
-      CartesianData.lerp(begin, end!, t);
+  CartesianData lerp(double t) => CartesianData.lerp(begin, end!, t);
 }
 
 /// Base Series for any type of Data which can be plotted

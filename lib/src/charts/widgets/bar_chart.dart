@@ -83,7 +83,7 @@ class _BarChartState extends State<BarChart>
         (widget.chartStyle?.gridStyle ?? defaultBarChartStyle.gridStyle)!;
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -109,7 +109,7 @@ class _BarChartState extends State<BarChart>
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
     _controller.update(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -124,7 +124,8 @@ class _BarChartState extends State<BarChart>
       gridStyle: validStyle.gridStyle!.copyWith(
         // Unless the user is trying to play around with the xUnitValue,
         // we will default it to the length of bar groups
-        xUnitValue: validStyle.gridStyle?.xUnitValue ?? _controller.maxXRange,
+        xUnitValue: validStyle.gridStyle?.xUnitValue ??
+            _controller.targetData.range.maxXRange,
       ),
     );
     return AnimatedBuilder(

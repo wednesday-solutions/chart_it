@@ -3,7 +3,6 @@ import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/pie_series_state.dart';
 
 abstract class PaintingState<SERIES, CONFIG, PAINTER> {
-  // SERIES? currentData;
   SERIES data;
   CONFIG config;
   PAINTER painter;

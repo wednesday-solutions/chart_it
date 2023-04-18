@@ -114,7 +114,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(5, (index) {
+  List<BarGroup> barSeries = List.generate(next(3, 7).toInt(), (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,
@@ -124,7 +124,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: next(10, 100)),
+        yValue: BarData(yValue: next(-50, 100)),
       );
     } else {
       return MultiBar(
@@ -154,7 +154,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 100),
+            yValue: next(-50, 100),
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -173,7 +173,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 100),
+            yValue: next(-50, 100),
           ),
         ],
       );

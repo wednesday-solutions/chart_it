@@ -13,12 +13,7 @@ class CartesianRangeContext {
   double minX;
   double minY;
 
-  CartesianRangeContext({
-    required this.maxX,
-    required this.maxY,
-    required this.minX,
-    required this.minY,
-  });
+  CartesianRangeContext(this.maxX, this.maxY, this.minX, this.minY);
 }
 
 /// A Result Wrapper that provides the X & Y Ranges and the unit values.

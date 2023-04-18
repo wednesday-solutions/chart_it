@@ -5,6 +5,7 @@ import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 class CartesianChartPainter {
@@ -156,7 +157,7 @@ class CartesianChartPainter {
       // We will plot texts and point along both X & Y axis
       if (showXLabels && i <= _xUnitsCount) {
         ChartTextPainter.fromChartTextStyle(
-          text: i.toString(),
+          text: i.toPrecision(2).toString(),
           chartTextStyle:
               style.axisStyle?.tickLabelStyle ?? defaultChartTextStyle,
         ).paint(
@@ -173,7 +174,9 @@ class CartesianChartPainter {
         final textStyle =
             style.axisStyle?.tickLabelStyle ?? defaultChartTextStyle;
         ChartTextPainter.fromChartTextStyle(
-          text: (rangeData.minYRange + (yUnitValue * i)).toString(),
+          text: (rangeData.minYRange + (yUnitValue * i))
+              .toPrecision(2)
+              .toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
         ).paint(
           canvas: canvas,

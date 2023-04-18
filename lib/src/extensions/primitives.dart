@@ -12,6 +12,10 @@ extension AsExtension on Object? {
   }
 }
 
+extension Precision on num {
+  double toPrecision(int n) => double.parse(toStringAsFixed(n));
+}
+
 extension ListTransforms<T> on List<T> {
   T get(int index, T defaultValue) {
     if (index >= length) {

@@ -14,6 +14,10 @@ extension AsExtension on Object? {
 
 extension Precision on num {
   double toPrecision(int n) => double.parse(toStringAsFixed(n));
+
+  bool isBetween(num from, num to) {
+    return from < this && this < to;
+  }
 }
 
 extension ListTransforms<T> on List<T> {
@@ -36,6 +40,8 @@ extension ListTransforms<T> on List<T> {
   List<T> distinct() => toSet().toList();
 
   List<Type> distinctTypes() => map((e) => e.runtimeType).toSet().toList();
+
+  List<T?> withNullableItems() => whereType<T?>().toList();
 
   void forEachIndexed(void Function(int index, T item) action) {
     for (var index = 0; index < length; index++) {

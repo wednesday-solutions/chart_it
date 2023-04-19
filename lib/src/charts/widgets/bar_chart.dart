@@ -135,7 +135,7 @@ class _BarChartState extends State<BarChart>
           width: widget.width,
           height: widget.height,
           style: style,
-          states: _controller.currentData.state,
+          states: _controller.currentData.states,
           rangeData: _controller.currentData.range,
           interactionDispatcher: _controller,
         );

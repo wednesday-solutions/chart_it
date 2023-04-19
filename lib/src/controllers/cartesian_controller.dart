@@ -162,7 +162,7 @@ class CartesianController extends ChangeNotifier
 
     // Invalidate the RangeData
     var results = _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
-    return CartesianData(state: states, range: results);
+    return CartesianData(states: states, range: results);
   }
 
   @override
@@ -202,23 +202,12 @@ class CartesianController extends ChangeNotifier
     Offset localPosition,
   ) {
     // TODO: implement onInteraction
-    switch (interactionType) {
-      case TouchInteractionType.tap:
-        // Fire all painters to perform Hit Test
-
-        break;
-      case TouchInteractionType.doubleTap:
-        // TODO: Handle this case.
-        break;
-      case TouchInteractionType.dragStart:
-        // TODO: Handle this case.
-        break;
-      case TouchInteractionType.dragUpdate:
-        // TODO: Handle this case.
-        break;
-      case TouchInteractionType.dragEnd:
-        // TODO: Handle this case.
-        break;
+    // Fire all painters to perform Hit Test
+    for (var i = 0; i < targetData.states.length; i++) {
+      final state = targetData.states[i];
+      if (state is BarSeriesState) {
+        state.painter.hitTest(interactionType, localPosition);
+      }
     }
   }
 }

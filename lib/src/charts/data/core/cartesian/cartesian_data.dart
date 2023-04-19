@@ -21,17 +21,17 @@ enum CartesianChartAlignment {
 enum CartesianChartOrientation { vertical, horizontal }
 
 class CartesianData {
-  List<PaintingState> state;
+  List<PaintingState> states;
   CartesianRangeResult range;
 
   CartesianData({
-    required this.state,
+    required this.states,
     required this.range,
   });
 
   factory CartesianData.zero(CartesianRangeResult targetRange) {
     return CartesianData(
-      state: List.empty(),
+      states: List.empty(),
       range: targetRange,
     );
   }
@@ -42,7 +42,7 @@ class CartesianData {
     double t,
   ) {
     return CartesianData(
-      state: PaintingState.lerpStateList(current?.state, target.state, t),
+      states: PaintingState.lerpStateList(current?.states, target.states, t),
       range: CartesianRangeResult.lerp(current?.range, target.range, t),
     );
   }
@@ -63,8 +63,8 @@ class CartesianDataTween extends Tween<CartesianData> {
 
 /// Base Series for any type of Data which can be plotted
 /// on a Cartesian Chart.
-abstract class CartesianSeries<R extends TouchInteractionResult> {
-  final TouchInteractionEvents<R> interactionEvents;
+abstract class CartesianSeries<E extends TouchInteractionEvents> {
+  final E interactionEvents;
 
   CartesianSeries({required this.interactionEvents});
 

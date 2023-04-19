@@ -5,10 +5,13 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.d
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter<BarInteractionResult> {
+  final List<_BarInteractionData> _interactionData = List.empty(growable: true);
+
   late BarSeriesConfig _config;
   late BarSeries _data;
 
@@ -20,9 +23,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
   late Paint _barPaint;
   late Paint _barStroke;
 
-  BarPainter({
-    required this.useGraphUnits,
-  }) {
+  BarPainter({required this.useGraphUnits}) {
     _barPaint = Paint();
     _barStroke = Paint()..style = PaintingStyle.stroke;
   }
@@ -32,13 +33,43 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     TouchInteractionType type,
     Offset localPosition,
   ) {
-    throw UnimplementedError();
+    // We will perform HitTest only if Interactions are enabled for this series.
+    if (_data.interactionEvents.isEnabled) {
+      var snapToNearestBar = _data.interactionEvents.snapToNearestPoint;
+      var snappingRange = _data.interactionEvents.snappingRange;
+
+      var foundBar = _interactionData.withNullableItems().singleWhere((data) {
+        // Check if we have to find the nearest bar to interaction position
+        if (snapToNearestBar) {
+          return data!.findNearest(localPosition, snappingRange);
+        } else {
+          return data!.contains(localPosition);
+        }
+      }, orElse: () => null);
+
+      if (foundBar != null) {
+        // A Bar has been identified within the Interaction Parameters.
+        // We will return it's details to the user.
+        return BarInteractionResult(
+          barGroup: foundBar.barGroup,
+          barGroupIndex: foundBar.barGroupIndex,
+          barData: foundBar.barData,
+          barDataIndex: foundBar.barDataIndex,
+          localPosition: localPosition,
+          interactionType: type,
+        );
+      }
+
+      // We couldn't find any Bar within Interaction Parameters
+      return null;
+    }
+    // No Interactions for this BarSeries.
+    return null;
   }
 
   @override
   void paint(
     CartesianSeries lerpSeries,
-    // CartesianSeries targetSeries,
     Canvas canvas,
     CartesianChartPainter chart,
     CartesianConfig config,
@@ -47,11 +78,10 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       config is BarSeriesConfig,
       "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
     );
+    // Remove old Interaction Data
+    _interactionData.clear();
     // Setup the bar data
     _data = lerpSeries as BarSeries;
-    // print('BarSeries Data: $_data');
-    // print('------------------------------');
-    // Setup the bar chart config
     _config = config as BarSeriesConfig;
 
     _unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
@@ -67,29 +97,42 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       final group = _data.barData[i];
       if (group is SimpleBar) {
         // We have to paint a single bar
-        _drawSimpleBar(canvas, chart, dx, group);
+        _drawSimpleBar(
+          group: group,
+          groupIndex: i,
+          canvas: canvas,
+          chart: chart,
+          dxOffset: dx,
+        );
       } else if (group is MultiBar) {
         // We need to find the arrangement of our bar group
         if (group.arrangement == BarGroupArrangement.stack) {
           // TODO: Paint Stacked Bars
         } else {
           // Paint Bar Series across unit width
-          _drawBarSeries(canvas, chart, dx, group);
+          _drawBarSeries(
+            group: group,
+            groupIndex: i,
+            canvas: canvas,
+            chart: chart,
+            dxOffset: dx,
+          );
         }
       }
 
-      _drawGroupLabel(canvas, chart, dx, group);
+      _drawGroupLabel(canvas: canvas, chart: chart, dxOffset: dx, group: group);
 
       dx += _unitWidth;
     }
   }
 
-  _drawSimpleBar(
-    Canvas canvas,
-    CartesianChartPainter chart,
-    double dxOffset,
-    SimpleBar group,
-  ) {
+  _drawSimpleBar({
+    required SimpleBar group,
+    required int groupIndex,
+    required Canvas canvas,
+    required CartesianChartPainter chart,
+    required double dxOffset,
+  }) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var style = group.yValue.barStyle ??
@@ -99,25 +142,31 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
 
     // Since we have only one yValue, we only have to draw one bar
     _drawBar(
-      canvas,
-      chart,
-      style,
-      dxOffset + (_unitWidth * 0.5) - (_barWidth * 0.5),
+      barGroup: group,
+      barGroupIndex: groupIndex,
+      barData: group.yValue,
+      // BarData index for SimpleBar is always zero
+      // because there are no multiple y-Values.
+      barDataIndex: 0,
+      canvas: canvas,
+      chart: chart,
+      style: style,
       // dx pos to start the bar from
-      _barWidth,
-      group.barSpacing,
-      group.yValue.yValue,
+      dxCenter: dxOffset + (_unitWidth * 0.5) - (_barWidth * 0.5),
+      barWidth: _barWidth,
+      barSpacing: group.barSpacing,
     );
     // Finally paint the y-labels for this bar
-    _drawBarValues(canvas, chart, group.yValue);
+    _drawBarValues(canvas: canvas, chart: chart, data: group.yValue);
   }
 
-  _drawBarSeries(
-    Canvas canvas,
-    CartesianChartPainter chart,
-    double dxOffset,
-    MultiBar group,
-  ) {
+  _drawBarSeries({
+    required MultiBar group,
+    required int groupIndex,
+    required Canvas canvas,
+    required CartesianChartPainter chart,
+    required double dxOffset,
+  }) {
     // var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var groupCount = group.yValues.length; // No. of groups for this multibar
@@ -134,36 +183,43 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
           defaultBarSeriesStyle;
 
       _drawBar(
-        canvas,
-        chart,
-        style,
-        x,
+        barGroup: group,
+        barGroupIndex: groupIndex,
+        barData: barData,
+        barDataIndex: i,
+        canvas: canvas,
+        chart: chart,
+        style: style,
         // dx pos to start the bar in this group
-        _barWidth,
-        group.groupSpacing,
-        barData.yValue,
+        dxCenter: x,
+        barWidth: _barWidth,
+        barSpacing: group.groupSpacing,
       );
       // Finally paint the y-labels for this bar
-      _drawBarValues(canvas, chart, barData);
+      _drawBarValues(canvas: canvas, chart: chart, data: barData);
 
       x += _barWidth;
     }
   }
 
-  _drawBar(
-    Canvas canvas,
-    CartesianChartPainter chart,
+  _drawBar({
+    required BarGroup barGroup,
+    required int barGroupIndex,
+    required BarData barData,
+    required int barDataIndex,
+    required Canvas canvas,
+    required CartesianChartPainter chart,
     BarDataStyle? style,
-    double dxCenter,
-    double barWidth,
-    double barSpacing,
-    num yValue,
-  ) {
+    required double dxCenter,
+    required double barWidth,
+    required double barSpacing,
+    // required num yValue,
+  }) {
     var padding = (barSpacing * 0.5);
     // The first thing to do is to get the data point into the range!
     // This is because we don't want our bar to exceed the min/max values
     // we then multiply it by the vRatio to get the vertical pixel value!
-    var y = yValue * _vRatio;
+    var y = barData.yValue * _vRatio;
     // The x values start from the left side of the chart and then increase by unit width!
     // Note: y values increase from the top to the bottom of the screen, so
     // we have to subtract the computed y value from the chart's bottom to invert the drawing!
@@ -179,12 +235,23 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       dxCenter + barWidth - padding, // startX + barWidth
       chart.axisOrigin.dy, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
-      topLeft: yValue.isNegative ? bottomLeft : topLeft,
-      topRight: yValue.isNegative ? bottomRight : topRight,
-      bottomLeft: yValue.isNegative ? topLeft : bottomLeft,
-      bottomRight: yValue.isNegative ? topRight : bottomRight,
+      topLeft: barData.yValue.isNegative ? bottomLeft : topLeft,
+      topRight: barData.yValue.isNegative ? bottomRight : topRight,
+      bottomLeft: barData.yValue.isNegative ? topLeft : bottomLeft,
+      bottomRight: barData.yValue.isNegative ? topRight : bottomRight,
     );
 
+    // Before we Paint this Bar, we need to store it's data for hitTesting
+    var shapeData = _BarInteractionData(
+      rect: bar,
+      barGroup: barGroup,
+      barGroupIndex: barGroupIndex,
+      barData: barData,
+      barDataIndex: barDataIndex,
+    );
+    _interactionData.add(shapeData);
+
+    // Finally We will Paint our Bar on the Canvas.
     var barPaint = _barPaint
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
       ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
@@ -201,12 +268,12 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  void _drawGroupLabel(
-    Canvas canvas,
-    CartesianChartPainter chart,
-    double dxOffset,
-    BarGroup group,
-  ) {
+  void _drawGroupLabel({
+    required Canvas canvas,
+    required CartesianChartPainter chart,
+    required double dxOffset,
+    required BarGroup group,
+  }) {
     // We will draw the Label that the user had provided for our bar group
     if (group.label != null) {
       // TODO: rotate the text if it doesn't fit within the unitWidth
@@ -227,11 +294,11 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  void _drawBarValues(
-    Canvas canvas,
-    CartesianChartPainter chart,
-    BarData data,
-  ) {
+  void _drawBarValues({
+    required Canvas canvas,
+    required CartesianChartPainter chart,
+    required BarData data,
+  }) {
     if (data.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: data.label!(data.yValue),
@@ -246,5 +313,33 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         ),
       );
     }
+  }
+}
+
+class _BarInteractionData {
+  final RRect rect;
+  final BarGroup barGroup;
+  final int barGroupIndex;
+  final BarData barData;
+  final int barDataIndex;
+
+  _BarInteractionData({
+    required this.rect,
+    required this.barGroup,
+    required this.barGroupIndex,
+    required this.barData,
+    required this.barDataIndex,
+  });
+}
+
+extension _InteractionValidators on _BarInteractionData {
+  // If the Bar's rectangle boundaries contains the interaction position
+  bool contains(Offset position) => rect.contains(position);
+
+  bool findNearest(Offset position, double snappingRange) {
+    var dxLeft = rect.left - snappingRange;
+    var dxRight = rect.right + snappingRange;
+    // Find if we can snap to the nearest bar
+    return position.dx.isBetween(dxLeft, dxRight);
   }
 }

@@ -18,7 +18,7 @@ import 'package:flutter/animation.dart';
 /// The BarSeries is **mandatory** to be provided to the [BarChart] widget.
 ///
 /// See Also: [CartesianSeries]
-class BarSeries extends CartesianSeries<BarInteractionResult>
+class BarSeries extends CartesianSeries<BarInteractionEvents>
     with EquatableMixin {
   /// Sets uniform styling for All the Bars in this [BarSeries].
   ///

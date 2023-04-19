@@ -88,7 +88,11 @@ class _TestBarChartsState extends State<TestBarCharts> {
               data: BarSeries(
                 interactionEvents: BarInteractionEvents(
                   isEnabled: true,
-                  onTap: (BarInteractionResult result) {},
+                  onTap: (BarInteractionResult result) {
+                    print('Touched Bar ${result.barDataIndex} of '
+                        'BarGroup: ${result.barGroup.label?.call(0)} and '
+                        'of type ${result.barGroup.runtimeType.toString()}');
+                  },
                 ),
                 seriesStyle: const BarDataStyle(
                   barWidth: 10.0,
@@ -114,7 +118,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(next(3, 7).toInt(), (index) {
+  List<BarGroup> barSeries = List.generate(5, (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,
@@ -124,7 +128,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: next(-50, 100)),
+        yValue: BarData(yValue: next(10, 100)),
       );
     } else {
       return MultiBar(
@@ -154,7 +158,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(-50, 100),
+            yValue: next(10, 100),
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -173,7 +177,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(-50, 100),
+            yValue: next(10, 100),
           ),
         ],
       );

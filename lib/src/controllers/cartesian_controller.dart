@@ -7,6 +7,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class CartesianController extends ChangeNotifier
     with
         ChartAnimationsMixin<CartesianData, CartesianSeries>,
         InteractionDispatcher {
-  final Map<Set<CartesianSeries>, CartesianData> _cachedValues = {};
+  final Map<EquatableList<CartesianSeries>, CartesianData> _cachedValues = {};
 
   final List<CartesianSeries> data;
 
@@ -168,7 +169,7 @@ class CartesianController extends ChangeNotifier
   @override
   CartesianData setData(List<CartesianSeries> data) {
     // Get the cacheKey as a Set of our CartesianSeries.
-    Set<CartesianSeries> cacheKey = Set.from(data);
+    var cacheKey = EquatableList(data);
 
     if (_cachedValues.containsKey(cacheKey)) {
       // Cache entry found. Just return the CartesianData for this Series.

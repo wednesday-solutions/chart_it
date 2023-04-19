@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 extension AsExtension on Object? {
   X as<X>() => this as X;
 
@@ -18,6 +20,15 @@ extension Precision on num {
   bool isBetween(num from, num to) {
     return from < this && this < to;
   }
+}
+
+class EquatableList<T> extends Equatable {
+  final List<T> list;
+
+  const EquatableList(this.list);
+
+  @override
+  List<Object?> get props => [list];
 }
 
 extension ListTransforms<T> on List<T> {

@@ -122,18 +122,16 @@ class PieSeries extends RadialSeries with EquatableMixin {
 ///
 /// Returns the value for a [SliceData].
 class PieSeriesConfig extends RadialConfig {
-  /// Calculated Minimum Value
-  var calculatedMinValue = 0.0;
-
-  /// Calculated Maximum Value
-  var calculatedMaxValue = 0.0;
-
   /// Returns the value of this [SliceData] in [onUpdate].
-  void updateEdges(
-    SliceData slice,
+  void calcSliceRange(
+    List<SliceData> slices,
     Function(double value) onUpdate,
-  ) =>
+  ) {
+    for (var i = 0; i < slices.length; i++) {
+      final slice = slices[i];
       onUpdate(slice.value.toDouble());
+    }
+  }
 }
 
 /// A Tween to interpolate between two [PieSeries]

@@ -20,7 +20,7 @@ class CartesianController extends ChangeNotifier
         InteractionDispatcher {
   final Map<Set<CartesianSeries>, CartesianData> _cachedValues = {};
 
-  List<CartesianSeries> data;
+  final List<CartesianSeries> data;
 
   /// The Current Data which will be lerped across every animation tick.
   late CartesianData currentData;
@@ -177,7 +177,7 @@ class CartesianController extends ChangeNotifier
       // No entry found, so this is probably a new series. We need to recalculate
       targetData = constructState(data);
       // Reset the old cache. Update the cache with new data
-      _cachedValues.clear();
+      // _cachedValues.clear();
       _cachedValues[cacheKey] = targetData;
     }
     return targetData;

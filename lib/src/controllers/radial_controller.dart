@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
@@ -12,21 +14,16 @@ import 'package:flutter/material.dart';
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [RadialSeries].
 class RadialController extends ChangeNotifier
-    with
-        // RadialDataMixin,
-        ChartAnimationsMixin<RadialData, RadialSeries>,
-        InteractionDispatcher {
+    with ChartAnimationsMixin<RadialData, RadialSeries>, InteractionDispatcher {
+  final Map<Set<RadialSeries>, RadialData> _cachedValues = {};
+
+  final List<RadialSeries> data;
+
   /// The Current Data which will be lerped across every animation tick.
   late RadialData currentData;
 
   /// The Target Data to which the chart needs to updates.
-  List<RadialSeries> targetData;
-
-  /// The minimum value across all Series.
-  double minValue = 0.0;
-
-  /// The maximum value across all Series.
-  double maxValue = 0.0;
+  late RadialData targetData;
 
   /// A [Tween] for evaluating every [RadialSeries] when the chart animates.
   @override
@@ -54,18 +51,18 @@ class RadialController extends ChangeNotifier
   /// Encapsulates the required Chart Data, Animatable Data, Configs
   /// and Mapped Painters for every [RadialSeries].
   RadialController({
-    required this.targetData,
+    required this.data,
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
   }) {
     animateDataUpdates();
     // // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(targetData, isInitPhase: true);
+    updateDataSeries(data, isInitPhase: true);
   }
 
   update({
-    List<RadialSeries>? targetData,
+    List<RadialSeries>? data,
     AnimationController? animation,
     bool? animateOnUpdate,
     bool? animateOnLoad,
@@ -83,45 +80,37 @@ class RadialController extends ChangeNotifier
       animateDataUpdates();
     }
 
-    if (targetData != null && this.targetData != targetData) {
-      updateDataSeries(targetData, isInitPhase: false);
+    if (data != null && this.data != data) {
+      updateDataSeries(data, isInitPhase: false);
     }
   }
 
   @override
   RadialData constructState(List<RadialSeries> newData) {
-    // TODO: New Data is our target data.
+    // Set our Range Holders
+    var minValue = 0.0;
+    var maxValue = 0.0;
+    // Set our State holder
     var states = <PaintingState>[];
 
     for (var i = 0; i < newData.length; i++) {
       final series = newData[i];
-      series.when(onPieSeries: (pieSeries) {
-        // Invalidate Painter for PieSeries
-        var piePainter = PiePainter();
-        PieSeriesConfig? pieConfig;
+      series.when(
+        onPieSeries: (pieSeries) {
+          // Invalidate Painter for PieSeries
+          var painter = PiePainter();
+          var config = PieSeriesConfig();
 
-        // if (painters.getOrNull(i).runtimeType != BarPainter) {
-        //   painters[i] = BarPainter(useGraphUnits: false);
-        // } else {
-        //   // Update if needed.
-        // }
+          config.calcSliceRange(pieSeries.slices, (value) {
+            minValue = min(value, minValue);
+            maxValue = max(value, maxValue);
+          });
 
-        for (var j = 0; j < pieSeries.slices.length; j++) {
-          final slice = pieSeries.slices[j];
-          pieConfig ??= PieSeriesConfig();
-          pieConfig.updateEdges(slice, _updateMinMaxValues);
-        }
-
-        assert(pieConfig != null);
-
-        states.add(
-          PieSeriesState(
-            data: pieSeries,
-            config: pieConfig!,
-            painter: piePainter,
-          ),
-        );
-      });
+          states.add(
+            PieSeriesState(data: pieSeries, config: config, painter: painter),
+          );
+        },
+      );
     }
 
     // We cannot show Negative Values in Radial Charts, so for now
@@ -136,9 +125,20 @@ class RadialController extends ChangeNotifier
 
   @override
   RadialData setData(List<RadialSeries> data) {
-    targetData = data;
-    _resetRangeData();
-    return constructState(data);
+    // Get the cacheKey as a Set of our CartesianSeries.
+    Set<RadialSeries> cacheKey = Set.from(data);
+
+    if (_cachedValues.containsKey(cacheKey)) {
+      // Cache entry found. Just return the CartesianData for this Series.
+      targetData = _cachedValues[cacheKey]!;
+    } else {
+      // No entry found, so this is probably a new series. We need to recalculate
+      targetData = constructState(data);
+      // Reset the old cache. Update the cache with new data
+      // _cachedValues.clear();
+      _cachedValues[cacheKey] = targetData;
+    }
+    return targetData;
   }
 
   @override
@@ -153,21 +153,6 @@ class RadialController extends ChangeNotifier
         begin: isInitPhase ? RadialData.zero() : currentData,
         end: newData,
       );
-
-  _updateMinMaxValues(value) {
-    if (value < minValue) {
-      minValue = value;
-    }
-
-    if (value > maxValue) {
-      maxValue = value;
-    }
-  }
-
-  _resetRangeData() {
-    minValue = 0.0;
-    maxValue = 0.0;
-  }
 
   @override
   void onInteraction(

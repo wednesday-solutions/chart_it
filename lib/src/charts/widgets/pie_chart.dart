@@ -72,7 +72,7 @@ class _PieChartState extends State<PieChart>
     );
     // provide the chart details to the controller
     _controller = RadialController(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -84,7 +84,7 @@ class _PieChartState extends State<PieChart>
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
     _controller.update(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,

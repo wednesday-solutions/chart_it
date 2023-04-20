@@ -28,6 +28,19 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     _barStroke = Paint()..style = PaintingStyle.stroke;
   }
 
+  _BarInteractionData _findNearestBar(
+    Offset position,
+    List<_BarInteractionData> bars, {
+    double fuzzinessRange = 0.0,
+  }) {
+    return bars.reduce((previous, current) {
+      final distToPrev = position.dx - previous.rect.right;
+      final distToCurrent = current.rect.left - position.dx;
+
+      return distToPrev >= distToCurrent ? current : previous;
+    });
+  }
+
   @override
   BarInteractionResult? hitTest(
     TouchInteractionType type,
@@ -36,32 +49,49 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     // We will perform HitTest only if Interactions are enabled for this series.
     if (_data.interactionEvents.isEnabled) {
       var snapToNearestBar = _data.interactionEvents.snapToNearestPoint;
-      var snappingRange = _data.interactionEvents.snappingRange;
+      var fuzzinessRange = _data.interactionEvents.snappingRange;
 
-      var foundBar = _interactionData.withNullableItems().singleWhere((data) {
+      var interactableBars = _interactionData.where((data) {
         // Check if we have to find the nearest bar to interaction position
         if (snapToNearestBar) {
-          return data!.findNearest(localPosition, snappingRange);
+          return data.isNearest(localPosition, fuzzinessRange);
         } else {
-          return data!.contains(localPosition);
+          return data.contains(localPosition);
         }
-      }, orElse: () => null);
+      }).toList();
 
-      if (foundBar != null) {
+      if (interactableBars.length == 1) {
         // A Bar has been identified within the Interaction Parameters.
         // We will return it's details to the user.
         return BarInteractionResult(
-          barGroup: foundBar.barGroup,
-          barGroupIndex: foundBar.barGroupIndex,
-          barData: foundBar.barData,
-          barDataIndex: foundBar.barDataIndex,
+          barGroup: interactableBars.first.barGroup,
+          barGroupIndex: interactableBars.first.barGroupIndex,
+          barData: interactableBars.first.barData,
+          barDataIndex: interactableBars.first.barDataIndex,
           localPosition: localPosition,
           interactionType: type,
         );
-      }
+      } else if (interactableBars.length > 1) {
+        // Multiple Bars found because of Fuzziness Overlap
+        // We reduce the results to find the closest bar to interaction point
+        var closestBar = _findNearestBar(
+          localPosition,
+          interactableBars,
+          fuzzinessRange: fuzzinessRange,
+        );
 
-      // We couldn't find any Bar within Interaction Parameters
-      return null;
+        return BarInteractionResult(
+          barGroup: closestBar.barGroup,
+          barGroupIndex: closestBar.barGroupIndex,
+          barData: closestBar.barData,
+          barDataIndex: closestBar.barDataIndex,
+          localPosition: localPosition,
+          interactionType: type,
+        );
+      } else {
+        // We couldn't find any Bar within Interaction Parameters
+        return null;
+      }
     }
     // No Interactions for this BarSeries.
     return null;
@@ -336,9 +366,9 @@ extension _InteractionValidators on _BarInteractionData {
   // If the Bar's rectangle boundaries contains the interaction position
   bool contains(Offset position) => rect.contains(position);
 
-  bool findNearest(Offset position, double snappingRange) {
-    var dxLeft = rect.left - snappingRange;
-    var dxRight = rect.right + snappingRange;
+  bool isNearest(Offset position, double fuzzinessRange) {
+    var dxLeft = rect.left - fuzzinessRange;
+    var dxRight = rect.right + fuzzinessRange;
     // Find if we can snap to the nearest bar
     return position.dx.isBetween(dxLeft, dxRight);
   }

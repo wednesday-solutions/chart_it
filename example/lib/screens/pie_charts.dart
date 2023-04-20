@@ -74,6 +74,14 @@ class _TestPieChartsState extends State<TestPieCharts> {
                   ),
                 ),
                 donutLabel: () => 'Crypto',
+                interactionEvents: PieInteractionEvents(
+                  isEnabled: true,
+                  onTap: (PieInteractionResult result) {
+                    // print('Touched Bar ${result.barDataIndex} of '
+                    //     'BarGroup: ${result.barGroup.label?.call(0)} and '
+                    //     'of type ${result.barGroup.runtimeType.toString()}');
+                  },
+                ),
                 slices: makeSliceData(context),
               ),
             ),

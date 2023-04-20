@@ -91,9 +91,9 @@ class _TestBarChartsState extends State<TestBarCharts> {
                   snapToNearestPoint: true,
                   snappingRange: 50,
                   onTap: (BarInteractionResult result) {
-                    print('Touched Bar ${result.barDataIndex} of '
-                        'BarGroup: ${result.barGroup.label?.call(0)} and '
-                        'of type ${result.barGroup.runtimeType.toString()}');
+                    // print('Touched Bar ${result.barDataIndex} of '
+                    //     'BarGroup: ${result.barGroup.label?.call(0)} and '
+                    //     'of type ${result.barGroup.runtimeType.toString()}');
                   },
                 ),
                 seriesStyle: const BarDataStyle(

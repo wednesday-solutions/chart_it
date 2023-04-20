@@ -35,7 +35,7 @@ class PiePainter implements RadialPainter {
   ) {
     // We will perform HitTest only if Interactions are enabled for this series.
     if (_data.interactionEvents.isEnabled) {
-      _interactionData.withNullableItems().singleWhere((data){
+      _interactionData.withNullableItems().singleWhere((data) {
         return data!.contains(localPosition);
       }, orElse: () => null);
     }

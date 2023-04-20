@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 
 class PieInteractionEvents extends TouchInteractionEvents<PieInteractionResult>
     with EquatableMixin {
-
   const PieInteractionEvents({
     required super.isEnabled,
     super.onTap,

@@ -120,7 +120,7 @@ class RadialController extends ChangeNotifier
       throw ArgumentError('Radial Charts cannot display Negative Values!');
     }
 
-    return RadialData(state: states);
+    return RadialData(states: states);
   }
 
   @override
@@ -159,6 +159,13 @@ class RadialController extends ChangeNotifier
     TouchInteractionType interactionType,
     Offset localPosition,
   ) {
-    // TODO: implement onInteraction
+    // Fire all painters to perform Hit Test
+    for (var i = 0; i < targetData.states.length; i++) {
+      final state = targetData.states[i];
+      if (state is PieSeriesState) {
+        var result = state.painter.hitTest(interactionType, localPosition);
+        if (result != null) state.data.interactionEvents.onInteraction(result);
+      }
+    }
   }
 }

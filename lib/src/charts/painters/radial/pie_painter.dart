@@ -7,10 +7,14 @@ import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 class PiePainter implements RadialPainter {
+  final List<_SliceInteractionData> _interactionData = [];
+
   // late PieSeriesConfig _config;
   late PieSeries _data;
 
@@ -22,6 +26,21 @@ class PiePainter implements RadialPainter {
     _arcPaint = Paint();
     _arcStroke = Paint()..style = PaintingStyle.stroke;
     _donutFill = Paint();
+  }
+
+  @override
+  PieInteractionResult? hitTest(
+    TouchInteractionType type,
+    Offset localPosition,
+  ) {
+    // We will perform HitTest only if Interactions are enabled for this series.
+    if (_data.interactionEvents.isEnabled) {
+      _interactionData.withNullableItems().singleWhere((data){
+        return data!.contains(localPosition);
+      }, orElse: () => null);
+    }
+    // No Interactions for this PieSeries.
+    return null;
   }
 
   @override
@@ -285,4 +304,21 @@ class PiePainter implements RadialPainter {
     );
     textPainter.paint(canvas: canvas, offset: offset);
   }
+}
+
+class _SliceInteractionData {
+  final Path arc;
+  final SliceData slice;
+  final int sliceDataIndex;
+
+  _SliceInteractionData({
+    required this.arc,
+    required this.slice,
+    required this.sliceDataIndex,
+  });
+}
+
+extension _InteractionValidators on _SliceInteractionData {
+  // If the Slice Arc boundaries contains the interaction position
+  bool contains(Offset position) => arc.contains(position);
 }

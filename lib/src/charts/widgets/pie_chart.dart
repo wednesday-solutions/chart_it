@@ -101,7 +101,7 @@ class _PieChartState extends State<PieChart>
           width: widget.width,
           height: widget.height,
           style: style,
-          states: _controller.currentData.state,
+          states: _controller.currentData.states,
           interactionDispatcher: _controller,
         );
       },

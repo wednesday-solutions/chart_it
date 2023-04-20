@@ -1,6 +1,7 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/pie/pie_interactions.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data_style.dart';
 import 'package:chart_it/src/charts/widgets/pie_chart.dart';
@@ -16,7 +17,7 @@ typedef DonutLabel = String Function();
 /// The PieSeries is **mandatory** to be provided to the [PieChart] widget.
 ///
 /// See Also: [RadialSeries]
-class PieSeries extends RadialSeries with EquatableMixin {
+class PieSeries extends RadialSeries<PieInteractionEvents> with EquatableMixin {
   /// The size of the Donut Circle. Defaults to zero.
   final double donutRadius;
 
@@ -58,6 +59,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
     this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.slices,
+    super.interactionEvents = const PieInteractionEvents(isEnabled: false),
   })  : assert(donutRadius >= 0.0, 'Donut Radius cannot be Negative!'),
         assert(
           donutLabel != null ? donutRadius > 0.0 : true,
@@ -113,6 +115,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
         target.donutRadius,
         t,
       ),
+      interactionEvents: target.interactionEvents,
     );
   }
 }
@@ -132,17 +135,4 @@ class PieSeriesConfig extends RadialConfig {
       onUpdate(slice.value.toDouble());
     }
   }
-}
-
-/// A Tween to interpolate between two [PieSeries]
-///
-/// [end] object must not be null.
-class PieSeriesTween extends Tween<PieSeries> {
-  PieSeriesTween({
-    required PieSeries? begin,
-    required PieSeries end,
-  }) : super(begin: begin, end: end);
-
-  @override
-  PieSeries lerp(double t) => PieSeries.lerp(begin, end!, t);
 }

@@ -70,5 +70,12 @@ class BarInteractionResult extends TouchInteractionResult with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [barGroup, barGroupIndex, barData, barDataIndex];
+  List<Object?> get props => [
+        barGroup,
+        barGroupIndex,
+        barData,
+        barDataIndex,
+        super.localPosition,
+        super.interactionType,
+      ];
 }

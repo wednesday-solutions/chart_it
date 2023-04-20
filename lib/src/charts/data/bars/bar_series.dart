@@ -10,7 +10,6 @@ import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/animation.dart';
 
 /// This class defines the Data Set to be provided to the BarChart
 /// and the Global Styling options.
@@ -130,20 +129,4 @@ class BarSeriesConfig extends CartesianConfig {
       onUpdate(minX, maxX, minY, maxY);
     }
   }
-}
-
-/// A Tween to interpolate between two [BarSeries]
-///
-/// [end] object must not be null.
-class BarSeriesTween extends Tween<BarSeries> {
-  /// A Tween to interpolate between two [BarSeries]
-  ///
-  /// [end] object must not be null.
-  BarSeriesTween({
-    required BarSeries? begin,
-    required BarSeries end,
-  }) : super(begin: begin, end: end);
-
-  @override
-  BarSeries lerp(double t) => BarSeries.lerp(begin, end!, t);
 }

@@ -10,7 +10,7 @@ import 'package:equatable/equatable.dart';
 /// Defines a Simple singular Bar with a Single Y-Value
 ///
 /// See Also: [BarGroup]
-class SimpleBar extends BarGroup with EquatableMixin {
+class SimpleBar extends BarGroup {
   /// The Y-Value data ([BarData]) for this Bar.
   final BarData yValue;
 
@@ -30,8 +30,7 @@ class SimpleBar extends BarGroup with EquatableMixin {
   });
 
   @override
-  List<Object?> get props =>
-      [super.xValue, yValue, super.label, super.labelStyle, super.groupStyle];
+  List<Object?> get props => [super.xValue, yValue, super.labelStyle, super.groupStyle];
 
   /// Lerps between two [SimpleBar]s for a factor [t]
   static SimpleBar lerp(BarGroup? current, BarGroup target, double t) {

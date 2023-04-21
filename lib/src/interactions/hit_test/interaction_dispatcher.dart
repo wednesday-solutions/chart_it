@@ -41,6 +41,10 @@ mixin InteractionDispatcher {
   }
 
   void onPanCancel() {
+    final latestPanOffset = _latestPanOffset;
+    if (latestPanOffset != null) {
+      onInteraction(TouchInteractionType.dragEnd, latestPanOffset);
+    }
     _latestPanOffset = null;
   }
 

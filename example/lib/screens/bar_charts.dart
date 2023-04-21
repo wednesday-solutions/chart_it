@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-var rng = Random();
 
 class TestBarCharts extends StatefulWidget {
   const TestBarCharts({Key? key}) : super(key: key);
@@ -30,13 +29,75 @@ class _TestBarChartsState extends State<TestBarCharts> {
     ],
   );
 
+  getSeries() {
+    return BarSeries(
+      interactionEvents: BarInteractionEvents(
+          isEnabled: true,
+          snapToNearestBar: true,
+          fuzziness: 0,
+          onDrag: (BarInteractionResult result) {
+            setState(() {
+              _interactionIndex = result.barGroupIndex;
+            });
+          },
+          onDragEnd: (_) {
+            setState(() {
+              _interactionIndex = -1;
+            });
+          }
+      ),
+      seriesStyle: const BarDataStyle(
+        barWidth: 10.0,
+        barColor: Color(0xFFBDA2F4),
+        strokeWidth: 3.0,
+        strokeColor: Color(0xFF7136E7),
+        cornerRadius: BorderRadius.only(
+          topLeft: Radius.circular(5.0),
+          topRight: Radius.circular(5.0),
+        ),
+      ),
+      barData: makeGroupData(context),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+
+    final data1 = getSeries();
+    final data2 = getSeries();
+
+    final bar1 = SimpleBar(
+      xValue:  1,
+      label: (value) => 'Group  1',
+      barSpacing:  50,
+      labelStyle: ChartTextStyle(
+        textStyle: GoogleFonts.poppins(
+          color: theme.colorScheme.inverseSurface,
+        ),
+      ),
+      yValue: BarData(yValue: 10),
+    );
+    final bar2 = SimpleBar(
+      xValue:  1,
+      label: (value) => 'Group 1',
+      barSpacing:  50,
+      labelStyle: ChartTextStyle(
+        textStyle: GoogleFonts.poppins(
+          color: theme.colorScheme.inverseSurface,
+        ),
+      ),
+      yValue: BarData(yValue: 10),
+    );
+
+    print("$bar1 $bar2");
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.large(
         child: const Icon(Icons.refresh_rounded),
-        onPressed: () => setState(() {}),
+        onPressed: () => setState(() {
+          data2;
+        }),
       ),
       body: Column(
         children: [
@@ -61,6 +122,8 @@ class _TestBarChartsState extends State<TestBarCharts> {
           ),
           Expanded(
             child: BarChart(
+              animationDuration: Duration(milliseconds: 200),
+              maxYValue: 15,
               title: const Text('Demo Chart'),
               chartStyle: CartesianChartStyle(
                 backgroundColor: theme.colorScheme.surface,
@@ -82,32 +145,10 @@ class _TestBarChartsState extends State<TestBarCharts> {
                   gridLineWidth: 1.0,
                   gridLineColor: theme.colorScheme.onBackground,
                   xUnitValue: 1.0,
-                  yUnitValue: 10.0,
+                  yUnitValue: 5.0,
                 ),
               ),
-              data: BarSeries(
-                interactionEvents: BarInteractionEvents(
-                  isEnabled: true,
-                  snapToNearestPoint: true,
-                  snappingRange: 50,
-                  onTap: (BarInteractionResult result) {
-                    // print('Touched Bar ${result.barDataIndex} of '
-                    //     'BarGroup: ${result.barGroup.label?.call(0)} and '
-                    //     'of type ${result.barGroup.runtimeType.toString()}');
-                  },
-                ),
-                seriesStyle: const BarDataStyle(
-                  barWidth: 10.0,
-                  barColor: Color(0xFFBDA2F4),
-                  strokeWidth: 3.0,
-                  strokeColor: Color(0xFF7136E7),
-                  cornerRadius: BorderRadius.only(
-                    topLeft: Radius.circular(5.0),
-                    topRight: Radius.circular(5.0),
-                  ),
-                ),
-                barData: makeGroupData(context),
-              ),
+              data: data1,
             ),
           ),
         ],
@@ -116,73 +157,75 @@ class _TestBarChartsState extends State<TestBarCharts> {
   }
 }
 
+int _interactionIndex = -1;
+
 List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
-  double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(5, (index) {
-    if (rng.nextBool()) {
+  List<BarGroup> barSeries = List.generate(2, (index) {
+    if (true) {
       return SimpleBar(
         xValue: index + 1,
         label: (value) => 'Group ${index + 1}',
+        barSpacing: _interactionIndex == index ? 60: 50,
         labelStyle: ChartTextStyle(
           textStyle: GoogleFonts.poppins(
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: next(10, 100)),
+        yValue: BarData(yValue: _interactionIndex == index ? 10.5 : 10),
       );
     } else {
-      return MultiBar(
-        xValue: index + 1,
-        groupSpacing: 10.0,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
-        yValues: [
-          BarData(
-            barStyle: const BarDataStyle(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFFBDA2F4),
-                  Color(0xFF7136E7),
-                ],
-              ),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFFBDA2F4),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
-            ),
-            yValue: next(10, 100),
-          ),
-          BarData(
-            barStyle: const BarDataStyle(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFFE39F56),
-                  Color(0xFFBDA2F4),
-                ],
-              ),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFFE39F56),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
-            ),
-            yValue: next(10, 100),
-          ),
-        ],
-      );
+      // return MultiBar(
+      //   xValue: index + 1,
+      //   groupSpacing: 10.0,
+      //   label: (value) => 'Group ${index + 1}',
+      //   labelStyle: ChartTextStyle(
+      //     textStyle: GoogleFonts.poppins(
+      //       color: theme.colorScheme.inverseSurface,
+      //     ),
+      //   ),
+      //   yValues: [
+      //     BarData(
+      //       barStyle: const BarDataStyle(
+      //         gradient: LinearGradient(
+      //           begin: Alignment.bottomCenter,
+      //           end: Alignment.topCenter,
+      //           colors: [
+      //             Color(0xFFBDA2F4),
+      //             Color(0xFF7136E7),
+      //           ],
+      //         ),
+      //         strokeWidth: 3.0,
+      //         strokeColor: Color(0xFFBDA2F4),
+      //         cornerRadius: BorderRadius.only(
+      //           topLeft: Radius.circular(5.0),
+      //           topRight: Radius.circular(5.0),
+      //         ),
+      //       ),
+      //       yValue: next(10, 100),
+      //     ),
+      //     BarData(
+      //       barStyle: const BarDataStyle(
+      //         gradient: LinearGradient(
+      //           begin: Alignment.bottomCenter,
+      //           end: Alignment.topCenter,
+      //           colors: [
+      //             Color(0xFFE39F56),
+      //             Color(0xFFBDA2F4),
+      //           ],
+      //         ),
+      //         strokeWidth: 3.0,
+      //         strokeColor: Color(0xFFE39F56),
+      //         cornerRadius: BorderRadius.only(
+      //           topLeft: Radius.circular(5.0),
+      //           topRight: Radius.circular(5.0),
+      //         ),
+      //       ),
+      //       yValue: next(10, 100),
+      //     ),
+      //   ],
+      // );
     }
   });
 

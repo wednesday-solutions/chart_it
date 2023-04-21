@@ -1,6 +1,7 @@
 import 'package:chart_it/src/interactions/data/touch_interactions.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class TouchInteractionEvents<T extends TouchInteractionResult> {
+abstract class TouchInteractionEvents<T extends TouchInteractionResult> with EquatableMixin {
   final bool isEnabled;
   final void Function(T interactionResult)? onRawInteraction;
   final void Function(T interactionResult)? onTap;
@@ -28,10 +29,10 @@ abstract class TouchInteractionEvents<T extends TouchInteractionResult> {
         onDoubleTap?.call(interactionResult);
         break;
       case TouchInteractionType.dragUpdate:
-        onDragStart?.call(interactionResult);
+        onDrag?.call(interactionResult);
         break;
       case TouchInteractionType.dragStart:
-        onDrag?.call(interactionResult);
+        onDragStart?.call(interactionResult);
         break;
       case TouchInteractionType.dragEnd:
         onDragEnd?.call(interactionResult);

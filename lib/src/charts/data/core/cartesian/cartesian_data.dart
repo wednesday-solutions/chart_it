@@ -2,6 +2,7 @@ import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
@@ -20,7 +21,7 @@ enum CartesianChartAlignment {
 /// Orientation of the Chart
 enum CartesianChartOrientation { vertical, horizontal }
 
-class CartesianData {
+class CartesianData with EquatableMixin {
   List<PaintingState> states;
   CartesianRangeResult range;
 
@@ -46,6 +47,10 @@ class CartesianData {
       range: CartesianRangeResult.lerp(current?.range, target.range, t),
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [states, range];
 }
 
 class CartesianDataTween extends Tween<CartesianData> {
@@ -63,7 +68,7 @@ class CartesianDataTween extends Tween<CartesianData> {
 
 /// Base Series for any type of Data which can be plotted
 /// on a Cartesian Chart.
-abstract class CartesianSeries<E extends TouchInteractionEvents> {
+abstract class CartesianSeries<E extends TouchInteractionEvents> with EquatableMixin {
   final E interactionEvents;
 
   CartesianSeries({required this.interactionEvents});
@@ -115,4 +120,4 @@ abstract class CartesianSeries<E extends TouchInteractionEvents> {
   }
 }
 
-abstract class CartesianConfig {}
+abstract class CartesianConfig with EquatableMixin {}

@@ -169,8 +169,12 @@ class CartesianController extends ChangeNotifier
   @override
   CartesianData setData(List<CartesianSeries> data) {
     // Get the cacheKey as a Set of our CartesianSeries.
-    var cacheKey = EquatableList(data);
-
+    var cacheKey = EquatableList<CartesianSeries>(data);
+    _cachedValues.keys.length;
+    _cachedValues.keys.forEach((element) {
+      print("CACHE EQUALS: ${element == cacheKey}");
+    });
+    print("CACHE HIT: ${cacheKey.hashCode}");
     if (_cachedValues.containsKey(cacheKey)) {
       // Cache entry found. Just return the CartesianData for this Series.
       targetData = _cachedValues[cacheKey]!;

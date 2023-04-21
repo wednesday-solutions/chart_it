@@ -4,35 +4,29 @@ import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 
-class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult>
-    with EquatableMixin {
-  final bool snapToNearestPoint;
-  final double snappingRange;
+class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult> {
+  final bool snapToNearestBar;
+  final double fuzziness;
 
   const BarInteractionEvents({
     required super.isEnabled,
-    this.snapToNearestPoint = true,
-    this.snappingRange = 0.0,
+    this.snapToNearestBar = true,
+    this.fuzziness = 0.0,
     super.onTap,
     super.onDoubleTap,
     super.onDragStart,
     super.onDrag,
     super.onDragEnd,
   }) : assert(
-          snappingRange > 0.0 ? snapToNearestPoint : true,
+          fuzziness > 0.0 ? snapToNearestBar : true,
           'For snappingRange to work, snapToNearestPoint should be enabled!',
         );
 
   @override
   List<Object?> get props => [
         super.isEnabled,
-        snapToNearestPoint,
-        snappingRange,
-        super.onTap,
-        super.onDoubleTap,
-        super.onDragStart,
-        super.onDrag,
-        super.onDragEnd,
+        snapToNearestBar,
+        fuzziness,
       ];
 }
 

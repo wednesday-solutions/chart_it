@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 
-abstract class TouchInteractionResult {
+abstract class TouchInteractionResult with EquatableMixin {
   final Offset? localPosition;
   final TouchInteractionType interactionType;
 

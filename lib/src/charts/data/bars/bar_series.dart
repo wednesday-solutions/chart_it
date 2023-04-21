@@ -17,8 +17,7 @@ import 'package:equatable/equatable.dart';
 /// The BarSeries is **mandatory** to be provided to the [BarChart] widget.
 ///
 /// See Also: [CartesianSeries]
-class BarSeries extends CartesianSeries<BarInteractionEvents>
-    with EquatableMixin {
+class BarSeries extends CartesianSeries<BarInteractionEvents> {
   /// Sets uniform styling for All the Bars in this [BarSeries].
   ///
   /// {@macro bar_styling_order}
@@ -129,4 +128,8 @@ class BarSeriesConfig extends CartesianConfig {
       onUpdate(minX, maxX, minY, maxY);
     }
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [maxBarsInGroup];
 }

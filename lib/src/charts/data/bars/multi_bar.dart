@@ -13,7 +13,7 @@ import 'package:equatable/equatable.dart';
 /// provide us the Y-Value for each individual bar in the group.
 ///
 /// See Also: [BarGroup]
-class MultiBar extends BarGroup with EquatableMixin {
+class MultiBar extends BarGroup {
   /// The list of [BarData] which gives us the Y-Value and
   /// the styling for each individual bars in this group.
   final List<BarData> yValues;
@@ -57,7 +57,7 @@ class MultiBar extends BarGroup with EquatableMixin {
         assert(groupSpacing >= 0.0, "groupSpacing cannot be Negative!");
 
   @override
-  List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
+  List<Object?> get props => [xValue, yValues, labelStyle, groupStyle];
 
   /// Lerps between two [MultiBar]s for a factor [t]
   static MultiBar lerp(BarGroup? current, BarGroup target, double t) {

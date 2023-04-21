@@ -18,10 +18,7 @@ class BarInteractionEvents
     super.onDragStart,
     super.onDrag,
     super.onDragEnd,
-  }) : assert(
-          fuzziness > 0.0 ? snapToNearestBar : true,
-          'For fuzziness to work, snapToNearestPoint should be enabled!',
-        );
+  });
 
   @override
   List<Object?> get props => [isEnabled, snapToNearestBar, fuzziness];

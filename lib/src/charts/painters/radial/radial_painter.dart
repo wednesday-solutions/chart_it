@@ -4,12 +4,12 @@ import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
 abstract class RadialPainter<T extends TouchInteractionResult> {
+  T? hitTest(TouchInteractionType type, Offset localPosition);
+
   void paint(
     RadialSeries lerp,
     Canvas canvas,
     RadialChartPainter chart,
     RadialConfig config,
   );
-
-  T? hitTest(TouchInteractionType type, Offset localPosition);
 }

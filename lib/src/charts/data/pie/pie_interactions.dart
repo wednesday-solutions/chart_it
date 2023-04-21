@@ -15,7 +15,7 @@ class PieInteractionEvents extends TouchInteractionEvents<PieInteractionResult>
   });
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [isEnabled];
 }
 
 class PieInteractionResult extends TouchInteractionResult with EquatableMixin {
@@ -44,10 +44,6 @@ class PieInteractionResult extends TouchInteractionResult with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [
-        slice,
-        sliceDataIndex,
-        super.localPosition,
-        super.interactionType,
-      ];
+  List<Object?> get props =>
+      [slice, sliceDataIndex, localPosition, interactionType];
 }

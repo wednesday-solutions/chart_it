@@ -59,11 +59,11 @@ class CartesianRangeResult with EquatableMixin {
   @override
   // TODO: implement props
   List<Object?> get props => [
-    xUnitValue,
-    yUnitValue,
-    maxXRange,
-    maxYRange,
-    minXRange,
-    minYRange,
-  ];
+        xUnitValue,
+        yUnitValue,
+        maxXRange,
+        maxYRange,
+        minXRange,
+        minYRange,
+      ];
 }

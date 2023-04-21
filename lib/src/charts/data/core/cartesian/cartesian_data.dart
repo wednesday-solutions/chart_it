@@ -25,16 +25,10 @@ class CartesianData with EquatableMixin {
   List<PaintingState> states;
   CartesianRangeResult range;
 
-  CartesianData({
-    required this.states,
-    required this.range,
-  });
+  CartesianData({required this.states, required this.range});
 
   factory CartesianData.zero(CartesianRangeResult targetRange) {
-    return CartesianData(
-      states: List.empty(),
-      range: targetRange,
-    );
+    return CartesianData(states: List.empty(), range: targetRange);
   }
 
   static CartesianData lerp(
@@ -49,8 +43,7 @@ class CartesianData with EquatableMixin {
   }
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [states, range];
+  List<Object> get props => [states, range];
 }
 
 class CartesianDataTween extends Tween<CartesianData> {
@@ -68,7 +61,8 @@ class CartesianDataTween extends Tween<CartesianData> {
 
 /// Base Series for any type of Data which can be plotted
 /// on a Cartesian Chart.
-abstract class CartesianSeries<E extends TouchInteractionEvents> with EquatableMixin {
+abstract class CartesianSeries<E extends TouchInteractionEvents>
+    with EquatableMixin {
   final E interactionEvents;
 
   CartesianSeries({required this.interactionEvents});

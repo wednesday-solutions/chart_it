@@ -9,7 +9,6 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
-import 'package:equatable/equatable.dart';
 
 /// This class defines the Data Set to be provided to the BarChart
 /// and the Global Styling options.
@@ -52,12 +51,8 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
   factory BarSeries.zero() => BarSeries(barData: List.empty());
 
   @override
-  List<Object?> get props => [
-        labelStyle,
-        seriesStyle,
-        barData,
-        super.interactionEvents,
-      ];
+  List<Object?> get props =>
+      [labelStyle, seriesStyle, barData, interactionEvents];
 
   /// Lerps between two [BarSeries] for a factor [t]
   static BarSeries lerp(
@@ -130,6 +125,5 @@ class BarSeriesConfig extends CartesianConfig {
   }
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [maxBarsInGroup];
+  List<Object> get props => [maxBarsInGroup];
 }

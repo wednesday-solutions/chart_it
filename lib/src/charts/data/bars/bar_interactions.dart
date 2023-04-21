@@ -4,7 +4,8 @@ import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 
-class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult> {
+class BarInteractionEvents
+    extends TouchInteractionEvents<BarInteractionResult> {
   final bool snapToNearestBar;
   final double fuzziness;
 
@@ -19,15 +20,11 @@ class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult> 
     super.onDragEnd,
   }) : assert(
           fuzziness > 0.0 ? snapToNearestBar : true,
-          'For snappingRange to work, snapToNearestPoint should be enabled!',
+          'For fuzziness to work, snapToNearestPoint should be enabled!',
         );
 
   @override
-  List<Object?> get props => [
-        super.isEnabled,
-        snapToNearestBar,
-        fuzziness,
-      ];
+  List<Object?> get props => [isEnabled, snapToNearestBar, fuzziness];
 }
 
 class BarInteractionResult extends TouchInteractionResult with EquatableMixin {
@@ -69,7 +66,7 @@ class BarInteractionResult extends TouchInteractionResult with EquatableMixin {
         barGroupIndex,
         barData,
         barDataIndex,
-        super.localPosition,
-        super.interactionType,
+        localPosition,
+        interactionType,
       ];
 }

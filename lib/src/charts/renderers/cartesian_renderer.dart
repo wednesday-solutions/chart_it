@@ -124,9 +124,9 @@ class CartesianRenderBox extends RenderBox {
       ..onEnd = interactionDispatcher.onPanEnd;
 
     ScaleGestureRecognizer()
-    ..onEnd = (_) {
-      interactionDispatcher.onPanEnd(DragEndDetails());
-    };
+      ..onEnd = (_) {
+        interactionDispatcher.onPanEnd(DragEndDetails());
+      };
   }
 
   @override

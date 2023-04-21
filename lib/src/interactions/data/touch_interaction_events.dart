@@ -1,7 +1,8 @@
 import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class TouchInteractionEvents<T extends TouchInteractionResult> with EquatableMixin {
+abstract class TouchInteractionEvents<T extends TouchInteractionResult>
+    with EquatableMixin {
   final bool isEnabled;
   final void Function(T interactionResult)? onRawInteraction;
   final void Function(T interactionResult)? onTap;

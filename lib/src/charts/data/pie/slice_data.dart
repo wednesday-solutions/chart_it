@@ -34,9 +34,6 @@ class SliceData extends Equatable {
     this.style,
   });
 
-  @override
-  List<Object?> get props => [style, label, labelStyle, value];
-
   /// Lerps between two [SliceData] values for a factor [t]
   static SliceData lerp(
     SliceData? current,
@@ -66,4 +63,7 @@ class SliceData extends Equatable {
       lerpList(current, target, t, lerp: (begin, end, t) {
         return SliceData.lerp(begin, end, donutRadius, t);
       });
+
+  @override
+  List<Object?> get props => [style, labelStyle, value];
 }

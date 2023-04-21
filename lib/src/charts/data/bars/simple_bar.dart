@@ -5,7 +5,6 @@ import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
-import 'package:equatable/equatable.dart';
 
 /// Defines a Simple singular Bar with a Single Y-Value
 ///
@@ -28,9 +27,6 @@ class SimpleBar extends BarGroup {
     super.labelStyle,
     super.groupStyle,
   });
-
-  @override
-  List<Object?> get props => [super.xValue, yValue, super.labelStyle, super.groupStyle];
 
   /// Lerps between two [SimpleBar]s for a factor [t]
   static SimpleBar lerp(BarGroup? current, BarGroup target, double t) {
@@ -59,4 +55,7 @@ class SimpleBar extends BarGroup {
       throw Exception('Both current & target data should be of same series!');
     }
   }
+
+  @override
+  List<Object?> get props => [xValue, yValue, labelStyle, groupStyle];
 }

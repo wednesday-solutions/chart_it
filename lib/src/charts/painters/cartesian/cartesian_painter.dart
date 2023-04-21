@@ -4,12 +4,12 @@ import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 import 'package:flutter/material.dart';
 
 abstract class CartesianPainter<T extends TouchInteractionResult> {
+  T? hitTest(TouchInteractionType type, Offset localPosition);
+
   void paint(
     CartesianSeries lerp,
     Canvas canvas,
     CartesianChartPainter chart,
     CartesianConfig config,
   );
-
-  T? hitTest(TouchInteractionType type, Offset localPosition);
 }

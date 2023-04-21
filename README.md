@@ -1,9 +1,10 @@
 # Chart It
 
-[![pub version](https://img.shields.io/badge/pub-v0.0.5-blue?style=for-the-badge&logo=flutter)](https://pub.dev/packages/chart_it)
-[![pub likes](https://img.shields.io/pub/likes/chart_it?color=29B6F7&label=pub%20likes&style=for-the-badge)](https://pub.dev/packages/chart_it)
-[![pub points](https://img.shields.io/pub/points/chart_it?label=pub%20points&style=for-the-badge)](https://pub.dev/packages/chart_it)
-[![license](https://img.shields.io/github/license/wednesday-solutions/chart_it?color=brightgreen&style=for-the-badge)](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE)
+[![wednesday](https://img.shields.io/badge/Wednesday-4247E8?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOSAyOCI+PHBhdGggZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMjMuMDEgMTcuOTVjMCAuNzYtLjM3IDEuNDYtLjk5IDEuODVsLTEuNyAxLjM2Yy0uMTYuMS0uMzYtLjAyLS4zNi0uMjJ2LTguNGEuOTkuOTkgMCAwIDAtLjY3LS45NGwtMi4xLS42N2EuNDMuNDMgMCAwIDAtLjU2LjR2Ny40OWwtMS45OC0yLjQ0YS43LjcgMCAwIDAtLjc1LjAxTDEyIDE4Ljgydi03LjQ1YzAtLjMtLjMtLjUtLjU4LS40bC0xLjkuNzRhMSAxIDAgMCAwLS42Mi45M3Y4LjNjMCAuMi0uMi4zMi0uMzcuMjJMNi44NyAxOS44YTIuMTkgMi4xOSAwIDAgMS0uOTgtMS44NXYtNy4yMmMwLS44Ni40Ny0xLjYzIDEuMjEtMS45OGw2LjM4LTIuOTVjLjUtLjIzIDEuMDgtLjI0IDEuNTktLjAxbDYuNyAyLjk3YTIuMTYgMi4xNiAwIDAgMSAxLjI1IDJ2Ny4xOVptLTYuOTEgNC4zNy0xLjA2LjU0Yy0uNC4yLS44OC4yLTEuMjggMGwtMS4wNi0uNTRjLS4wNiAwLS4wOC0uMS0uMDQtLjE1bDEuNzQtMi4xIDEuNzQgMi4xYy4wNS4wNS4wMi4xNS0uMDQuMTVaTTE0LjUgMGExNCAxNCAwIDEgMCAwIDI4IDE0IDE0IDAgMCAwIDAtMjhaIi8+PC9zdmc+&style=for-the-badge)](https://www.wednesday.is/)
+[![pub version](https://img.shields.io/pub/v/chart_it?labelColor=31C4F3&color=389AD5&logo=flutter&logoColor=blue&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![pub likes](https://img.shields.io/pub/likes/chart_it?labelColor=38C1D0&color=45A4B8&label=pub%20likes&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![pub points](https://img.shields.io/pub/points/chart_it?label=pub%20points&labelColor=38C1D0&color=45A4B8&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![license](https://img.shields.io/github/license/wednesday-solutions/chart_it?labelColor=EA4661&color=C13C3A&style=for-the-badge)](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE)
 
 Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
 

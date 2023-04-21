@@ -2,12 +2,14 @@
 
 Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
 
-[![pub version](https://img.shields.io/badge/pub-v0.0.5-blue?style=for-the-badge&logo=flutter)]()
+[![pub version](https://img.shields.io/badge/pub-v0.0.5-blue?style=for-the-badge&logo=flutter)](https://pub.dev/packages/chart_it)
+[![pub likes](https://img.shields.io/pub/likes/chart_it?color=29B6F7&label=pub%20likes&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![pub points](https://img.shields.io/pub/points/chart_it?label=pub%20points&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![license](https://img.shields.io/github/license/wednesday-solutions/chart_it?color=brightgreen&style=for-the-badge)](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE)
 
-|                                               Bar Charts                                                |                                               Pie Charts                                                |
-|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|
-| ![barcharts](https://github.com/wednesday-solutions/chart_it/raw/dev/pub_images/bar-charts-read-me.gif) | ![piecharts](https://github.com/wednesday-solutions/chart_it/raw/dev/pub_images/pie-charts-read-me.gif) |
-|                    [Read More](https://flutter.wednesday.is/charts/guides/bar-chart)                    |               [Read More](https://flutter.wednesday.is/charts/guides/pie-and-donut-chart)               |
+|          ![barcharts](pub_images/bar-charts-read-me.gif)           |               ![piecharts](pub_images/pie-charts-read-me.gif)                |
+|:------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+| [Learn More](https://flutter.wednesday.is/charts/guides/bar-chart) | [Learn More](https://flutter.wednesday.is/charts/guides/pie-and-donut-chart) |
 
 ## Installation
 Add the `chart_it` package to your project's `pubspec.yaml` file:
@@ -138,4 +140,4 @@ child: BarChart(
 
 # License
 
-Flutter Charts is licensed under the BSD-3-Clause license. Check the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for details.
+Flutter Charts is licensed under the BSD-3-Clause license. Check the [LICENSE](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE) file for details.

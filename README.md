@@ -1,11 +1,11 @@
 # Chart It
 
-Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
-
 [![pub version](https://img.shields.io/badge/pub-v0.0.5-blue?style=for-the-badge&logo=flutter)](https://pub.dev/packages/chart_it)
 [![pub likes](https://img.shields.io/pub/likes/chart_it?color=29B6F7&label=pub%20likes&style=for-the-badge)](https://pub.dev/packages/chart_it)
 [![pub points](https://img.shields.io/pub/points/chart_it?label=pub%20points&style=for-the-badge)](https://pub.dev/packages/chart_it)
 [![license](https://img.shields.io/github/license/wednesday-solutions/chart_it?color=brightgreen&style=for-the-badge)](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE)
+
+Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
 
 |          ![barcharts](pub_images/bar-charts-read-me.gif)           |               ![piecharts](pub_images/pie-charts-read-me.gif)                |
 |:------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
@@ -15,7 +15,7 @@ Chart_It is a fully written in dart, strongly customizable and seamlessly animat
 Add the `chart_it` package to your project's `pubspec.yaml` file:
 ```yaml
 dependencies:
-  chart_it: ^0.0.4
+  chart_it: ^0.0.5
 ```
 Alternatively, you can also run the following command in your Flutter Project:
 ```shell

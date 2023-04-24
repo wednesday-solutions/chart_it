@@ -92,7 +92,7 @@ class _TestBarChartsState extends State<TestBarCharts> {
           ),
           Expanded(
             child: BarChart(
-              animationDuration: Duration(milliseconds: 200),
+              animationDuration: const Duration(milliseconds: 200),
               animateOnLoad: true,
               animateOnUpdate: true,
               maxYValue: 15,

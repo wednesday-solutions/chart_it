@@ -1,4 +1,3 @@
-import 'package:chart_it/src/data/pair.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].

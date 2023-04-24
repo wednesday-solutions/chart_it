@@ -60,7 +60,8 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
     // Update the Target Data to the newest value
     final targetData = setData(newSeries);
 
-    if (latestDataDispatchedToPainting != null && latestDataDispatchedToPainting == targetData) {
+    if (latestDataDispatchedToPainting != null &&
+        latestDataDispatchedToPainting == targetData) {
       return;
     } else {
       latestDataDispatchedToPainting = targetData;

@@ -9,17 +9,16 @@ class BarInteractionEvents
   final bool snapToNearestBar;
   final double fuzziness;
 
-  const BarInteractionEvents({
-    required super.isEnabled,
-    this.snapToNearestBar = true,
-    this.fuzziness = 0.0,
-    super.onTap,
-    super.onDoubleTap,
-    super.onDragStart,
-    super.onDrag,
-    super.onDragEnd,
-    super.onRawInteraction
-  });
+  const BarInteractionEvents(
+      {required super.isEnabled,
+      this.snapToNearestBar = true,
+      this.fuzziness = 0.0,
+      super.onTap,
+      super.onDoubleTap,
+      super.onDragStart,
+      super.onDrag,
+      super.onDragEnd,
+      super.onRawInteraction});
 
   @override
   List<Object?> get props => [isEnabled, snapToNearestBar, fuzziness];

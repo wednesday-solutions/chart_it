@@ -36,13 +36,12 @@ class _TestBarChartsState extends State<TestBarCharts> {
           isEnabled: true,
           snapToNearestBar: true,
           fuzziness: 0,
-        onDrag: (result) {
+          onDrag: (result) {
             setState(() {
               _interactionIndex = result.barGroupIndex;
               _barIndex = result.barDataIndex;
             });
-        }
-      ),
+          }),
       seriesStyle: const BarDataStyle(
         barWidth: 10.0,
         barColor: Color(0xFFBDA2F4),
@@ -145,7 +144,10 @@ List<BarGroup> makeGroupData(BuildContext context) {
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: _interactionIndex == index ? 10.5 + index / 2 * 0.5: 10 + index / 2 * 0.5),
+        yValue: BarData(
+            yValue: _interactionIndex == index
+                ? 10.5 + index / 2 * 0.5
+                : 10 + index / 2 * 0.5),
       );
     } else {
       return MultiBar(
@@ -175,7 +177,11 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: _interactionIndex == index ? _barIndex == 0 ? 10.5 + index * 0.5: 10 + index * 0.5 : 10 + index * 0.5,
+            yValue: _interactionIndex == index
+                ? _barIndex == 0
+                    ? 10.5 + index * 0.5
+                    : 10 + index * 0.5
+                : 10 + index * 0.5,
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -194,7 +200,11 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: _interactionIndex == index ? _barIndex == 1 ? 10.5 + index * 0.5: 10 + index * 0.5 : 10 + index * 0.5,
+            yValue: _interactionIndex == index
+                ? _barIndex == 1
+                    ? 10.5 + index * 0.5
+                    : 10 + index * 0.5
+                : 10 + index * 0.5,
           ),
         ],
       );

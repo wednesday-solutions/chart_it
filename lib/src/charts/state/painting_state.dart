@@ -1,8 +1,9 @@
 import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/pie_series_state.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class PaintingState<SERIES, CONFIG, PAINTER> {
+abstract class PaintingState<SERIES, CONFIG, PAINTER> with EquatableMixin {
   SERIES data;
   CONFIG config;
   PAINTER painter;

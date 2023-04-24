@@ -1,3 +1,4 @@
+import 'package:chart_it/src/data/pair.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -10,6 +11,8 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
   @protected
   Tween<K> get tweenData;
 
+  K? latestDataDispatchedToPainting;
+
   set tweenData(Tween<K> newTween);
 
   AnimationController get animation;
@@ -18,7 +21,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
 
   bool get animateOnUpdate;
 
-  K setData(List<T> data);
+  Pair<K, bool> setData(List<T> data);
 
   void setAnimatableData(K data);
 
@@ -56,9 +59,15 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
     bool isInitPhase = false,
   }) {
     // Update the Target Data to the newest value
-    var newData = setData(newSeries);
+    final dataToCachePair = setData(newSeries);
+
+    if (latestDataDispatchedToPainting != null && latestDataDispatchedToPainting != dataToCachePair.first) {
+      latestDataDispatchedToPainting = dataToCachePair.first;
+      return;
+    }
+
     // Tween a List of Tweens for CartesianSeries
-    tweenData = getTweens(newData: newData, isInitPhase: isInitPhase);
+    tweenData = getTweens(newData: dataToCachePair.first, isInitPhase: isInitPhase);
 
     // Finally animate the differences
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
@@ -70,7 +79,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
         ..forward();
     } else {
       // We are to not animate the data updates
-      setAnimatableData(newData);
+      setAnimatableData(dataToCachePair.first);
       notifyListeners();
     }
   }

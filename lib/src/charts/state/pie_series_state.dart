@@ -21,4 +21,7 @@ class PieSeriesState
       painter: target.painter,
     );
   }
+
+  @override
+  List<Object?> get props => [super.data];
 }

@@ -1,9 +1,47 @@
+import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/interactions/data/touch_interaction_events.dart';
 import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 import 'package:flutter/material.dart';
 
 mixin InteractionDispatcher {
+  Offset? _latestTapOffset;
   Offset? _latestDoubleTapOffset;
   Offset? _latestPanOffset;
+
+  bool get tapRecognitionEnabled => _tapRecognitionEnabled;
+  bool _tapRecognitionEnabled = false;
+
+  bool get doubleTapRecognitionEnabled => _doubleTapRecognitionEnabled;
+  bool _doubleTapRecognitionEnabled = false;
+
+  bool get dragRecognitionEnabled => _dragRecognitionEnabled;
+  bool _dragRecognitionEnabled = false;
+
+  updateInteractionDetectionStates<T extends TouchInteractionResult>(TouchInteractionEvents<T> interactionEvents) {
+    if (interactionEvents.shouldHitTest.isFalse) return;
+
+    if (interactionEvents.onRawInteraction.isNotNull) {
+      _tapRecognitionEnabled = true;
+      _doubleTapRecognitionEnabled = true;
+      _dragRecognitionEnabled = true;
+    }
+
+    if (_tapRecognitionEnabled.isFalse) {
+      _tapRecognitionEnabled = interactionEvents.onTap.isNotNull ||
+          interactionEvents.onTapUp.isNotNull ||
+          interactionEvents.onTapDown.isNotNull;
+    }
+
+    if (_doubleTapRecognitionEnabled.isFalse) {
+      _doubleTapRecognitionEnabled = interactionEvents.onDoubleTap.isNotNull;
+    }
+
+    if (_dragRecognitionEnabled.isFalse) {
+      _dragRecognitionEnabled = interactionEvents.onDrag.isNotNull ||
+          interactionEvents.onDragStart.isNotNull ||
+          interactionEvents.onDragEnd.isNotNull;
+    }
+  }
 
   @protected
   void onInteraction(
@@ -11,8 +49,26 @@ mixin InteractionDispatcher {
     Offset localPosition,
   );
 
+  void onTapDown(TapDownDetails details) {
+    _latestTapOffset = details.localPosition;
+    onInteraction(TouchInteractionType.tapDown, details.localPosition);
+  }
+
   void onTapUp(TapUpDetails details) {
-    onInteraction(TouchInteractionType.tap, details.localPosition);
+    _latestTapOffset = details.localPosition;
+    onInteraction(TouchInteractionType.tapUp, details.localPosition);
+  }
+
+  void onTap() {
+    final latestTapOffset = _latestTapOffset;
+    if (latestTapOffset != null) {
+      onInteraction(TouchInteractionType.tap, latestTapOffset);
+    }
+    _latestTapOffset = null;
+  }
+
+  void onTapCancel() {
+    _latestTapOffset = null;
   }
 
   void onDoubleTap() {
@@ -32,7 +88,7 @@ mixin InteractionDispatcher {
 
   void onPanStart(DragStartDetails details) {
     _latestPanOffset = details.localPosition;
-    onInteraction(TouchInteractionType.dragUpdate, details.localPosition);
+    onInteraction(TouchInteractionType.dragStart, details.localPosition);
   }
 
   void onPanUpdate(DragUpdateDetails details) {

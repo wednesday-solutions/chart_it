@@ -33,7 +33,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     Offset localPosition,
   ) {
     final data = _data;
-    if (data == null) return null;
+    if (data == null || !data.interactionEvents.shouldHitTest) return null;
 
     // We will perform HitTest only if Interactions are enabled for this series.
     if (data.interactionEvents.isEnabled) {

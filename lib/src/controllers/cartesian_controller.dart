@@ -7,6 +7,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/data/pair.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -147,6 +148,8 @@ class CartesianController extends ChangeNotifier
           var painter = BarPainter(useGraphUnits: false);
           var config = BarSeriesConfig();
 
+          updateInteractionDetectionStates(barSeries.interactionEvents);
+
           config.calcBarDataRange(barSeries.barData, (minX, maxX, minY, maxY) {
             minXValue = min(minX, minXValue);
             maxXValue = max(maxX, maxXValue);
@@ -167,13 +170,14 @@ class CartesianController extends ChangeNotifier
   }
 
   @override
-  CartesianData setData(List<CartesianSeries> data) {
+  Pair<CartesianData, bool> setData(List<CartesianSeries> data) {
     // Get the cacheKey as a List of our CartesianSeries.
     var cacheKey = EquatableList<CartesianSeries>(data);
 
     if (_cachedValues.containsKey(cacheKey)) {
       // Cache entry found. Just return the CartesianData for this Series.
       targetData = _cachedValues[cacheKey]!;
+      return targetData.to(true);
     } else {
       // No entry found, so this is probably a new series. We need to recalculate
       targetData = constructState(data);
@@ -181,8 +185,8 @@ class CartesianController extends ChangeNotifier
       if (_cachedValues.keys.length >= 100) _cachedValues.clear();
       // Update the cache with new data
       _cachedValues[cacheKey] = targetData;
+      return targetData.to(false);
     }
-    return targetData;
   }
 
   @override

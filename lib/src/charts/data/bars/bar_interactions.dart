@@ -18,6 +18,7 @@ class BarInteractionEvents
     super.onDragStart,
     super.onDrag,
     super.onDragEnd,
+    super.onRawInteraction
   });
 
   @override

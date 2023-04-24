@@ -30,13 +30,44 @@ class _TestBarChartsState extends State<TestBarCharts> {
     ],
   );
 
+  getSeries() {
+    return BarSeries(
+      interactionEvents: BarInteractionEvents(
+          isEnabled: true,
+          snapToNearestBar: true,
+          fuzziness: 0,
+        onDrag: (result) {
+            setState(() {
+              _interactionIndex = result.barGroupIndex;
+              _barIndex = result.barDataIndex;
+            });
+        }
+      ),
+      seriesStyle: const BarDataStyle(
+        barWidth: 10.0,
+        barColor: Color(0xFFBDA2F4),
+        strokeWidth: 3.0,
+        strokeColor: Color(0xFF7136E7),
+        cornerRadius: BorderRadius.only(
+          topLeft: Radius.circular(5.0),
+          topRight: Radius.circular(5.0),
+        ),
+      ),
+      barData: makeGroupData(context),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.large(
         child: const Icon(Icons.refresh_rounded),
-        onPressed: () => setState(() {}),
+        onPressed: () => setState(() {
+          _interactionIndex = -1;
+          _barIndex = -1;
+        }),
       ),
       body: Column(
         children: [
@@ -61,6 +92,10 @@ class _TestBarChartsState extends State<TestBarCharts> {
           ),
           Expanded(
             child: BarChart(
+              animationDuration: Duration(milliseconds: 200),
+              animateOnLoad: true,
+              animateOnUpdate: true,
+              maxYValue: 15,
               title: const Text('Demo Chart'),
               chartStyle: CartesianChartStyle(
                 backgroundColor: theme.colorScheme.surface,
@@ -82,31 +117,10 @@ class _TestBarChartsState extends State<TestBarCharts> {
                   gridLineWidth: 1.0,
                   gridLineColor: theme.colorScheme.onBackground,
                   xUnitValue: 1.0,
-                  yUnitValue: 10.0,
+                  yUnitValue: 5.0,
                 ),
               ),
-              data: BarSeries(
-                interactionEvents: BarInteractionEvents(
-                  isEnabled: true,
-                  snapToNearestBar: true,
-                  onTap: (BarInteractionResult result) {
-                    // print('Touched Bar ${result.barDataIndex} of '
-                    //     'BarGroup: ${result.barGroup.label?.call(0)} and '
-                    //     'of type ${result.barGroup.runtimeType.toString()}');
-                  },
-                ),
-                seriesStyle: const BarDataStyle(
-                  barWidth: 10.0,
-                  barColor: Color(0xFFBDA2F4),
-                  strokeWidth: 3.0,
-                  strokeColor: Color(0xFF7136E7),
-                  cornerRadius: BorderRadius.only(
-                    topLeft: Radius.circular(5.0),
-                    topRight: Radius.circular(5.0),
-                  ),
-                ),
-                barData: makeGroupData(context),
-              ),
+              data: getSeries(),
             ),
           ),
         ],
@@ -115,12 +129,14 @@ class _TestBarChartsState extends State<TestBarCharts> {
   }
 }
 
+int _interactionIndex = -1;
+int _barIndex = -1;
+
 List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
-  double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
   List<BarGroup> barSeries = List.generate(5, (index) {
-    if (rng.nextBool()) {
+    if (index % 2 == 0) {
       return SimpleBar(
         xValue: index + 1,
         label: (value) => 'Group ${index + 1}',
@@ -129,7 +145,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: next(10, 100)),
+        yValue: BarData(yValue: _interactionIndex == index ? 10.5 + index / 2 * 0.5: 10 + index / 2 * 0.5),
       );
     } else {
       return MultiBar(
@@ -159,7 +175,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 100),
+            yValue: _interactionIndex == index ? _barIndex == 0 ? 10.5 + index * 0.5: 10 + index * 0.5 : 10 + index * 0.5,
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -178,7 +194,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 100),
+            yValue: _interactionIndex == index ? _barIndex == 1 ? 10.5 + index * 0.5: 10 + index * 0.5 : 10 + index * 0.5,
           ),
         ],
       );

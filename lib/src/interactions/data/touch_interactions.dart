@@ -13,6 +13,8 @@ abstract class TouchInteractionResult with EquatableMixin {
 
 enum TouchInteractionType {
   tap,
+  tapUp,
+  tapDown,
   doubleTap,
   dragStart,
   dragUpdate,

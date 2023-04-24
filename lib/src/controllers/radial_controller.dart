@@ -6,7 +6,6 @@ import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/painters/radial/pie_painter.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/charts/state/pie_series_state.dart';
-import 'package:chart_it/src/data/pair.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -126,14 +125,13 @@ class RadialController extends ChangeNotifier
   }
 
   @override
-  Pair<RadialData, bool> setData(List<RadialSeries> data) {
+  RadialData setData(List<RadialSeries> data) {
     // Get the cacheKey as a List of our CartesianSeries.
     var cacheKey = EquatableList<RadialSeries>(data);
 
     if (_cachedValues.containsKey(cacheKey)) {
       // Cache entry found. Just return the CartesianData for this Series.
       targetData = _cachedValues[cacheKey]!;
-      return targetData.to(true);
     } else {
       // No entry found, so this is probably a new series. We need to recalculate
       targetData = constructState(data);
@@ -141,8 +139,8 @@ class RadialController extends ChangeNotifier
       if (_cachedValues.keys.length >= 100) _cachedValues.clear();
       // Update the cache with new data
       _cachedValues[cacheKey] = targetData;
-      return targetData.to(false);
     }
+    return targetData;
   }
 
   @override

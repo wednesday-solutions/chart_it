@@ -21,7 +21,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
 
   bool get animateOnUpdate;
 
-  Pair<K, bool> setData(List<T> data);
+  K setData(List<T> data);
 
   void setAnimatableData(K data);
 
@@ -59,15 +59,16 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
     bool isInitPhase = false,
   }) {
     // Update the Target Data to the newest value
-    final dataToCachePair = setData(newSeries);
+    final targetData = setData(newSeries);
 
-    if (latestDataDispatchedToPainting != null && latestDataDispatchedToPainting != dataToCachePair.first) {
-      latestDataDispatchedToPainting = dataToCachePair.first;
+    if (latestDataDispatchedToPainting != null && latestDataDispatchedToPainting == targetData) {
       return;
+    } else {
+      latestDataDispatchedToPainting = targetData;
     }
 
     // Tween a List of Tweens for CartesianSeries
-    tweenData = getTweens(newData: dataToCachePair.first, isInitPhase: isInitPhase);
+    tweenData = getTweens(newData: targetData, isInitPhase: isInitPhase);
 
     // Finally animate the differences
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
@@ -79,7 +80,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
         ..forward();
     } else {
       // We are to not animate the data updates
-      setAnimatableData(dataToCachePair.first);
+      setAnimatableData(targetData);
       notifyListeners();
     }
   }

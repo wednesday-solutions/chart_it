@@ -34,9 +34,12 @@ class _TestBarChartsState extends State<TestBarCharts> {
     return BarSeries(
       interactionEvents: BarInteractionEvents(
           isEnabled: true,
-          snapToNearestBar: true,
-          fuzziness: 0,
-          onDrag: (result) {
+          snapToNearestBarConfig: const SnapToNearestBarConfig(
+            snapToHeightOnDrag: true,
+            snapToHeightOnTap: false,
+            snapToHeightOnDoubleTap: false
+          ),
+          onTap: (result) {
             setState(() {
               _interactionIndex = result.barGroupIndex;
               _barIndex = result.barDataIndex;

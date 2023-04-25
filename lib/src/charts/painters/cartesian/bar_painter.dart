@@ -1,9 +1,11 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/core/shared/fuzziness.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
+import 'package:chart_it/src/extensions/interactions.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -37,28 +39,35 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
 
     // We will perform HitTest only if Interactions are enabled for this series.
     if (data.interactionEvents.isEnabled) {
-      var snapToNearestBar = data.interactionEvents.snapToNearestBar;
+      var snapToNearestBarConfig = data.interactionEvents.snapToNearestBarConfig;
       var fuzziness = data.interactionEvents.fuzziness;
 
       _BarInteractionData? previousBar;
 
       for (var i = 0; i < _interactionData.length; i++) {
         final bar = _interactionData[i];
+        final shouldSnapToHeight = snapToNearestBarConfig.shouldSnapToHeight(type);
 
-        if (bar.containsWithFuzziness(localPosition, fuzziness)) {
+        if (bar.containsWithFuzziness(
+          position: localPosition,
+          fuzziness: fuzziness,
+          snapToHeight: shouldSnapToHeight,
+        )) {
           return bar.getInteractionResult(localPosition, type);
         }
 
-        if (snapToNearestBar) {
+        if (snapToNearestBarConfig.shouldSnapToWidth(type)) {
           final isPointerAfterBar = bar.isPointerAfterBar(localPosition);
           if (!isPointerAfterBar) {
             return _snapToNearestBar(
               localPosition: localPosition,
+              fuzziness: fuzziness,
               type: type,
               previousBar: previousBar,
               currentBar: bar,
               isPointerAfterBar: isPointerAfterBar,
               isLastBar: i == _interactionData.length - 1,
+              shouldSnapToHeight: shouldSnapToHeight,
             );
           } else {
             previousBar = bar;
@@ -138,10 +147,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
   }) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-    var style = group.yValue.barStyle ??
-        group.groupStyle ??
-        _data!.seriesStyle ??
-        defaultBarSeriesStyle;
+    var style =
+        group.yValue.barStyle ?? group.groupStyle ?? _data!.seriesStyle ?? defaultBarSeriesStyle;
 
     // Since we have only one yValue, we only have to draw one bar
     _drawBar(
@@ -180,10 +187,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       final barData = group.yValues[i];
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-      var style = barData.barStyle ??
-          group.groupStyle ??
-          _data!.seriesStyle ??
-          defaultBarSeriesStyle;
+      var style =
+          barData.barStyle ?? group.groupStyle ?? _data!.seriesStyle ?? defaultBarSeriesStyle;
 
       _drawBar(
         barGroup: group,
@@ -256,8 +261,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     // Finally We will Paint our Bar on the Canvas.
     var barPaint = _barPaint
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
-          ?.toShader(bar.outerRect);
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)?.toShader(bar.outerRect);
 
     canvas.drawRRect(bar, barPaint); // draw fill
 
@@ -282,8 +286,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: group.label!(group.xValue),
         maxWidth: _unitWidth,
-        chartTextStyle:
-            group.labelStyle ?? _data!.labelStyle ?? defaultChartTextStyle,
+        chartTextStyle: group.labelStyle ?? _data!.labelStyle ?? defaultChartTextStyle,
       );
 
       textPainter.paint(
@@ -317,19 +320,28 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  BarInteractionResult _snapToNearestBar({
+  BarInteractionResult? _snapToNearestBar({
     required Offset localPosition,
+    required Fuzziness fuzziness,
     required TouchInteractionType type,
     required _BarInteractionData? previousBar,
     required _BarInteractionData currentBar,
     required bool isPointerAfterBar,
     required bool isLastBar,
+    required bool shouldSnapToHeight,
   }) {
     if (previousBar == null || (isLastBar && isPointerAfterBar)) {
       return currentBar.getInteractionResult(localPosition, type);
     }
 
     final nearestBar = _findNearestBar(localPosition, previousBar, currentBar);
+
+    // If snap to height is disabled and pointer is above the nearest bar, return null
+    if (!shouldSnapToHeight &&
+        nearestBar.isPointerAboveBar(position: localPosition, fuzziness: fuzziness)) {
+      return null;
+    }
+
     return nearestBar.getInteractionResult(localPosition, type);
   }
 
@@ -359,18 +371,32 @@ class _BarInteractionData {
     required this.barDataIndex,
   });
 
-  bool containsWithFuzziness(Offset position, double fuzziness) {
-    final left = rect.left - fuzziness;
-    final right = rect.right + fuzziness;
-    final top = rect.top - fuzziness;
-    final bottom = rect.bottom + fuzziness;
-    return position.dx >= left &&
-        position.dx < right &&
-        position.dy >= top &&
-        position.dy < bottom;
+  bool containsWithFuzziness({
+    required Offset position,
+    required Fuzziness fuzziness,
+    required bool snapToHeight,
+  }) {
+    final left = rect.left - fuzziness.left;
+    final right = rect.right + fuzziness.right;
+
+    if (snapToHeight) {
+      // If snapToHeight is true, any value of dy should return true. So we just check for dx constraints.
+      return position.dx >= left && position.dx < right;
+    }
+
+    final top = rect.top - fuzziness.top;
+    final bottom = rect.bottom + fuzziness.bottom;
+    return position.dx >= left && position.dx < right && position.dy >= top && position.dy < bottom;
   }
 
   bool isPointerAfterBar(Offset position) => position.dx > rect.right;
+
+  bool isPointerAboveBar({required Offset position, required Fuzziness fuzziness}) {
+    final top = rect.top - fuzziness.top;
+    final bottom = rect.bottom + fuzziness.bottom;
+
+    return position.dy < top || position.dy > bottom;
+  }
 
   BarInteractionResult getInteractionResult(
     Offset localPosition,

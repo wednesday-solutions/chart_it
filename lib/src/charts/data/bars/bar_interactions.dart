@@ -1,27 +1,28 @@
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/core/shared/fuzziness.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 
-class BarInteractionEvents
-    extends TouchInteractionEvents<BarInteractionResult> {
-  final bool snapToNearestBar;
-  final double fuzziness;
+class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult> {
+  final SnapToNearestBarConfig snapToNearestBarConfig;
+  final Fuzziness fuzziness;
 
-  const BarInteractionEvents(
-      {required super.isEnabled,
-      this.snapToNearestBar = true,
-      this.fuzziness = 0.0,
-      super.onTap,
-      super.onDoubleTap,
-      super.onDragStart,
-      super.onDrag,
-      super.onDragEnd,
-      super.onRawInteraction});
+  const BarInteractionEvents({
+    required super.isEnabled,
+    this.snapToNearestBarConfig = const SnapToNearestBarConfig(),
+    this.fuzziness = const Fuzziness.zero(),
+    super.onTap,
+    super.onDoubleTap,
+    super.onDragStart,
+    super.onDrag,
+    super.onDragEnd,
+    super.onRawInteraction,
+  });
 
   @override
-  List<Object?> get props => [isEnabled, snapToNearestBar, fuzziness];
+  List<Object?> get props => [isEnabled, snapToNearestBarConfig, fuzziness];
 }
 
 class BarInteractionResult extends TouchInteractionResult with EquatableMixin {
@@ -65,5 +66,41 @@ class BarInteractionResult extends TouchInteractionResult with EquatableMixin {
         barDataIndex,
         localPosition,
         interactionType,
+      ];
+}
+
+class SnapToNearestBarConfig extends Equatable {
+  final bool snapToWidthOnDrag;
+  final bool snapToHeightOnDrag;
+  final bool snapToWidthOnTap;
+  final bool snapToHeightOnTap;
+  final bool snapToWidthOnDoubleTap;
+  final bool snapToHeightOnDoubleTap;
+
+  const SnapToNearestBarConfig({
+    this.snapToWidthOnDrag = true,
+    this.snapToHeightOnDrag = false,
+    this.snapToWidthOnTap = true,
+    this.snapToHeightOnTap = false,
+    this.snapToWidthOnDoubleTap = true,
+    this.snapToHeightOnDoubleTap = false,
+  });
+
+  const SnapToNearestBarConfig.forAll({required bool snapToWidth, required bool snapToHeight})
+      : snapToWidthOnDrag = snapToWidth,
+        snapToWidthOnTap = snapToWidth,
+        snapToWidthOnDoubleTap = snapToWidth,
+        snapToHeightOnDrag = snapToHeight,
+        snapToHeightOnTap = snapToHeight,
+        snapToHeightOnDoubleTap = snapToHeight;
+
+  @override
+  List<Object?> get props => [
+        snapToWidthOnDrag,
+        snapToHeightOnDrag,
+        snapToWidthOnTap,
+        snapToHeightOnTap,
+        snapToWidthOnDoubleTap,
+        snapToHeightOnDoubleTap
       ];
 }

@@ -39,14 +39,13 @@ class _TestBarChartsState extends State<TestBarCharts> {
             snapToHeightOnTap: false,
             snapToHeightOnDoubleTap: false
           ),
-          onTap: (result) {
+          onDrag: (result) {
             setState(() {
               _interactionIndex = result.barGroupIndex;
               _barIndex = result.barDataIndex;
             });
           }),
       seriesStyle: const BarDataStyle(
-        barWidth: 10.0,
         barColor: Color(0xFFBDA2F4),
         strokeWidth: 3.0,
         strokeColor: Color(0xFF7136E7),

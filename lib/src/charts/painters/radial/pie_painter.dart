@@ -318,7 +318,7 @@ class PiePainter implements RadialPainter {
       text: text,
     );
 
-    textPainter.paint(canvas: canvas, offset: labelOffset);
+    textPainter.paint(canvas: canvas, offset: labelOffset, shouldLayout: true);
   }
 
   void _drawDonutLabel({
@@ -331,7 +331,7 @@ class PiePainter implements RadialPainter {
       chartTextStyle: style ?? defaultChartTextStyle,
       text: text,
     );
-    textPainter.paint(canvas: canvas, offset: offset);
+    textPainter.paint(canvas: canvas, offset: offset, shouldLayout: true);
   }
 }
 

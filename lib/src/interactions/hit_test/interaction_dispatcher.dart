@@ -18,7 +18,8 @@ mixin InteractionDispatcher {
   bool _dragRecognitionEnabled = false;
 
   updateInteractionDetectionStates<T extends TouchInteractionResult>(
-      TouchInteractionEvents<T> interactionEvents) {
+      TouchInteractionEvents<T> interactionEvents
+      ) {
     if (interactionEvents.shouldHitTest.isFalse) return;
 
     if (interactionEvents.onRawInteraction.isNotNull) {

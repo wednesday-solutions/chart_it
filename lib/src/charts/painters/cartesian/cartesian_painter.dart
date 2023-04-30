@@ -6,10 +6,17 @@ import 'package:flutter/material.dart';
 abstract class CartesianPainter<T extends TouchInteractionResult> {
   T? hitTest(TouchInteractionType type, Offset localPosition);
 
+  EdgeInsets performAxisLabelLayout({
+    required CartesianSeries series,
+    required CartesianChartStyle style,
+    required double graphUnitWidth,
+    required double valueUnitWidth,
+  });
+
   void paint(
-    CartesianSeries lerp,
-    Canvas canvas,
-    CartesianChartPainter chart,
-    CartesianConfig config,
-  );
+      {required CartesianSeries lerpSeries,
+      required Canvas canvas,
+      required CartesianChartGeometryData chart,
+      required CartesianConfig config,
+      required CartesianChartStyle style});
 }

@@ -76,6 +76,7 @@ class SnapToNearestBarConfig extends Equatable {
   final bool snapToHeightOnTap;
   final bool snapToWidthOnDoubleTap;
   final bool snapToHeightOnDoubleTap;
+  final SnapToNearestBarBehaviour snapToNearestBarBehaviour;
 
   const SnapToNearestBarConfig({
     this.snapToWidthOnDrag = true,
@@ -84,10 +85,14 @@ class SnapToNearestBarConfig extends Equatable {
     this.snapToHeightOnTap = false,
     this.snapToWidthOnDoubleTap = true,
     this.snapToHeightOnDoubleTap = false,
+    this.snapToNearestBarBehaviour = SnapToNearestBarBehaviour.snapSection,
   });
 
-  const SnapToNearestBarConfig.forAll({required bool snapToWidth, required bool snapToHeight})
-      : snapToWidthOnDrag = snapToWidth,
+  const SnapToNearestBarConfig.forAll({
+    required bool snapToWidth,
+    required bool snapToHeight,
+    this.snapToNearestBarBehaviour = SnapToNearestBarBehaviour.snapSection,
+  })  : snapToWidthOnDrag = snapToWidth,
         snapToWidthOnTap = snapToWidth,
         snapToWidthOnDoubleTap = snapToWidth,
         snapToHeightOnDrag = snapToHeight,
@@ -101,6 +106,12 @@ class SnapToNearestBarConfig extends Equatable {
         snapToWidthOnTap,
         snapToHeightOnTap,
         snapToWidthOnDoubleTap,
-        snapToHeightOnDoubleTap
+        snapToHeightOnDoubleTap,
+        snapToNearestBarBehaviour,
       ];
+}
+
+enum SnapToNearestBarBehaviour {
+  snapNearest,
+  snapSection;
 }

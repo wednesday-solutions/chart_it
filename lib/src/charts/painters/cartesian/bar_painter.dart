@@ -56,16 +56,28 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         if (snapToNearestBarConfig.shouldSnapToWidth(type)) {
           final isPointerAfterBar = bar.isPointerAfterBar(localPosition);
           if (!isPointerAfterBar) {
-            return _snapToNearestBar(
-              localPosition: localPosition,
-              fuzziness: fuzziness,
-              type: type,
-              previousBar: previousBar,
-              currentBar: bar,
-              isPointerAfterBar: isPointerAfterBar,
-              isLastBar: i == _interactionData.length - 1,
-              shouldSnapToHeight: shouldSnapToHeight,
-            );
+            switch (snapToNearestBarConfig.snapToNearestBarBehaviour) {
+              case SnapToNearestBarBehaviour.snapNearest:
+                return _snapToNearestBar(
+                  localPosition: localPosition,
+                  fuzziness: fuzziness,
+                  type: type,
+                  previousBar: previousBar,
+                  currentBar: bar,
+                  isPointerAfterBar: isPointerAfterBar,
+                  isLastBar: i == _interactionData.length - 1,
+                  shouldSnapToHeight: shouldSnapToHeight,
+                );
+              case SnapToNearestBarBehaviour.snapSection:
+                return _snapToSectionBar(
+                  data: data,
+                  index: i,
+                  localPosition: localPosition,
+                  previousBar: previousBar,
+                  bar: bar,
+                  type: type,
+                );
+            }
           } else {
             previousBar = bar;
           }
@@ -96,8 +108,11 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       series: lerpSeries as BarSeries,
       config: config as BarSeriesConfig,
       vRatio: chart.graphHeight / chart.totalYRange,
-      unitWidth: useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth,
+      unitWidth: unitWidth,
+      graphUnitWidth: chart.graphUnitWidth,
+      valueUnitWidth: chart.valueUnitHeight,
       barWidth: unitWidth / config.maxBarsInGroup,
+      graphEdgeInsets: chart.graphEdgeInsets,
     );
     _data = data;
 
@@ -149,12 +164,11 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
   }
 
   @override
-  EdgeInsets performAxisLabelLayout( {
-    required CartesianSeries series,
-    required CartesianChartStyle style,
-    required double graphUnitWidth,
-    required double valueUnitWidth
-  }) {
+  EdgeInsets performAxisLabelLayout(
+      {required CartesianSeries series,
+      required CartesianChartStyle style,
+      required double graphUnitWidth,
+      required double valueUnitWidth}) {
     assert(series is BarSeries);
     var maxHeight = 0.0;
     for (var i = 0; i < (series as BarSeries).barData.length; i++) {
@@ -318,13 +332,15 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  void _drawGroupLabel(
-      {required Canvas canvas,
-      required CartesianChartGeometryData chart,
-      required double dxOffset,
-      required BarGroup group,
-      required CartesianChartStyle style,
-      required _BarPainterData data, required int groupIndex,}) {
+  void _drawGroupLabel({
+    required Canvas canvas,
+    required CartesianChartGeometryData chart,
+    required double dxOffset,
+    required BarGroup group,
+    required CartesianChartStyle style,
+    required _BarPainterData data,
+    required int groupIndex,
+  }) {
     // We will draw the Label that the user had provided for our bar group
     if (group.label != null) {
       final textPainter = _groupLabelTextPainters[groupIndex];
@@ -383,6 +399,21 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
 
     return nearestBar.getInteractionResult(localPosition, type);
+  }
+
+  BarInteractionResult? _snapToSectionBar(
+      {required _BarPainterData data,
+      required int index,
+      required Offset localPosition,
+      required _BarInteractionData? previousBar,
+      required _BarInteractionData bar,
+      required TouchInteractionType type}) {
+    final currentUnitWidthEndOffset = (data.graphUnitWidth * index) + data.graphEdgeInsets.left;
+    if (localPosition.dx <= currentUnitWidthEndOffset) {
+      return previousBar?.getInteractionResult(localPosition, type);
+    } else {
+      return bar.getInteractionResult(localPosition, type);
+    }
   }
 
   _BarInteractionData _findNearestBar(
@@ -463,6 +494,9 @@ class _BarPainterData {
   final double vRatio;
   final double unitWidth;
   final double barWidth;
+  final double graphUnitWidth;
+  final double valueUnitWidth;
+  final EdgeInsets graphEdgeInsets;
 
   _BarPainterData({
     required this.series,
@@ -470,5 +504,8 @@ class _BarPainterData {
     required this.vRatio,
     required this.unitWidth,
     required this.barWidth,
+    required this.graphUnitWidth,
+    required this.valueUnitWidth,
+    required this.graphEdgeInsets,
   });
 }

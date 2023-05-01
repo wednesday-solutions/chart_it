@@ -111,4 +111,10 @@ class _PieChartState extends State<PieChart>
   AnimationController _provideAnimation() =>
       widget.animation ?? _defaultAnimation
         ..duration = widget.animationDuration;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }

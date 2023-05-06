@@ -24,7 +24,6 @@ class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult> 
   /// hit targets.
   final Fuzziness fuzziness;
 
-  /// {@macro BarInteractionEvents}
   const BarInteractionEvents({
     required super.isEnabled,
     this.snapToBarConfig = const SnapToBarConfig(),

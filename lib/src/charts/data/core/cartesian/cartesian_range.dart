@@ -18,7 +18,6 @@ class CartesianRangeContext with EquatableMixin {
   CartesianRangeContext(this.maxX, this.maxY, this.minX, this.minY);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [maxX, minX, maxY, minY];
 }
 

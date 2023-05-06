@@ -1,7 +1,7 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 
-extension BarSnapExtension on SnapToNearestBarConfig {
+extension BarSnapExtension on SnapToBarConfig {
   bool shouldSnapToHeight(TouchInteractionType type) {
     switch (type) {
       case TouchInteractionType.tap:

@@ -20,6 +20,12 @@ class Fuzziness extends Equatable {
     this.right = 0,
   });
 
+  const Fuzziness.all(double fuzziness)
+      : top = fuzziness,
+        bottom = fuzziness,
+        left = fuzziness,
+        right = fuzziness;
+
   const Fuzziness.symmetric({
     required double width,
     required double height,

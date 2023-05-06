@@ -34,11 +34,10 @@ class _TestBarChartsState extends State<TestBarCharts> {
     return BarSeries(
       interactionEvents: BarInteractionEvents(
           isEnabled: true,
-          snapToNearestBarConfig: const SnapToNearestBarConfig(
-            snapToHeightOnDrag: true,
-            snapToHeightOnTap: true,
-            snapToHeightOnDoubleTap: false,
-          ),
+          snapToBarConfig: const SnapToBarConfig.forAll(
+              snapToWidth: true,
+              snapToHeight: true,
+              snapToBarBehaviour: SnapToBarBehaviour.snapToSection),
           onTap: (result) {
             setState(() {
               _interactionIndex = result.barGroupIndex;
@@ -136,7 +135,7 @@ int _barIndex = -1;
 List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
 
-  List<BarGroup> barSeries = List.generate(5, (index) {
+  List<BarGroup> barSeries = List.generate(4, (index) {
     if (index % 2 == 0) {
       return SimpleBar(
         xValue: index + 1,
@@ -147,14 +146,12 @@ List<BarGroup> makeGroupData(BuildContext context) {
           ),
         ),
         yValue: BarData(
-            yValue: _interactionIndex == index
-                ? 10.5 + index / 2 * 0.5
-                : 10 + index / 2 * 0.5),
+            yValue: _interactionIndex == index ? 10.5 + index / 2 * 0.5 : 10 + index / 2 * 0.5),
       );
     } else {
       return MultiBar(
         xValue: index + 1,
-        groupSpacing: 10.0,
+        groupSpacing: 50.0,
         label: (value) => 'Group ${index + 1}',
         labelStyle: ChartTextStyle(
           textStyle: GoogleFonts.poppins(
@@ -191,6 +188,29 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
+                  Color(0xFFBDA2F4),
+                  Color(0xFF7136E7),
+                ],
+              ),
+              strokeWidth: 3.0,
+              strokeColor: Color(0xFFBDA2F4),
+              cornerRadius: BorderRadius.only(
+                topLeft: Radius.circular(5.0),
+                topRight: Radius.circular(5.0),
+              ),
+            ),
+            yValue: _interactionIndex == index
+                ? _barIndex == 1
+                ? 10.5 + index * 0.5
+                : 10 + index * 0.5
+                : 10 + index * 0.5,
+          ),
+          BarData(
+            barStyle: const BarDataStyle(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
                   Color(0xFFE39F56),
                   Color(0xFFBDA2F4),
                 ],
@@ -203,7 +223,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
               ),
             ),
             yValue: _interactionIndex == index
-                ? _barIndex == 1
+                ? _barIndex == 2
                     ? 10.5 + index * 0.5
                     : 10 + index * 0.5
                 : 10 + index * 0.5,

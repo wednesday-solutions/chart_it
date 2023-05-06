@@ -64,7 +64,7 @@ class RadialRenderBox extends RenderBox {
   }
 
   final RadialChartPainter _painter;
-  final InteractionDispatcher interactionDispatcher;
+  final InteractionDispatcher _interactionDispatcher;
 
   // Mandatory Fields
   set style(RadialChartStyle value) {
@@ -88,28 +88,28 @@ class RadialRenderBox extends RenderBox {
     double? height,
     required RadialChartStyle style,
     required List<PaintingState> states,
-    required this.interactionDispatcher,
-  })  : _width = width,
+    required InteractionDispatcher interactionDispatcher,
+  })  : _interactionDispatcher = interactionDispatcher, _width = width,
         _height = height,
         _painter = RadialChartPainter(style: style, states: states);
 
   _registerGestureRecognizers() {
     _tapGestureRecognizer = TapGestureRecognizer()
-      ..onTapUp = interactionDispatcher.onTapUp
-      ..onTapDown = interactionDispatcher.onTapDown
-      ..onTap = interactionDispatcher.onTap
-      ..onTapCancel = interactionDispatcher.onTapCancel;
+      ..onTapUp = _interactionDispatcher.onTapUp
+      ..onTapCancel = _interactionDispatcher.onTapCancel
+      ..onTap = _interactionDispatcher.onTap
+      ..onTapDown = _interactionDispatcher.onTapDown;
 
     _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
-      ..onDoubleTap = interactionDispatcher.onDoubleTap
-      ..onDoubleTapDown = interactionDispatcher.onDoubleTapDown
-      ..onDoubleTapCancel = interactionDispatcher.onDoubleTapCancel;
+      ..onDoubleTap = _interactionDispatcher.onDoubleTap
+      ..onDoubleTapDown = _interactionDispatcher.onDoubleTapDown
+      ..onDoubleTapCancel = _interactionDispatcher.onDoubleTapCancel;
 
     _panGestureRecognizer = PanGestureRecognizer()
-      ..onStart = interactionDispatcher.onPanStart
-      ..onUpdate = interactionDispatcher.onPanUpdate
-      ..onCancel = interactionDispatcher.onPanCancel
-      ..onEnd = interactionDispatcher.onPanEnd;
+      ..onStart = _interactionDispatcher.onPanStart
+      ..onUpdate = _interactionDispatcher.onPanUpdate
+      ..onCancel = _interactionDispatcher.onPanCancel
+      ..onEnd = _interactionDispatcher.onPanEnd;
   }
 
   @override
@@ -131,9 +131,15 @@ class RadialRenderBox extends RenderBox {
   @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
-      _tapGestureRecognizer.addPointer(event);
-      _doubleTapGestureRecognizer.addPointer(event);
-      _panGestureRecognizer.addPointer(event);
+      if (_interactionDispatcher.tapRecognitionEnabled) {
+        _tapGestureRecognizer.addPointer(event);
+      }
+      if (_interactionDispatcher.doubleTapRecognitionEnabled) {
+        _doubleTapGestureRecognizer.addPointer(event);
+      }
+      if (_interactionDispatcher.dragRecognitionEnabled) {
+        _panGestureRecognizer.addPointer(event);
+      }
     } else if (event is PointerHoverEvent) {
       // TODO: Handle onHover() for Web & Desktops
     } else if (event is PointerScrollEvent || event is PointerScaleEvent) {

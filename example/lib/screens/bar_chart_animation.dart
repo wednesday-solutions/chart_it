@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 var rng = Random();
 
@@ -15,15 +14,12 @@ class TestBarChartsAnimation extends StatefulWidget {
 }
 
 class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        setState(() {
-
-        });
+        setState(() {});
       },
       child: BarChart(
         height: 400,
@@ -72,7 +68,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
   var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(next(3,5).toInt(), (index) {
+  List<BarGroup> barSeries = List.generate(next(3, 5).toInt(), (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,

@@ -54,8 +54,7 @@ class TestBarChart extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 22,
-                        color: Theme.of(context).colorScheme.onBackground
-                    )),
+                        color: Theme.of(context).colorScheme.onBackground)),
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -64,18 +63,19 @@ class TestBarChart extends StatelessWidget {
               Text("Tap the chart to change data.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.onBackground
-                  )),
-              const Divider(height: 100, thickness: 20,),
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.onBackground)),
+              const Divider(
+                height: 100,
+                thickness: 20,
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text("Bar Chart Interactions",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 22,
-                        color: Theme.of(context).colorScheme.onBackground
-                    )),
+                        color: Theme.of(context).colorScheme.onBackground)),
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -85,9 +85,10 @@ class TestBarChart extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.onBackground
-                  )),
-              const SizedBox(height: 50,)
+                      color: Theme.of(context).colorScheme.onBackground)),
+              const SizedBox(
+                height: 50,
+              )
             ],
           )),
         ],

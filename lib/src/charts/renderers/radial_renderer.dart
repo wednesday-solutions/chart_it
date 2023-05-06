@@ -89,7 +89,8 @@ class RadialRenderBox extends RenderBox {
     required RadialChartStyle style,
     required List<PaintingState> states,
     required InteractionDispatcher interactionDispatcher,
-  })  : _interactionDispatcher = interactionDispatcher, _width = width,
+  })  : _interactionDispatcher = interactionDispatcher,
+        _width = width,
         _height = height,
         _painter = RadialChartPainter(style: style, states: states);
 

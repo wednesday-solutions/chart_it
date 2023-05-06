@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 var rng = Random();
 
@@ -49,13 +48,10 @@ class _TestPieChartsAnimationState extends State<TestPieChartsAnimation> {
           ),
         ),
         interactionEvents: PieInteractionEvents(
-          isEnabled: true,
-          onTap: (_) {
-            setState(() {
-
-            });
-          }
-        ),
+            isEnabled: true,
+            onTap: (_) {
+              setState(() {});
+            }),
         donutLabel: isDonut ? () => 'Crypto' : null,
         slices: makeSliceData(context),
       ),

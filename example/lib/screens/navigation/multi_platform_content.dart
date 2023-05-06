@@ -1,8 +1,5 @@
 import 'package:example/screens/bar_chart.dart';
-import 'package:example/screens/bar_chart_animation.dart';
-import 'package:example/screens/bar_charts_interaction.dart';
 import 'package:example/screens/pie_chart.dart';
-import 'package:example/screens/pie_charts_animation.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -128,8 +125,8 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
                   : const SizedBox(),
               isExtended && CurrentDevice.isMobile
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
                         "Charts",
                         style: TextStyle(
                             fontSize: 22,
@@ -138,7 +135,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
                                 .colorScheme
                                 .onSecondaryContainer),
                       ),
-                  )
+                    )
                   : const SizedBox(),
             ],
           ),

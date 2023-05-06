@@ -1,9 +1,7 @@
-import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 class TestBarChartsInteraction extends StatefulWidget {
   const TestBarChartsInteraction({Key? key}) : super(key: key);

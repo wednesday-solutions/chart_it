@@ -1,5 +1,3 @@
-import 'package:example/screens/bar_chart_animation.dart';
-import 'package:example/screens/bar_charts_interaction.dart';
 import 'package:example/screens/pie_chart_interaction.dart';
 import 'package:example/screens/pie_charts_animation.dart';
 import 'package:flutter/material.dart';
@@ -49,49 +47,50 @@ class TestPieChart extends StatelessWidget {
           ),
           Expanded(
               child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Bar Chart State Changes",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 22,
-                            color: Theme.of(context).colorScheme.onBackground
-                        )),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TestPieChartsAnimation(),
-                  ),
-                  Text("Tap the chart to change data.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.onBackground
-                      )),
-                  const Divider(height: 100, thickness: 20,),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Bar Chart Interactions",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 22,
-                            color: Theme.of(context).colorScheme.onBackground
-                        )),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TestPieChartsInteraction(),
-                  ),
-                  Text("Tap to interact with the chart.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.onBackground
-                      )),
-                  const SizedBox(height: 50,)
-                ],
-              )),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Bar Chart State Changes",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onBackground)),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TestPieChartsAnimation(),
+              ),
+              Text("Tap the chart to change data.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.onBackground)),
+              const Divider(
+                height: 100,
+                thickness: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Bar Chart Interactions",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onBackground)),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TestPieChartsInteraction(),
+              ),
+              Text("Tap to interact with the chart.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.onBackground)),
+              const SizedBox(
+                height: 50,
+              )
+            ],
+          )),
         ],
       ),
     );

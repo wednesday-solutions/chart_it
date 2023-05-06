@@ -78,7 +78,8 @@ class PieSeries extends RadialSeries<PieInteractionEvents> with EquatableMixin {
     double t,
   ) {
     return PieSeries(
-      donutRadius: lerpDouble(current?.donutRadius, target.donutRadius, t) ?? target.donutRadius,
+      donutRadius: lerpDouble(current?.donutRadius, target.donutRadius, t) ??
+          target.donutRadius,
       donutSpaceColor: Color.lerp(
         current?.donutSpaceColor,
         target.donutSpaceColor,

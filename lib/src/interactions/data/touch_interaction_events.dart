@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 /// {@endtemplate}
 abstract class TouchInteractionEvents<T extends TouchInteractionResult>
     with EquatableMixin {
-
   /// Set if interaction is enabled.
   final bool isEnabled;
 

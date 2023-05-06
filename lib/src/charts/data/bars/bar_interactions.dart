@@ -12,7 +12,8 @@ import 'package:flutter/gestures.dart';
 /// * [SnapToBarConfig]
 ///
 /// {@endtemplate}
-class BarInteractionEvents extends TouchInteractionEvents<BarInteractionResult> {
+class BarInteractionEvents
+    extends TouchInteractionEvents<BarInteractionResult> {
   /// [SnapToBarConfig] determines the way interactions outside the boundary of the bar are handled by
   /// dictating how the interactions are interpreted.
   final SnapToBarConfig snapToBarConfig;
@@ -169,6 +170,7 @@ class SnapToBarConfig extends Equatable {
 enum SnapToBarBehaviour {
   /// [snapToNearest] will snap the interaction point to the closed bar by distance.
   snapToNearest,
+
   /// [snapToSection] will snap to the
   snapToSection;
 }

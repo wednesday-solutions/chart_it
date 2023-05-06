@@ -106,7 +106,8 @@ class CartesianChartPainter {
 
     // create horizontal lines
     for (var i = 0; i <= geometryData.unitData.yUnitsCount; i++) {
-      var y = geometryData.graphPolygon.bottom - geometryData.graphUnitHeight * i;
+      var y =
+          geometryData.graphPolygon.bottom - geometryData.graphUnitHeight * i;
 
       var p1 = Offset(geometryData.graphPolygon.left, y);
       var p2 = Offset(geometryData.graphPolygon.right, y);
@@ -128,19 +129,25 @@ class CartesianChartPainter {
 
     // We will use a L shaped path for the Axes
     var axis = Path();
-    axis.moveTo(geometryData.graphPolygon.topLeft.dx, geometryData.graphPolygon.topLeft.dy);
-    axis.lineTo(geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // +ve y axis
-    axis.lineTo(geometryData.graphPolygon.right, geometryData.axisOrigin.dy); // +ve x axis
+    axis.moveTo(geometryData.graphPolygon.topLeft.dx,
+        geometryData.graphPolygon.topLeft.dy);
+    axis.lineTo(
+        geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // +ve y axis
+    axis.lineTo(geometryData.graphPolygon.right,
+        geometryData.axisOrigin.dy); // +ve x axis
 
     if (rangeData.minYRange.isNegative) {
       // Paint negative Y-axis if we have negative values
-      axis.moveTo(geometryData.graphPolygon.bottomLeft.dx, geometryData.graphPolygon.bottomLeft.dy);
-      axis.lineTo(geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // -ve y axis
+      axis.moveTo(geometryData.graphPolygon.bottomLeft.dx,
+          geometryData.graphPolygon.bottomLeft.dy);
+      axis.lineTo(
+          geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // -ve y axis
     }
 
     if (rangeData.minXRange.isNegative) {
       // Paint negative X-axis if we have Negative values
-      axis.lineTo(geometryData.graphPolygon.left, geometryData.axisOrigin.dy); // -ve x axis
+      axis.lineTo(geometryData.graphPolygon.left,
+          geometryData.axisOrigin.dy); // -ve x axis
     }
 
     canvas.drawPath(axis, axisPaint);
@@ -153,7 +160,8 @@ class CartesianChartPainter {
       for (var element in textLayoutData.xLabelPainters) {
         element.paint(
           canvas: canvas,
-          offset: Offset(x, geometryData.graphPolygon.bottom + _labelPlacementOffset),
+          offset: Offset(
+              x, geometryData.graphPolygon.bottom + _labelPlacementOffset),
         );
         x += geometryData.graphUnitWidth;
       }
@@ -179,7 +187,8 @@ class CartesianChartPainter {
     var maxPainterLabelInsets = EdgeInsets.zero;
 
     for (var i = 0; i < states.length; i++) {
-      final state = states[i] as PaintingState<CartesianSeries, CartesianConfig, CartesianPainter>;
+      final state = states[i]
+          as PaintingState<CartesianSeries, CartesianConfig, CartesianPainter>;
       final inset = state.painter.performAxisLabelLayout(
         series: state.data,
         style: style,
@@ -218,7 +227,8 @@ class CartesianChartPainter {
       if (showXLabels && i <= unitData.xUnitsCount) {
         final painter = ChartTextPainter.fromChartTextStyle(
           text: i.toPrecision(2).toString(),
-          chartTextStyle: style.axisStyle?.tickLabelStyle ?? defaultChartTextStyle,
+          chartTextStyle:
+              style.axisStyle?.tickLabelStyle ?? defaultChartTextStyle,
         )..layout();
         maxXHeight = max(maxXHeight, painter.height);
         xLabelPainters.add(painter);
@@ -226,7 +236,9 @@ class CartesianChartPainter {
 
       if (showYLabels && i <= unitData.yUnitsCount) {
         final painter = ChartTextPainter.fromChartTextStyle(
-          text: (rangeData.minYRange + (unitData.yUnitValue * i)).toPrecision(2).toString(),
+          text: (rangeData.minYRange + (unitData.yUnitValue * i))
+              .toPrecision(2)
+              .toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
         )..layout();
         maxYWidth = max(maxYWidth, painter.width);
@@ -289,8 +301,10 @@ class CartesianChartPainter {
     final valueUnitHeight = graphPolygon.height / totalYRange;
 
     // Calculate the Offset for Axis Origin
-    var negativeXRange = (rangeData.minXRange.abs() / xUnitValue) * graphUnitWidth;
-    var negativeYRange = (rangeData.minYRange.abs() / yUnitValue) * graphUnitHeight;
+    var negativeXRange =
+        (rangeData.minXRange.abs() / xUnitValue) * graphUnitWidth;
+    var negativeYRange =
+        (rangeData.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     final axisOrigin = Offset(xOffset, yOffset);
@@ -438,8 +452,14 @@ class UnitData extends Equatable {
       totalYRange: 0.0);
 
   @override
-  List<Object?> get props =>
-      [xUnitsCount, xUnitValue, yUnitsCount, yUnitValue, totalXRange, totalYRange];
+  List<Object?> get props => [
+        xUnitsCount,
+        xUnitValue,
+        yUnitsCount,
+        yUnitValue,
+        totalXRange,
+        totalYRange
+      ];
 }
 
 class _TextPainterLayoutData extends Equatable {

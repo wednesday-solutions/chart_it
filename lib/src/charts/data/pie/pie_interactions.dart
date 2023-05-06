@@ -1,5 +1,4 @@
 import 'package:chart_it/chart_it.dart';
-import 'package:chart_it/src/charts/data/pie.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/gestures.dart';
 /// {@endtemplate}
 class PieInteractionEvents extends TouchInteractionEvents<PieInteractionResult>
     with EquatableMixin {
-
   /// {@macro PieInteractionEvents}
   const PieInteractionEvents({
     required super.isEnabled,
@@ -33,7 +31,6 @@ class PieInteractionEvents extends TouchInteractionEvents<PieInteractionResult>
 /// * [TouchInteractionType]
 /// {@endtemplate}
 class PieInteractionResult extends TouchInteractionResult with EquatableMixin {
-
   /// The [SliceData] matching the interaction.
   final SliceData slice;
 

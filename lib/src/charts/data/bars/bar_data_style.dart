@@ -17,7 +17,6 @@ import 'package:flutter/painting.dart';
 /// 4. Default [BarDataStyle] Style
 /// {@endtemplate}
 class BarDataStyle extends Equatable {
-
   /// The fill color of the Bar
   final Color? barColor;
 

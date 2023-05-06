@@ -23,15 +23,18 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
 
   BarPainter({required this.useGraphUnits}) {
     _barPaint = Paint();
-    _barStroke = Paint()
-      ..style = PaintingStyle.stroke;
+    _barStroke = Paint()..style = PaintingStyle.stroke;
   }
 
   @override
-  BarInteractionResult? hitTest(TouchInteractionType type,
-      Offset localPosition,) {
+  BarInteractionResult? hitTest(
+    TouchInteractionType type,
+    Offset localPosition,
+  ) {
     final data = _data;
-    if (data == null || !data.series.interactionEvents.shouldHitTest) return null;
+    if (data == null || !data.series.interactionEvents.shouldHitTest) {
+      return null;
+    }
 
     // We will perform HitTest only if Interactions are enabled for this series.
     if (data.series.interactionEvents.isEnabled) {
@@ -92,19 +95,21 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
 
   @override
   void paint({
-    required CartesianSeries<TouchInteractionEvents<TouchInteractionResult>> lerpSeries,
+    required CartesianSeries<TouchInteractionEvents<TouchInteractionResult>>
+        lerpSeries,
     required Canvas canvas,
     required CartesianChartGeometryData chart,
     required CartesianConfig config,
     required CartesianChartStyle style,
   }) {
     assert(
-    config is BarSeriesConfig,
-    "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
+      config is BarSeriesConfig,
+      "$BarPainter required $BarSeriesConfig but found ${config.runtimeType}",
     );
     _interactionData.clear();
 
-    final unitWidth = useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
+    final unitWidth =
+        useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
 
     final data = _BarPainterData(
       series: lerpSeries as BarSeries,
@@ -166,10 +171,11 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
   }
 
   @override
-  EdgeInsets performAxisLabelLayout({required CartesianSeries series,
-    required CartesianChartStyle style,
-    required double graphUnitWidth,
-    required double valueUnitWidth}) {
+  EdgeInsets performAxisLabelLayout(
+      {required CartesianSeries series,
+      required CartesianChartStyle style,
+      required double graphUnitWidth,
+      required double valueUnitWidth}) {
     assert(series is BarSeries);
     var maxHeight = 0.0;
     for (var i = 0; i < (series as BarSeries).barData.length; i++) {
@@ -179,9 +185,9 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         final painter = ChartTextPainter.fromChartTextStyle(
           text: group.label!(group.xValue),
           maxWidth: useGraphUnits ? graphUnitWidth : valueUnitWidth,
-          chartTextStyle: group.labelStyle ?? series.labelStyle ?? defaultChartTextStyle,
-        )
-          ..layout();
+          chartTextStyle:
+              group.labelStyle ?? series.labelStyle ?? defaultChartTextStyle,
+        )..layout();
         maxHeight = max(maxHeight, painter.height);
         _groupLabelTextPainters.add(painter);
       } else {
@@ -189,16 +195,18 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       }
     }
 
-    return EdgeInsets.only(bottom: maxHeight + style.axisStyle!.tickLength + 15);
+    return EdgeInsets.only(
+        bottom: maxHeight + style.axisStyle!.tickLength + 15);
   }
 
-  _drawSimpleBar({required SimpleBar group,
-    required int groupIndex,
-    required Canvas canvas,
-    required CartesianChartGeometryData chart,
-    required double dxOffset,
-    required CartesianChartStyle style,
-    required _BarPainterData data}) {
+  _drawSimpleBar(
+      {required SimpleBar group,
+      required int groupIndex,
+      required Canvas canvas,
+      required CartesianChartGeometryData chart,
+      required double dxOffset,
+      required CartesianChartStyle style,
+      required _BarPainterData data}) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var barStyle = group.yValue.barStyle ??
@@ -224,32 +232,37 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       data: data,
     );
     // Finally paint the y-labels for this bar
-    _drawBarValues(canvas: canvas,
+    _drawBarValues(
+        canvas: canvas,
         chart: chart,
         barData: group.yValue,
         style: style,
         data: data);
   }
 
-  _drawBarSeries({required MultiBar group,
-    required int groupIndex,
-    required Canvas canvas,
-    required CartesianChartGeometryData chart,
-    required double dxOffset,
-    required CartesianChartStyle style,
-    required _BarPainterData data}) {
+  _drawBarSeries(
+      {required MultiBar group,
+      required int groupIndex,
+      required Canvas canvas,
+      required CartesianChartGeometryData chart,
+      required double dxOffset,
+      required CartesianChartStyle style,
+      required _BarPainterData data}) {
     // var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var groupCount = group.yValues.length; // No. of groups for this multibar
     // Start Offset
-    var x = dxOffset + (data.unitWidth * 0.5) - (data.barWidth * groupCount * 0.5);
+    var x =
+        dxOffset + (data.unitWidth * 0.5) - (data.barWidth * groupCount * 0.5);
 
     for (var i = 0; i < groupCount; i++) {
       final barData = group.yValues[i];
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
-      var barStyle =
-          barData.barStyle ?? group.groupStyle ?? data.series.seriesStyle ?? defaultBarSeriesStyle;
+      var barStyle = barData.barStyle ??
+          group.groupStyle ??
+          data.series.seriesStyle ??
+          defaultBarSeriesStyle;
 
       _drawBar(
         barGroup: group,
@@ -266,7 +279,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         data: data,
       );
       // Finally paint the y-labels for this bar
-      _drawBarValues(canvas: canvas,
+      _drawBarValues(
+          canvas: canvas,
           chart: chart,
           barData: barData,
           style: style,
@@ -276,17 +290,18 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  _drawBar({required BarGroup barGroup,
-    required int barGroupIndex,
-    required BarData barData,
-    required int barDataIndex,
-    required Canvas canvas,
-    required CartesianChartGeometryData chart,
-    BarDataStyle? style,
-    required double dxCenter,
-    required double barWidth,
-    required double barSpacing,
-    required _BarPainterData data}) {
+  _drawBar(
+      {required BarGroup barGroup,
+      required int barGroupIndex,
+      required BarData barData,
+      required int barDataIndex,
+      required Canvas canvas,
+      required CartesianChartGeometryData chart,
+      BarDataStyle? style,
+      required double dxCenter,
+      required double barWidth,
+      required double barSpacing,
+      required _BarPainterData data}) {
     var padding = (barSpacing * 0.5);
     // The first thing to do is to get the data point into the range!
     // This is because we don't want our bar to exceed the min/max values
@@ -326,7 +341,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     // Finally We will Paint our Bar on the Canvas.
     var barPaint = _barPaint
       ..color = (style?.barColor ?? defaultBarSeriesStyle.barColor)!
-      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)?.toShader(bar.outerRect);
+      ..shader = (style?.gradient ?? defaultBarSeriesStyle.gradient)
+          ?.toShader(bar.outerRect);
 
     canvas.drawRRect(bar, barPaint); // draw fill
 
@@ -361,11 +377,12 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  void _drawBarValues({required Canvas canvas,
-    required CartesianChartGeometryData chart,
-    required BarData barData,
-    required CartesianChartStyle style,
-    required _BarPainterData data}) {
+  void _drawBarValues(
+      {required Canvas canvas,
+      required CartesianChartGeometryData chart,
+      required BarData barData,
+      required CartesianChartStyle style,
+      required _BarPainterData data}) {
     if (barData.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: barData.label!(barData.yValue),
@@ -400,49 +417,55 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
 
     // If snap to height is disabled and pointer is above the nearest bar, return null
     if (!shouldSnapToHeight &&
-        nearestBar.isPointerAboveBar(position: localPosition, fuzziness: fuzziness)) {
+        nearestBar.isPointerAboveBar(
+            position: localPosition, fuzziness: fuzziness)) {
       return null;
     }
 
     return nearestBar.getInteractionResult(localPosition, type);
   }
 
-  BarInteractionResult? _snapToSectionBar({
-    required _BarPainterData data,
-    required Offset localPosition,
-    required _BarInteractionData? previousBar,
-    required _BarInteractionData bar,
-    required TouchInteractionType type,
-    required Fuzziness fuzziness,
-    required bool isLastBar,
-    required bool shouldSnapToHeight
-  }) {
+  BarInteractionResult? _snapToSectionBar(
+      {required _BarPainterData data,
+      required Offset localPosition,
+      required _BarInteractionData? previousBar,
+      required _BarInteractionData bar,
+      required TouchInteractionType type,
+      required Fuzziness fuzziness,
+      required bool isLastBar,
+      required bool shouldSnapToHeight}) {
     final index = previousBar?.barGroupIndex ?? bar.barGroupIndex;
     final widthMultiplicationFactor = index + 1;
-    final currentUnitWidthEndOffset = (data.graphUnitWidth * widthMultiplicationFactor) + data.graphEdgeInsets.left;
+    final currentUnitWidthEndOffset =
+        (data.graphUnitWidth * widthMultiplicationFactor) +
+            data.graphEdgeInsets.left;
 
     if (localPosition.dx <= currentUnitWidthEndOffset) {
       if (previousBar?.barGroupIndex == bar.barGroupIndex) {
-        return _snapToNearestBar(localPosition: localPosition,
-            fuzziness: fuzziness,
-            type: type,
-            previousBar: previousBar,
-            currentBar: bar,
-            isPointerAfterBar: false,
-            isLastBar: isLastBar,
-            shouldSnapToHeight: shouldSnapToHeight,
+        return _snapToNearestBar(
+          localPosition: localPosition,
+          fuzziness: fuzziness,
+          type: type,
+          previousBar: previousBar,
+          currentBar: bar,
+          isPointerAfterBar: false,
+          isLastBar: isLastBar,
+          shouldSnapToHeight: shouldSnapToHeight,
         );
       }
 
-      return previousBar?.getInteractionResult(localPosition, type) ?? bar.getInteractionResult(localPosition, type);
+      return previousBar?.getInteractionResult(localPosition, type) ??
+          bar.getInteractionResult(localPosition, type);
     } else {
       return bar.getInteractionResult(localPosition, type);
     }
   }
 
-  _BarInteractionData _findNearestBar(Offset position,
-      _BarInteractionData previous,
-      _BarInteractionData current,) {
+  _BarInteractionData _findNearestBar(
+    Offset position,
+    _BarInteractionData previous,
+    _BarInteractionData current,
+  ) {
     final distToPrev = position.dx - previous.rect.right;
     final distToCurrent = current.rect.left - position.dx;
     return distToPrev >= distToCurrent ? current : previous;
@@ -479,20 +502,26 @@ class _BarInteractionData {
 
     final top = rect.top - fuzziness.top;
     final bottom = rect.bottom + fuzziness.bottom;
-    return position.dx >= left && position.dx < right && position.dy >= top && position.dy < bottom;
+    return position.dx >= left &&
+        position.dx < right &&
+        position.dy >= top &&
+        position.dy < bottom;
   }
 
   bool isPointerAfterBar(Offset position) => position.dx > rect.right;
 
-  bool isPointerAboveBar({required Offset position, required Fuzziness fuzziness}) {
+  bool isPointerAboveBar(
+      {required Offset position, required Fuzziness fuzziness}) {
     final top = rect.top - fuzziness.top;
     final bottom = rect.bottom + fuzziness.bottom;
 
     return position.dy < top || position.dy > bottom;
   }
 
-  BarInteractionResult getInteractionResult(Offset localPosition,
-      TouchInteractionType type,) {
+  BarInteractionResult getInteractionResult(
+    Offset localPosition,
+    TouchInteractionType type,
+  ) {
     return BarInteractionResult(
       barGroup: barGroup,
       barGroupIndex: barGroupIndex,

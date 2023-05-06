@@ -146,7 +146,9 @@ List<BarGroup> makeGroupData(BuildContext context) {
           ),
         ),
         yValue: BarData(
-            yValue: _interactionIndex == index ? 10.5 + index / 2 * 0.5 : 10 + index / 2 * 0.5),
+            yValue: _interactionIndex == index
+                ? 10.5 + index / 2 * 0.5
+                : 10 + index / 2 * 0.5),
       );
     } else {
       return MultiBar(
@@ -201,8 +203,8 @@ List<BarGroup> makeGroupData(BuildContext context) {
             ),
             yValue: _interactionIndex == index
                 ? _barIndex == 1
-                ? 10.5 + index * 0.5
-                : 10 + index * 0.5
+                    ? 10.5 + index * 0.5
+                    : 10 + index * 0.5
                 : 10 + index * 0.5,
           ),
           BarData(

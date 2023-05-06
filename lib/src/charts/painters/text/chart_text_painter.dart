@@ -60,8 +60,10 @@ class ChartTextPainter {
   double get width => _painter.width;
   double get height => _painter.height;
 
-  void paint({required Canvas canvas, required Offset offset, bool shouldLayout = false}) {
-
+  void paint(
+      {required Canvas canvas,
+      required Offset offset,
+      bool shouldLayout = false}) {
     if (shouldLayout) {
       layout();
     }

@@ -1,4 +1,6 @@
-import 'package:example/screens/bar_charts.dart';
+import 'package:example/screens/bar_chart.dart';
+import 'package:example/screens/bar_chart_animation.dart';
+import 'package:example/screens/bar_charts_interaction.dart';
 import 'package:example/screens/pie_charts.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +84,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
               builder: (context, _) {
                 switch (_controller.selectedIndex) {
                   case 0:
-                    return const TestBarCharts();
+                    return const TestBarChart();
                   case 1:
                     return const TestPieCharts();
                   default:

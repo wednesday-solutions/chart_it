@@ -85,5 +85,5 @@ class MultiBar extends BarGroup {
   }
 
   @override
-  List<Object?> get props => [xValue, yValues, labelStyle, groupStyle];
+  List<Object?> get props => [xValue, yValues, labelStyle, groupStyle, groupSpacing, arrangement];
 }

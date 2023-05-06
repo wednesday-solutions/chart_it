@@ -307,6 +307,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     // This is because we don't want our bar to exceed the min/max values
     // we then multiply it by the vRatio to get the vertical pixel value!
     var y = barData.yValue * data.vRatio;
+
     // The x values start from the left side of the chart and then increase by unit width!
     // Note: y values increase from the top to the bottom of the screen, so
     // we have to subtract the computed y value from the chart's bottom to invert the drawing!

@@ -1,8 +1,7 @@
-import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
-import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -13,22 +12,16 @@ class RadialRenderer extends LeafRenderObjectWidget {
 
   // Mandatory Fields
   final RadialChartStyle style;
-  final List<RadialSeries> currentData;
-  final List<RadialSeries> targetData;
-  final Map<int, RadialPainter> painters;
-  final Map<RadialSeries, RadialConfig> configs;
-  final RadialDataMixin radialRangeData;
+  final List<PaintingState> states;
+  final InteractionDispatcher interactionDispatcher;
 
   const RadialRenderer({
     Key? key,
     this.width,
     this.height,
     required this.style,
-    required this.currentData,
-    required this.targetData,
-    required this.painters,
-    required this.configs,
-    required this.radialRangeData,
+    required this.states,
+    required this.interactionDispatcher,
   }) : super(key: key);
 
   @override
@@ -37,11 +30,8 @@ class RadialRenderer extends LeafRenderObjectWidget {
       width: width,
       height: height,
       style: style,
-      currentData: currentData,
-      targetData: targetData,
-      painters: painters,
-      configs: configs,
-      rangeData: radialRangeData,
+      states: states,
+      interactionDispatcher: interactionDispatcher,
     );
   }
 
@@ -52,10 +42,7 @@ class RadialRenderer extends LeafRenderObjectWidget {
       ..width = width
       ..height = height
       ..style = style
-      ..currentData = currentData
-      ..targetData = targetData
-      ..painters = painters
-      ..configs = configs;
+      ..states = states;
   }
 }
 
@@ -77,6 +64,7 @@ class RadialRenderBox extends RenderBox {
   }
 
   final RadialChartPainter _painter;
+  final InteractionDispatcher interactionDispatcher;
 
   // Mandatory Fields
   set style(RadialChartStyle value) {
@@ -85,78 +73,80 @@ class RadialRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  set currentData(List<RadialSeries> value) {
-    if (_painter.currentData == value) return;
-    _painter.currentData = value;
+  set states(List<PaintingState> value) {
+    if (_painter.states == value) return;
+    _painter.states = value;
     markNeedsPaint();
   }
 
-  set targetData(List<RadialSeries> value) {
-    if (_painter.targetData == value) return;
-    _painter.targetData = value;
-    markNeedsPaint();
-  }
-
-  set painters(Map<int, RadialPainter> value) {
-    if (_painter.painters != value) return;
-    _painter.painters = value;
-    markNeedsPaint();
-  }
-
-  set configs(Map<RadialSeries, RadialConfig> value) {
-    if (_painter.configs != value) return;
-    _painter.configs = value;
-    markNeedsPaint();
-  }
-
-  late TapGestureRecognizer _tapGestureRecognizer;
-  final _doubleTapGestureRecognizer = DoubleTapGestureRecognizer();
+  late final TapGestureRecognizer _tapGestureRecognizer;
+  late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
+  late final PanGestureRecognizer _panGestureRecognizer;
 
   RadialRenderBox({
     double? width,
     double? height,
     required RadialChartStyle style,
-    required RadialDataMixin rangeData,
-    required List<RadialSeries> currentData,
-    required List<RadialSeries> targetData,
-    required Map<int, RadialPainter> painters,
-    required Map<RadialSeries, RadialConfig> configs,
+    required List<PaintingState> states,
+    required this.interactionDispatcher,
   })  : _width = width,
         _height = height,
-        _painter = RadialChartPainter(
-          style: style,
-          rangeData: rangeData,
-          currentData: currentData,
-          targetData: targetData,
-          painters: painters,
-          configs: configs,
-        );
+        _painter = RadialChartPainter(style: style, states: states);
 
-  // _registerGestureRecognizers() {
-  //   _tapGestureRecognizer = TapGestureRecognizer()
-  //     ..onTapUp = (details) {
-  //       // _painter.controller.onTapUp(details.localPosition);
-  //     };
-  // }
+  _registerGestureRecognizers() {
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTapUp = interactionDispatcher.onTapUp
+      ..onTapDown = interactionDispatcher.onTapDown
+      ..onTap = interactionDispatcher.onTap
+      ..onTapCancel = interactionDispatcher.onTapCancel;
+
+    _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
+      ..onDoubleTap = interactionDispatcher.onDoubleTap
+      ..onDoubleTapDown = interactionDispatcher.onDoubleTapDown
+      ..onDoubleTapCancel = interactionDispatcher.onDoubleTapCancel;
+
+    _panGestureRecognizer = PanGestureRecognizer()
+      ..onStart = interactionDispatcher.onPanStart
+      ..onUpdate = interactionDispatcher.onPanUpdate
+      ..onCancel = interactionDispatcher.onPanCancel
+      ..onEnd = interactionDispatcher.onPanEnd;
+  }
 
   @override
   void performLayout() => size = computeDryLayout(constraints);
 
   @override
-  Size computeDryLayout(BoxConstraints constraints) => Size(
-        _width ?? constraints.maxWidth,
-        _height ?? constraints.maxHeight,
-      );
+  Size computeDryLayout(BoxConstraints constraints) =>
+      Size(_width ?? constraints.maxWidth, _height ?? constraints.maxHeight);
 
   @override
   bool hitTestSelf(Offset position) => true;
+
+  @override
+  void attach(PipelineOwner owner) {
+    super.attach(owner);
+    _registerGestureRecognizers();
+  }
 
   @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
       _tapGestureRecognizer.addPointer(event);
       _doubleTapGestureRecognizer.addPointer(event);
+      _panGestureRecognizer.addPointer(event);
+    } else if (event is PointerHoverEvent) {
+      // TODO: Handle onHover() for Web & Desktops
+    } else if (event is PointerScrollEvent || event is PointerScaleEvent) {
+      // TODO: Handle onScaleUp/onScaleDown events
     }
+  }
+
+  @override
+  void detach() {
+    super.detach();
+    _tapGestureRecognizer.dispose();
+    _doubleTapGestureRecognizer.dispose();
+    _panGestureRecognizer.dispose();
   }
 
   @override

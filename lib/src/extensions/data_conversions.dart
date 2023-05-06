@@ -6,6 +6,7 @@ import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
+import 'package:flutter/cupertino.dart';
 
 extension YValueGetter on BarGroup {
   // Helper method to strip group data into data object with raw values
@@ -47,4 +48,13 @@ extension RadialIterators on List<RadialSeries> {
     });
     return count;
   }
+}
+
+EdgeInsets maxInsets(EdgeInsets a, EdgeInsets b) {
+  return EdgeInsets.only(
+    left: max(a.left, b.left),
+    right: max(a.right, b.right),
+    top: max(a.top, b.top),
+    bottom: max(a.bottom, b.bottom),
+  );
 }

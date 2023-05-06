@@ -3,13 +3,12 @@ import 'dart:math';
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
+import 'package:chart_it/src/charts/data/bars/bar_interactions.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/animation.dart';
 
 /// This class defines the Data Set to be provided to the BarChart
 /// and the Global Styling options.
@@ -17,7 +16,7 @@ import 'package:flutter/animation.dart';
 /// The BarSeries is **mandatory** to be provided to the [BarChart] widget.
 ///
 /// See Also: [CartesianSeries]
-class BarSeries extends CartesianSeries with EquatableMixin {
+class BarSeries extends CartesianSeries<BarInteractionEvents> {
   /// Sets uniform styling for All the Bars in this [BarSeries].
   ///
   /// {@macro bar_styling_order}
@@ -34,8 +33,9 @@ class BarSeries extends CartesianSeries with EquatableMixin {
   /// single or multiple group of bars.
   final List<BarGroup> barData;
 
-  /// This class defines the Data Set to be provided to the BarChart
-  /// and the Global Styling options.
+  /// This class defines the Data Set to be provided to the BarChart,
+  /// the Global Styling options and any interaction events that could be
+  /// performed on the following Data.
   ///
   /// The BarSeries is **mandatory** to be provided to the [BarChart] widget.
   ///
@@ -44,13 +44,15 @@ class BarSeries extends CartesianSeries with EquatableMixin {
     this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.barData,
+    super.interactionEvents = const BarInteractionEvents(isEnabled: false),
   });
 
   /// Constructs a Factory Instance of [BarSeries] without any Data.
   factory BarSeries.zero() => BarSeries(barData: List.empty());
 
   @override
-  List<Object?> get props => [labelStyle, seriesStyle, barData];
+  List<Object?> get props =>
+      [labelStyle, seriesStyle, barData, interactionEvents];
 
   /// Lerps between two [BarSeries] for a factor [t]
   static BarSeries lerp(
@@ -70,6 +72,7 @@ class BarSeries extends CartesianSeries with EquatableMixin {
         t,
       ),
       barData: BarGroup.lerpBarGroupList(current?.barData, target.barData, t),
+      interactionEvents: target.interactionEvents,
     );
   }
 }
@@ -82,66 +85,45 @@ class BarSeriesConfig extends CartesianConfig {
   /// Highest Count for number of bars in BarGroup
   var maxBarsInGroup = 1;
 
-  /// Calculated Minimum for X-Value
-  var calculatedMinXValue = 0.0;
-
-  /// Calculated Maximum for X-Value
-  var calculatedMaxXValue = 0.0;
-
-  /// Calculated Minimum for Y-Value
-  var calculatedMinYValue = 0.0;
-
-  /// Calculated Maximum for Y-Value
-  var calculatedMaxYValue = 0.0;
-
   /// Updates the Minimum & Maximum X & Y values for this series config.
   /// Returns the newly calculated minimum's and maximums in [onUpdate].
-  void updateEdges(
-    BarGroup group,
+  void calcBarDataRange(
+    List<BarGroup> barData,
     Function(double minX, double maxX, double minY, double maxY) onUpdate,
   ) {
-    var yValue = group.yValues();
+    for (var i = 0; i < barData.length; i++) {
+      final barGroup = barData[i];
+      var yValue = barGroup.yValues();
 
-    var minV = double.infinity;
-    var maxV = 0.0;
+      var minX = 0.0;
+      var maxX = double.infinity;
 
-    if (group is MultiBar && group.arrangement == BarGroupArrangement.stack) {
-      minV = min(minV, 0);
-      // For a stack, the y value of the bar is the total of all bars
-      maxV = max(maxV, yValue.fold(0, (a, b) => a + b.yValue));
-    } else {
-      for (var i = 0; i < yValue.length; i++) {
-        final data = yValue[i];
-        minV = min(minV, data.yValue.toDouble());
-        maxV = max(maxV, data.yValue.toDouble());
+      var minY = double.infinity;
+      var maxY = 0.0;
+
+      if (barGroup is MultiBar &&
+          barGroup.arrangement == BarGroupArrangement.stack) {
+        // In a Vertical Stack, we can also have few bars in Negative Region
+        minY = min(minY, yValue.fold(0, (a, b) => min(a, b.yValue.toDouble())));
+        // For a stack, the y value of the bar is the total of all bars
+        maxY = max(maxY, yValue.fold(0, (a, b) => a + b.yValue));
+      } else {
+        for (var i = 0; i < yValue.length; i++) {
+          final data = yValue[i];
+          minY = min(minY, data.yValue.toDouble());
+          maxY = max(maxY, data.yValue.toDouble());
+        }
       }
+
+      minX = min(minX, barGroup.xValue.toDouble());
+      maxX = max(maxX, barGroup.xValue.toDouble());
+
+      maxBarsInGroup = max(maxBarsInGroup, yValue.length);
+
+      onUpdate(minX, maxX, minY, maxY);
     }
-
-    calculatedMinYValue = min(calculatedMinYValue, minV);
-    calculatedMaxYValue = max(calculatedMaxYValue, maxV);
-    maxBarsInGroup = max(maxBarsInGroup, yValue.length);
-
-    onUpdate(
-      calculatedMinXValue,
-      calculatedMaxXValue,
-      calculatedMinYValue,
-      calculatedMaxYValue,
-    );
   }
-}
-
-/// A Tween to interpolate between two [BarSeries]
-///
-/// [end] object must not be null.
-class BarSeriesTween extends Tween<BarSeries> {
-  /// A Tween to interpolate between two [BarSeries]
-  ///
-  /// [end] object must not be null.
-  BarSeriesTween({
-    required BarSeries? begin,
-    required BarSeries end,
-  }) : super(begin: begin, end: end);
 
   @override
-  BarSeries lerp(double t) => BarSeries.lerp(begin, end!, t);
+  List<Object> get props => [maxBarsInGroup];
 }

@@ -1,4 +1,3 @@
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 
 /// Handles updating [tweenSeries] with new data and manages the [animation].
@@ -7,11 +6,13 @@ import 'package:flutter/material.dart';
 /// call [animateDataUpdates].
 ///
 /// To update the tween when new data is available and animate to the new state call [updateDataSeries].
-mixin ChartAnimationsMixin<T> on ChangeNotifier {
+mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
   @protected
-  List<Tween<T>> get tweenSeries;
+  Tween<K> get tweenData;
 
-  set tweenSeries(List<Tween<T>> newTweens);
+  K? latestDataDispatchedToPainting;
+
+  set tweenData(Tween<K> newTween);
 
   AnimationController get animation;
 
@@ -19,12 +20,12 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
 
   bool get animateOnUpdate;
 
-  void setData(List<T> data);
+  K setData(List<T> data);
 
-  void setAnimatableData(List<T> data);
+  void setAnimatableData(K data);
 
-  List<Tween<T>> getTweens({
-    required List<T> newSeries,
+  Tween<K> getTweens({
+    required K newData,
     required bool isInitPhase,
   });
 
@@ -37,13 +38,13 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
   /// 2. [notifyListeners] so that [CustomPainter.paint] is called on the painters registered with this controller.
   void animateDataUpdates() {
     animation.addListener(() {
-      setAnimatableData(
-        tweenSeries.fastMap((series) => series.evaluate(animation)),
-      );
+      setAnimatableData(tweenData.evaluate(animation));
       // Finally trigger a rebuild for all the painters
       notifyListeners();
     });
   }
+
+  K constructState(List<T> newData);
 
   /// Call to update the controller with new/updated chart data and start the [animation] if applicable.
   ///
@@ -56,10 +57,19 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
     List<T> newSeries, {
     bool isInitPhase = false,
   }) {
-    // Tween a List of Tweens for CartesianSeries
-    tweenSeries = getTweens(newSeries: newSeries, isInitPhase: isInitPhase);
     // Update the Target Data to the newest value
-    setData(newSeries);
+    final targetData = setData(newSeries);
+
+    if (latestDataDispatchedToPainting != null &&
+        latestDataDispatchedToPainting == targetData) {
+      return;
+    } else {
+      latestDataDispatchedToPainting = targetData;
+    }
+
+    // Tween a List of Tweens for CartesianSeries
+    tweenData = getTweens(newData: targetData, isInitPhase: isInitPhase);
+
     // Finally animate the differences
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
     final shouldAnimateOnUpdate = !isInitPhase && animateOnUpdate;
@@ -70,7 +80,7 @@ mixin ChartAnimationsMixin<T> on ChangeNotifier {
         ..forward();
     } else {
       // We are to not animate the data updates
-      setAnimatableData(newSeries);
+      setAnimatableData(targetData);
       notifyListeners();
     }
   }

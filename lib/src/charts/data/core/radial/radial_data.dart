@@ -1,16 +1,62 @@
-import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
 typedef SliceMapper = String Function(num percentage, num value);
 
+class RadialData {
+  List<PaintingState> states;
+
+  // CartesianRangeResult range;
+
+  RadialData({
+    required this.states,
+    // required this.range,
+  });
+
+  factory RadialData.zero() {
+    return RadialData(
+      states: List.empty(),
+      // range: targetRange,
+    );
+  }
+
+  static RadialData lerp(
+    RadialData? current,
+    RadialData target,
+    double t,
+  ) {
+    return RadialData(
+      states: PaintingState.lerpStateList(current?.states, target.states, t),
+      // range: CartesianRangeResult.lerp(current?.range, target.range, t),
+    );
+  }
+}
+
+class RadialDataTween extends Tween<RadialData> {
+  /// A Tween to interpolate between two [RadialData]
+  ///
+  /// [end] object must not be null.
+  RadialDataTween({
+    required RadialData? begin,
+    required RadialData end,
+  }) : super(begin: begin, end: end);
+
+  @override
+  RadialData lerp(double t) => RadialData.lerp(begin, end!, t);
+}
+
 /// Base Series for any type of Data which can be plotted
 /// on a Radial Type Chart.
-abstract class RadialSeries {
+abstract class RadialSeries<E extends TouchInteractionEvents> {
+  final E interactionEvents;
+
+  RadialSeries({required this.interactionEvents});
+
   /// Checks the Subclass Type and returns the casted instance
   /// to the matched callback. All callbacks must be provided.
   T when<T>({
@@ -59,28 +105,6 @@ abstract class RadialSeries {
 }
 
 abstract class RadialConfig {}
-
-/// Converts [current] and [target] list of [RadialSeries] to
-/// a list of [Tween] of type [RadialSeries]
-List<Tween<RadialSeries>>? toRadialTweens(
-  List<RadialSeries>? current,
-  List<RadialSeries> target,
-) {
-  return buildTweens(current, target, builder: (current, target) {
-    final currentValue =
-        current == null || current.runtimeType != target.runtimeType
-            ? null
-            : current;
-    return target.when(
-      onPieSeries: (series) {
-        return PieSeriesTween(
-          begin: currentValue.asOrDefault(PieSeries.zero()),
-          end: series,
-        );
-      },
-    );
-  });
-}
 
 /// Defines that the Axis Type is for a [PolarChart], and
 /// provides Styling for Elements only for PolarChart Axis Type

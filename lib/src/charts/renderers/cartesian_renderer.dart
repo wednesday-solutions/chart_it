@@ -1,8 +1,7 @@
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -13,22 +12,18 @@ class CartesianRenderer extends LeafRenderObjectWidget {
 
   // Mandatory Fields
   final CartesianChartStyle style;
-  final List<CartesianSeries> currentData;
-  final List<CartesianSeries> targetData;
-  final Map<int, CartesianPainter> painters;
-  final Map<CartesianSeries, CartesianConfig> configs;
-  final CartesianDataMixin cartesianRangeData;
+  final List<PaintingState> states;
+  final CartesianRangeResult rangeData;
+  final InteractionDispatcher interactionDispatcher;
 
   const CartesianRenderer({
     Key? key,
     this.width,
     this.height,
     required this.style,
-    required this.currentData,
-    required this.targetData,
-    required this.painters,
-    required this.configs,
-    required this.cartesianRangeData,
+    required this.states,
+    required this.rangeData,
+    required this.interactionDispatcher,
   }) : super(key: key);
 
   @override
@@ -37,11 +32,9 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       width: width,
       height: height,
       style: style,
-      currentData: currentData,
-      targetData: targetData,
-      painters: painters,
-      configs: configs,
-      rangeData: cartesianRangeData,
+      states: states,
+      rangeData: rangeData,
+      interactionDispatcher: interactionDispatcher,
     );
   }
 
@@ -52,10 +45,9 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..width = width
       ..height = height
       ..style = style
-      ..currentData = currentData
-      ..targetData = targetData
-      ..painters = painters
-      ..configs = configs;
+      ..states = states
+      ..range = rangeData
+      ..interactionDispatcher = interactionDispatcher;
   }
 }
 
@@ -77,6 +69,10 @@ class CartesianRenderBox extends RenderBox {
   }
 
   final CartesianChartPainter _painter;
+  InteractionDispatcher _interactionDispatcher;
+  set interactionDispatcher(InteractionDispatcher value) {
+    _interactionDispatcher = value;
+  }
 
   // Mandatory Fields
   set style(CartesianChartStyle value) {
@@ -85,78 +81,98 @@ class CartesianRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  set currentData(List<CartesianSeries> value) {
-    if (_painter.currentData == value) return;
-    _painter.currentData = value;
+  set states(List<PaintingState> value) {
+    if (_painter.states == value) return;
+    _painter.states = value;
     markNeedsPaint();
   }
 
-  set targetData(List<CartesianSeries> value) {
-    if (_painter.targetData == value) return;
-    _painter.targetData = value;
+  set range(CartesianRangeResult value) {
+    if (_painter.rangeData == value) return;
+    _painter.rangeData = value;
     markNeedsPaint();
   }
 
-  set painters(Map<int, CartesianPainter> value) {
-    if (_painter.painters != value) return;
-    _painter.painters = value;
-    markNeedsPaint();
-  }
-
-  set configs(Map<CartesianSeries, CartesianConfig> value) {
-    if (_painter.configs != value) return;
-    _painter.configs = value;
-    markNeedsPaint();
-  }
-
-  late TapGestureRecognizer _tapGestureRecognizer;
-  final _doubleTapGestureRecognizer = DoubleTapGestureRecognizer();
+  late final TapGestureRecognizer _tapGestureRecognizer;
+  late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
+  late final PanGestureRecognizer _panGestureRecognizer;
 
   CartesianRenderBox({
     double? width,
     double? height,
     required CartesianChartStyle style,
-    required CartesianDataMixin rangeData,
-    required List<CartesianSeries> currentData,
-    required List<CartesianSeries> targetData,
-    required Map<int, CartesianPainter> painters,
-    required Map<CartesianSeries, CartesianConfig> configs,
+    required List<PaintingState> states,
+    required CartesianRangeResult rangeData,
+    required InteractionDispatcher interactionDispatcher,
   })  : _width = width,
         _height = height,
+        _interactionDispatcher = interactionDispatcher,
         _painter = CartesianChartPainter(
           style: style,
+          states: states,
           rangeData: rangeData,
-          currentData: currentData,
-          targetData: targetData,
-          painters: painters,
-          configs: configs,
         );
 
-  // _registerGestureRecognizers() {
-  //   _tapGestureRecognizer = TapGestureRecognizer()
-  //     ..onTapUp = (details) {
-  //       // _painter.controller.onTapUp(details.localPosition);
-  //     };
-  // }
+  _registerGestureRecognizers() {
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTapUp = _interactionDispatcher.onTapUp
+      ..onTapCancel = _interactionDispatcher.onTapCancel
+      ..onTap = _interactionDispatcher.onTap
+      ..onTapDown = _interactionDispatcher.onTapDown;
+
+    _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
+      ..onDoubleTap = _interactionDispatcher.onDoubleTap
+      ..onDoubleTapDown = _interactionDispatcher.onDoubleTapDown
+      ..onDoubleTapCancel = _interactionDispatcher.onDoubleTapCancel;
+
+    _panGestureRecognizer = PanGestureRecognizer()
+      ..onStart = _interactionDispatcher.onPanStart
+      ..onUpdate = _interactionDispatcher.onPanUpdate
+      ..onCancel = _interactionDispatcher.onPanCancel
+      ..onEnd = _interactionDispatcher.onPanEnd;
+  }
 
   @override
   void performLayout() => size = computeDryLayout(constraints);
 
   @override
-  Size computeDryLayout(BoxConstraints constraints) => Size(
-        _width ?? constraints.maxWidth,
-        _height ?? constraints.maxHeight,
-      );
+  Size computeDryLayout(BoxConstraints constraints) =>
+      Size(_width ?? constraints.maxWidth, _height ?? constraints.maxHeight);
 
   @override
   bool hitTestSelf(Offset position) => true;
 
   @override
+  void attach(PipelineOwner owner) {
+    super.attach(owner);
+    _registerGestureRecognizers();
+  }
+
+  @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
-      _tapGestureRecognizer.addPointer(event);
-      _doubleTapGestureRecognizer.addPointer(event);
+      if (_interactionDispatcher.tapRecognitionEnabled) {
+        _tapGestureRecognizer.addPointer(event);
+      }
+      if (_interactionDispatcher.doubleTapRecognitionEnabled) {
+        _doubleTapGestureRecognizer.addPointer(event);
+      }
+      if (_interactionDispatcher.dragRecognitionEnabled) {
+        _panGestureRecognizer.addPointer(event);
+      }
+    } else if (event is PointerHoverEvent) {
+      // TODO: Handle onHover() for Web & Desktops
+    } else if (event is PointerScrollEvent || event is PointerScaleEvent) {
+      // TODO: Handle onScaleUp/onScaleDown events
     }
+  }
+
+  @override
+  void detach() {
+    super.detach();
+    _tapGestureRecognizer.dispose();
+    _doubleTapGestureRecognizer.dispose();
+    _panGestureRecognizer.dispose();
   }
 
   @override

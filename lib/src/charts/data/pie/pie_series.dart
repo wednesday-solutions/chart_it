@@ -1,6 +1,7 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/pie/pie_interactions.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data_style.dart';
 import 'package:chart_it/src/charts/widgets/pie_chart.dart';
@@ -16,7 +17,7 @@ typedef DonutLabel = String Function();
 /// The PieSeries is **mandatory** to be provided to the [PieChart] widget.
 ///
 /// See Also: [RadialSeries]
-class PieSeries extends RadialSeries with EquatableMixin {
+class PieSeries extends RadialSeries<PieInteractionEvents> with EquatableMixin {
   /// The size of the Donut Circle. Defaults to zero.
   final double donutRadius;
 
@@ -58,6 +59,7 @@ class PieSeries extends RadialSeries with EquatableMixin {
     this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.slices,
+    super.interactionEvents = const PieInteractionEvents(isEnabled: false),
   })  : assert(donutRadius >= 0.0, 'Donut Radius cannot be Negative!'),
         assert(
           donutLabel != null ? donutRadius > 0.0 : true,
@@ -66,16 +68,6 @@ class PieSeries extends RadialSeries with EquatableMixin {
 
   /// Constructs a Factory Instance of [PieSeries] without any Data.
   factory PieSeries.zero() => PieSeries(slices: List.empty());
-
-  @override
-  List<Object?> get props => [
-        donutRadius,
-        donutSpaceColor,
-        donutLabel,
-        donutLabelStyle,
-        seriesStyle,
-        slices,
-      ];
 
   /// Lerps between two [PieSeries] for a factor [t]
   static PieSeries lerp(
@@ -113,8 +105,18 @@ class PieSeries extends RadialSeries with EquatableMixin {
         target.donutRadius,
         t,
       ),
+      interactionEvents: target.interactionEvents,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        donutRadius,
+        donutSpaceColor,
+        donutLabelStyle,
+        seriesStyle,
+        slices,
+      ];
 }
 
 /// Defines [PieSeries] specific data variables, which are utilized
@@ -122,29 +124,14 @@ class PieSeries extends RadialSeries with EquatableMixin {
 ///
 /// Returns the value for a [SliceData].
 class PieSeriesConfig extends RadialConfig {
-  /// Calculated Minimum Value
-  var calculatedMinValue = 0.0;
-
-  /// Calculated Maximum Value
-  var calculatedMaxValue = 0.0;
-
   /// Returns the value of this [SliceData] in [onUpdate].
-  void updateEdges(
-    SliceData slice,
+  void calcSliceRange(
+    List<SliceData> slices,
     Function(double value) onUpdate,
-  ) =>
+  ) {
+    for (var i = 0; i < slices.length; i++) {
+      final slice = slices[i];
       onUpdate(slice.value.toDouble());
-}
-
-/// A Tween to interpolate between two [PieSeries]
-///
-/// [end] object must not be null.
-class PieSeriesTween extends Tween<PieSeries> {
-  PieSeriesTween({
-    required PieSeries? begin,
-    required PieSeries end,
-  }) : super(begin: begin, end: end);
-
-  @override
-  PieSeries lerp(double t) => PieSeries.lerp(begin, end!, t);
+    }
+  }
 }

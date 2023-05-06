@@ -1,3 +1,3 @@
-export 'data/chart_interaction_config.dart';
-export 'data/chart_interactions.dart';
+export 'data/touch_interaction_events.dart';
+export 'data/touch_interactions.dart';
 export 'hit_test/interaction_dispatcher.dart';

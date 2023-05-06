@@ -1,20 +1,7 @@
 library chart_it;
 
 export 'src/animations/refresh_rate_ticker.dart';
-export 'src/charts/data/bars/bar_data.dart';
-export 'src/charts/data/bars/bar_data_style.dart';
-export 'src/charts/data/bars/bar_group.dart';
-export 'src/charts/data/bars/bar_series.dart';
-export 'src/charts/data/bars/multi_bar.dart';
-export 'src/charts/data/bars/simple_bar.dart';
-export 'src/charts/data/core/cartesian/cartesian_data.dart';
-export 'src/charts/data/core/cartesian/cartesian_styling.dart';
-export 'src/charts/data/core/radial/radial_data.dart';
-export 'src/charts/data/core/radial/radial_styling.dart';
-export 'src/charts/data/core/shared/chart_text_style.dart';
-export 'src/charts/data/pie/pie_series.dart';
-export 'src/charts/data/pie/slice_data.dart';
-export 'src/charts/data/pie/slice_data_style.dart';
-export 'src/charts/widgets/bar_chart.dart';
-export 'src/charts/widgets/line_chart.dart';
-export 'src/charts/widgets/pie_chart.dart';
+export 'src/charts/data/bars.dart';
+export 'src/charts/data/core.dart';
+export 'src/charts/data/pie.dart';
+export 'src/charts/widgets/widgets.dart';

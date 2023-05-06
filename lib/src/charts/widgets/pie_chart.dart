@@ -1,6 +1,6 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
-import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/pie.dart';
 import 'package:chart_it/src/charts/renderers/radial_renderer.dart';
 import 'package:chart_it/src/controllers/radial_controller.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +72,7 @@ class _PieChartState extends State<PieChart>
     );
     // provide the chart details to the controller
     _controller = RadialController(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -84,7 +84,7 @@ class _PieChartState extends State<PieChart>
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
     _controller.update(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -101,11 +101,8 @@ class _PieChartState extends State<PieChart>
           width: widget.width,
           height: widget.height,
           style: style,
-          currentData: _controller.currentData,
-          targetData: _controller.targetData,
-          painters: _controller.painters,
-          configs: _controller.cachedConfigs,
-          radialRangeData: _controller,
+          states: _controller.currentData.states,
+          interactionDispatcher: _controller,
         );
       },
     );
@@ -114,4 +111,10 @@ class _PieChartState extends State<PieChart>
   AnimationController _provideAnimation() =>
       widget.animation ?? _defaultAnimation
         ..duration = widget.animationDuration;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }

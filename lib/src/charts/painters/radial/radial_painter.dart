@@ -1,11 +1,13 @@
-import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
-abstract class RadialPainter {
+abstract class RadialPainter<T extends TouchInteractionResult> {
+  T? hitTest(TouchInteractionType type, Offset localPosition);
+
   void paint(
     RadialSeries lerp,
-    RadialSeries target,
     Canvas canvas,
     RadialChartPainter chart,
     RadialConfig config,

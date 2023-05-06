@@ -1,4 +1,4 @@
-import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:flutter/cupertino.dart';
 
 const String _ellipsis = '\u2026';
@@ -49,11 +49,24 @@ class ChartTextPainter {
     );
   }
 
-  void paint({required Canvas canvas, required Offset offset}) {
+  void layout() {
     if (showEllipsis) {
       _painter.ellipsis = _ellipsis;
     }
+
     _painter.layout(maxWidth: maxWidth ?? double.infinity);
+  }
+
+  double get width => _painter.width;
+  double get height => _painter.height;
+
+  void paint(
+      {required Canvas canvas,
+      required Offset offset,
+      bool shouldLayout = false}) {
+    if (shouldLayout) {
+      layout();
+    }
 
     var alignOffset = 0.5;
     switch (align) {

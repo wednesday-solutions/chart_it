@@ -1,10 +1,12 @@
+import 'dart:math';
+
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_mixins.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
+import 'package:chart_it/src/charts/state/bar_series_state.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -15,60 +17,24 @@ import 'package:flutter/material.dart';
 /// and Mapped Painters for every [CartesianSeries].
 class CartesianController extends ChangeNotifier
     with
-        CartesianDataMixin,
-        ChartAnimationsMixin<CartesianSeries>,
+        ChartAnimationsMixin<CartesianData, CartesianSeries>,
         InteractionDispatcher {
-  /// Holds a map of configs for every data series.
-  final Map<CartesianSeries, CartesianConfig> cachedConfigs = {};
+  final Map<EquatableList<CartesianSeries>, CartesianData> _cachedValues = {};
 
-  /// Holds a map of painters for every series type.
-  final Map<int, CartesianPainter> painters = {};
+  final List<CartesianSeries> data;
 
   /// The Current Data which will be lerped across every animation tick.
-  List<CartesianSeries> currentData = List.empty();
+  late CartesianData currentData;
 
   /// The Target Data to which the chart needs to updates.
-  List<CartesianSeries> targetData;
+  late CartesianData targetData;
 
   /// Callback to calculate the X & Y ranges after Data Aggregation.
   final CalculateCartesianRange calculateRange;
 
-  /// The maximum value along X-Axis.
+  /// A [Tween] for evaluating every [CartesianSeries] when the chart animates.
   @override
-  double maxXValue = 0.0;
-
-  /// The maximum value along Y-Axis.
-  @override
-  double maxYValue = 0.0;
-
-  /// The minimum value along X-Axis.
-  @override
-  double minXValue = 0.0;
-
-  /// The minimum value along Y-Axis.
-  @override
-  double minYValue = 0.0;
-
-  /// The maximum range across X-Axis.
-  @override
-  double maxXRange = 0.0;
-
-  /// The maximum range across Y-Axis.
-  @override
-  double maxYRange = 0.0;
-
-  /// The minimum range across X-Axis.
-  @override
-  double minXRange = 0.0;
-
-  /// The minimum range across Y-Axis.
-  @override
-  double minYRange = 0.0;
-
-  /// A List of [Tween] for evaluating every [CartesianSeries] when
-  /// the chart animates.
-  @override
-  late List<Tween<CartesianSeries>> tweenSeries;
+  late Tween<CartesianData> tweenData;
 
   /// The Animation Controller to drive the charts animations.
   @override
@@ -94,7 +60,7 @@ class CartesianController extends ChangeNotifier
   /// Encapsulates the required Chart Data, Animatable Data, Configs
   /// and Mapped Painters for every [CartesianSeries].
   CartesianController({
-    required this.targetData,
+    required this.data,
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
@@ -103,11 +69,11 @@ class CartesianController extends ChangeNotifier
   }) {
     animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(targetData, isInitPhase: true);
+    updateDataSeries(data, isInitPhase: true);
   }
 
   update({
-    List<CartesianSeries>? targetData,
+    List<CartesianSeries>? data,
     AnimationController? animation,
     bool? animateOnUpdate,
     bool? animateOnLoad,
@@ -130,18 +96,18 @@ class CartesianController extends ChangeNotifier
       animateDataUpdates();
     }
 
-    if (targetData != null && this.targetData != targetData) {
-      updateDataSeries(targetData, isInitPhase: false);
+    if (data != null && this.data != data) {
+      updateDataSeries(data, isInitPhase: false);
     }
   }
 
-  _invalidateRangeValues() {
-    var rangeCtx = CartesianRangeContext(
-      maxX: maxXValue,
-      maxY: maxYValue,
-      minX: minXValue,
-      minY: minYValue,
-    );
+  CartesianRangeResult _invalidateRange(
+    double maxX,
+    double maxY,
+    double minX,
+    double minY,
+  ) {
+    var rangeCtx = CartesianRangeContext(maxX, maxY, minX, minY);
     var results = calculateRange(rangeCtx);
 
     while (results.maxYRange % results.yUnitValue != 0) {
@@ -160,120 +126,92 @@ class CartesianController extends ChangeNotifier
       results.minYRange = 0.0;
     }
 
-    minXRange = results.minXRange;
-    maxXRange = results.maxXRange;
-    minYRange = results.minYRange;
-    maxYRange = results.maxYRange;
+    return results;
   }
 
   @override
-  void aggregateData(List<CartesianSeries> data) {
-    for (var i = 0; i < data.length; i++) {
-      final series = data[i];
-      series.when(onBarSeries: (barSeries) {
-        // Invalidate Painter for BarSeries
-        if (painters.getOrNull(i).runtimeType != BarPainter) {
-          painters[i] = BarPainter(useGraphUnits: false);
-        } else {
-          // Update if needed.
-        }
+  CartesianData constructState(List<CartesianSeries> newData) {
+    // Set our Range Holders
+    var maxXValue = 0.0;
+    var maxYValue = 0.0;
+    var minXValue = 0.0;
+    var minYValue = 0.0;
+    // Set our State holder
+    var states = <PaintingState>[];
 
-        for (var j = 0; j < barSeries.barData.length; j++) {
-          final barGroup = barSeries.barData[j];
+    for (var i = 0; i < newData.length; i++) {
+      final series = newData[i];
+      series.when(
+        onBarSeries: (barSeries) {
+          // Invalidate Painter for BarSeries
+          var painter = BarPainter(useGraphUnits: false);
+          var config = BarSeriesConfig();
 
-          var config = cachedConfigs.getOrNull(barSeries);
-          if (config == null) {
-            config = BarSeriesConfig();
-            cachedConfigs[barSeries] = config;
-          }
-          assert(config is BarSeriesConfig);
-          (config as BarSeriesConfig)
-              .updateEdges(barGroup, _updateMinMaxValues);
-        }
-      });
+          updateInteractionDetectionStates(barSeries.interactionEvents);
+
+          config.calcBarDataRange(barSeries.barData, (minX, maxX, minY, maxY) {
+            minXValue = min(minX, minXValue);
+            maxXValue = max(maxX, maxXValue);
+            minYValue = min(minY, minYValue);
+            maxYValue = max(maxY, maxYValue);
+          });
+
+          states.add(
+            BarSeriesState(data: barSeries, config: config, painter: painter),
+          );
+        },
+      );
     }
+
+    // Invalidate the RangeData
+    var results = _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
+    return CartesianData(states: states, range: results);
   }
 
   @override
-  CartesianConfig? getConfig(CartesianSeries series) => cachedConfigs[series];
+  CartesianData setData(List<CartesianSeries> data) {
+    // Get the cacheKey as a List of our CartesianSeries.
+    var cacheKey = EquatableList<CartesianSeries>(data);
+
+    if (_cachedValues.containsKey(cacheKey)) {
+      // Cache entry found. Just return the CartesianData for this Series.
+      targetData = _cachedValues[cacheKey]!;
+    } else {
+      // No entry found, so this is probably a new series. We need to recalculate
+      targetData = constructState(data);
+      // Garbage Collection for cache. We cannot hold too much in it forever.
+      if (_cachedValues.keys.length >= 100) _cachedValues.clear();
+      // Update the cache with new data
+      _cachedValues[cacheKey] = targetData;
+    }
+    return targetData;
+  }
 
   @override
-  List<Tween<CartesianSeries>> getTweens({
-    required List<CartesianSeries> newSeries,
+  void setAnimatableData(CartesianData data) => currentData = data;
+
+  @override
+  Tween<CartesianData> getTweens({
+    required CartesianData newData,
     required bool isInitPhase,
   }) =>
-      toCartesianTweens(
-        isInitPhase ? List.empty() : currentData,
-        newSeries,
-      ) ??
-      List.empty();
-
-  @override
-  void setAnimatableData(List<CartesianSeries> data) => currentData = data;
-
-  @override
-  void setData(List<CartesianSeries> data) {
-    _resetRangeData();
-    aggregateData(data);
-    _invalidateRangeValues();
-    targetData = data;
-  }
-
-  _updateMinMaxValues(minX, maxX, minY, maxY) {
-    if (minX < minXValue) {
-      minXValue = minX;
-    }
-
-    if (maxX > maxXValue) {
-      maxXValue = maxX;
-    }
-
-    if (minY < minYValue) {
-      minYValue = minY;
-    }
-
-    if (maxY > maxYValue) {
-      maxYValue = maxY;
-    }
-  }
-
-  _resetRangeData() {
-    maxXValue = 0.0;
-    maxYValue = 0.0;
-    minXValue = 0.0;
-    minYValue = 0.0;
-    maxXRange = 0.0;
-    maxYRange = 0.0;
-    minXRange = 0.0;
-    minYRange = 0.0;
-  }
+      CartesianDataTween(
+        begin: isInitPhase ? CartesianData.zero(newData.range) : currentData,
+        end: newData,
+      );
 
   @override
   void onInteraction(
-    ChartInteractionType interactionType,
+    TouchInteractionType interactionType,
     Offset localPosition,
   ) {
-    // TODO: implement onInteraction
+    // Fire all painters to perform Hit Test
+    for (var i = 0; i < targetData.states.length; i++) {
+      final state = targetData.states[i];
+      if (state is BarSeriesState) {
+        var result = state.painter.hitTest(interactionType, localPosition);
+        if (result != null) state.data.interactionEvents.onInteraction(result);
+      }
+    }
   }
 }
-
-// abstract class ChartPaintingContext<SERIES, CONFIG, PAINTER> {
-//   SERIES series;
-//   CONFIG config;
-//   PAINTER painter;
-//
-//   ChartPaintingContext({
-//     required this.series,
-//     required this.config,
-//     required this.painter,
-//   });
-// }
-//
-// class BarChartPaintingContext
-//     extends ChartPaintingContext<BarSeries, BarSeriesConfig, BarPainter> {
-//   BarChartPaintingContext({
-//     required super.series,
-//     required super.config,
-//     required super.painter,
-//   });
-// }

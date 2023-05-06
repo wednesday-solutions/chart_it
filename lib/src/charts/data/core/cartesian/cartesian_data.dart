@@ -1,6 +1,8 @@
-import 'package:chart_it/src/animations/tweens.dart';
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
@@ -19,9 +21,52 @@ enum CartesianChartAlignment {
 /// Orientation of the Chart
 enum CartesianChartOrientation { vertical, horizontal }
 
+class CartesianData with EquatableMixin {
+  List<PaintingState> states;
+  CartesianRangeResult range;
+
+  CartesianData({required this.states, required this.range});
+
+  factory CartesianData.zero(CartesianRangeResult targetRange) {
+    return CartesianData(states: List.empty(), range: targetRange);
+  }
+
+  static CartesianData lerp(
+    CartesianData? current,
+    CartesianData target,
+    double t,
+  ) {
+    return CartesianData(
+      states: PaintingState.lerpStateList(current?.states, target.states, t),
+      range: CartesianRangeResult.lerp(current?.range, target.range, t),
+    );
+  }
+
+  @override
+  List<Object> get props => [states, range];
+}
+
+class CartesianDataTween extends Tween<CartesianData> {
+  /// A Tween to interpolate between two [CartesianData]
+  ///
+  /// [end] object must not be null.
+  CartesianDataTween({
+    required CartesianData? begin,
+    required CartesianData end,
+  }) : super(begin: begin, end: end);
+
+  @override
+  CartesianData lerp(double t) => CartesianData.lerp(begin, end!, t);
+}
+
 /// Base Series for any type of Data which can be plotted
 /// on a Cartesian Chart.
-abstract class CartesianSeries {
+abstract class CartesianSeries<E extends TouchInteractionEvents>
+    with EquatableMixin {
+  final E interactionEvents;
+
+  CartesianSeries({required this.interactionEvents});
+
   /// Checks the Subclass Type and returns the casted instance
   /// to the matched callback. All callbacks must be provided.
   T when<T>({
@@ -69,26 +114,4 @@ abstract class CartesianSeries {
   }
 }
 
-abstract class CartesianConfig {}
-
-/// Converts [current] and [target] list of [CartesianSeries] to
-/// a list of [Tween] of type [CartesianSeries]
-List<Tween<CartesianSeries>>? toCartesianTweens(
-  List<CartesianSeries>? current,
-  List<CartesianSeries> target,
-) {
-  return buildTweens(current, target, builder: (current, target) {
-    final currentValue =
-        current == null || current.runtimeType != target.runtimeType
-            ? null
-            : current;
-    return target.when(
-      onBarSeries: (series) {
-        return BarSeriesTween(
-          begin: currentValue.asOrDefault(BarSeries.zero()),
-          end: series,
-        );
-      },
-    );
-  });
-}
+abstract class CartesianConfig with EquatableMixin {}

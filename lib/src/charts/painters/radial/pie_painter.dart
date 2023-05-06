@@ -1,19 +1,21 @@
 import 'dart:math';
 
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
-import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
-import 'package:chart_it/src/charts/data/pie/pie_series.dart';
+import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/pie.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/paint_objects.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 class PiePainter implements RadialPainter {
+  final List<_SliceInteractionData> _interactionData = [];
+
   // late PieSeriesConfig _config;
-  late PieSeries _data;
+  PieSeries? _data;
 
   late Paint _arcPaint;
   late Paint _arcStroke;
@@ -26,9 +28,30 @@ class PiePainter implements RadialPainter {
   }
 
   @override
+  PieInteractionResult? hitTest(
+    TouchInteractionType type,
+    Offset localPosition,
+  ) {
+    final data = _data;
+    if (data == null) return null;
+
+    // We will perform HitTest only if Interactions are enabled for this series.
+    if (data.interactionEvents.isEnabled) {
+      for (var i = 0; i < _interactionData.length; i++) {
+        final slice = _interactionData[i];
+
+        if (slice.contains(localPosition)) {
+          return slice.getInteractionResult(localPosition, type);
+        }
+      }
+    }
+    // No Interactions for this PieSeries.
+    return null;
+  }
+
+  @override
   void paint(
     RadialSeries lerpSeries,
-    RadialSeries targetSeries,
     Canvas canvas,
     RadialChartPainter chart,
     RadialConfig config,
@@ -37,9 +60,9 @@ class PiePainter implements RadialPainter {
     _data = lerpSeries as PieSeries;
 
     var defaultStyle = defaultPieSeriesStyle;
-    var seriesRadius = _data.seriesStyle?.radius ?? defaultStyle.radius;
+    var seriesRadius = _data!.seriesStyle?.radius ?? defaultStyle.radius;
 
-    var total = _data.slices.fold(0.0, (prev, data) => (prev + data.value));
+    var total = _data!.slices.fold(0.0, (prev, data) => (prev + data.value));
 
     var fillStartAngle = (chart.style.initAngle - 90.0);
     var strokeStartAngle = (chart.style.initAngle - 90.0);
@@ -47,8 +70,8 @@ class PiePainter implements RadialPainter {
     var fillPointDegrees = 0.0;
     var strokePointDegrees = 0.0;
 
-    for (var i = 0; i < _data.slices.length; i++) {
-      final slice = _data.slices[i];
+    for (var i = 0; i < _data!.slices.length; i++) {
+      final slice = _data!.slices[i];
       var sliceRadius = slice.style?.radius ?? seriesRadius;
       // We need to ensure that user hasn't provided a radius value
       // that exceeds our max limit to draw a circle within given constraints
@@ -58,7 +81,7 @@ class PiePainter implements RadialPainter {
       if (slice.value > 0) {
         // Styling for Slices
         var sliceFill = slice.style?.color ??
-            _data.seriesStyle?.color ??
+            _data!.seriesStyle?.color ??
             defaultStyle.color!;
 
         // Draw slice with color fill
@@ -73,20 +96,22 @@ class PiePainter implements RadialPainter {
           );
 
         _drawArcGroup(
+          slice,
+          i,
           canvas,
           arcPaint,
-          _donutFill..color = _data.donutSpaceColor ?? Colors.transparent,
+          _donutFill..color = _data!.donutSpaceColor ?? Colors.transparent,
           center: chart.graphOrigin,
           radius: sliceRadius,
           startAngle: fillStartAngle,
           sweepDegrees: fillPointDegrees,
-          donutRadius: min(_data.donutRadius, chart.maxRadius),
-          isDonut: _data.donutRadius > 0.0,
+          donutRadius: min(_data!.donutRadius, chart.maxRadius),
+          isDonut: _data!.donutRadius > 0.0,
         );
 
         if (slice.label != null) {
           var labelPos = slice.style?.labelPosition ??
-              _data.seriesStyle?.labelPosition ??
+              _data!.seriesStyle?.labelPosition ??
               (sliceRadius + 30);
           _drawSliceLabels(
             canvas,
@@ -94,7 +119,7 @@ class PiePainter implements RadialPainter {
             length: labelPos,
             sweepAngle: fillStartAngle + (fillPointDegrees * 0.5),
             text: slice.label!(slice.value / total, slice.value),
-            style: slice.labelStyle ?? _data.labelStyle!,
+            style: slice.labelStyle ?? _data!.labelStyle!,
           );
         }
       }
@@ -102,8 +127,8 @@ class PiePainter implements RadialPainter {
       fillStartAngle += fillPointDegrees;
     }
 
-    for (var i = 0; i < _data.slices.length; i++) {
-      final slice = _data.slices[i];
+    for (var i = 0; i < _data!.slices.length; i++) {
+      final slice = _data!.slices[i];
       var sliceRadius = slice.style?.radius ?? seriesRadius;
       // We need to ensure that user hasn't provided a radius value
       // that exceeds our max limit to draw a circle within given constraints
@@ -112,10 +137,10 @@ class PiePainter implements RadialPainter {
 
       if (slice.value > 0) {
         var sliceStrokeWidth = slice.style?.strokeWidth ??
-            _data.seriesStyle?.strokeWidth ??
+            _data!.seriesStyle?.strokeWidth ??
             defaultStyle.strokeWidth!;
         var sliceStrokeColor = slice.style?.strokeColor ??
-            _data.seriesStyle?.strokeColor ??
+            _data!.seriesStyle?.strokeColor ??
             defaultStyle.strokeColor!;
 
         // Paint the stroke if visible width provided
@@ -132,8 +157,8 @@ class PiePainter implements RadialPainter {
             radius: sliceRadius,
             startAngle: strokeStartAngle,
             sweepDegrees: strokePointDegrees,
-            donutRadius: min(_data.donutRadius, chart.maxRadius),
-            isDonut: _data.donutRadius > 0.0,
+            donutRadius: min(_data!.donutRadius, chart.maxRadius),
+            isDonut: _data!.donutRadius > 0.0,
           );
         }
       }
@@ -142,17 +167,19 @@ class PiePainter implements RadialPainter {
     }
 
     // Draw a label in the Circle donut chart
-    if (_data.donutLabel != null) {
+    if (_data!.donutLabel != null) {
       _drawDonutLabel(
         canvas: canvas,
-        text: _data.donutLabel!(),
-        style: _data.donutLabelStyle,
+        text: _data!.donutLabel!(),
+        style: _data!.donutLabelStyle,
         offset: chart.graphOrigin,
       );
     }
   }
 
   _drawArcGroup(
+    SliceData sliceData,
+    int sliceDataIndex,
     Canvas canvas,
     Paint slicePaint,
     Paint? donutPaint, {
@@ -186,10 +213,21 @@ class PiePainter implements RadialPainter {
       );
       clippingPath.close();
 
-      canvas.drawPath(
-        Path.combine(PathOperation.difference, slicePath, clippingPath),
-        slicePaint,
+      var clippedPath = Path.combine(
+        PathOperation.difference,
+        slicePath,
+        clippingPath,
       );
+
+      _interactionData.add(
+        _SliceInteractionData(
+          arc: clippedPath,
+          slice: sliceData,
+          sliceDataIndex: sliceDataIndex,
+        ),
+      );
+
+      canvas.drawPath(clippedPath, slicePaint);
 
       // Provide fill to the donut piece if available
       if (donutPaint != null) {
@@ -206,6 +244,14 @@ class PiePainter implements RadialPainter {
         canvas.drawPath(donutFillPath, donutPaint);
       }
     } else {
+      _interactionData.add(
+        _SliceInteractionData(
+          arc: slicePath,
+          slice: sliceData,
+          sliceDataIndex: sliceDataIndex,
+        ),
+      );
+
       canvas.drawPath(slicePath, slicePaint);
     }
   }
@@ -272,7 +318,7 @@ class PiePainter implements RadialPainter {
       text: text,
     );
 
-    textPainter.paint(canvas: canvas, offset: labelOffset);
+    textPainter.paint(canvas: canvas, offset: labelOffset, shouldLayout: true);
   }
 
   void _drawDonutLabel({
@@ -285,6 +331,33 @@ class PiePainter implements RadialPainter {
       chartTextStyle: style ?? defaultChartTextStyle,
       text: text,
     );
-    textPainter.paint(canvas: canvas, offset: offset);
+    textPainter.paint(canvas: canvas, offset: offset, shouldLayout: true);
+  }
+}
+
+class _SliceInteractionData {
+  final Path arc;
+  final SliceData slice;
+  final int sliceDataIndex;
+
+  _SliceInteractionData({
+    required this.arc,
+    required this.slice,
+    required this.sliceDataIndex,
+  });
+
+  // If the Slice Arc boundaries contains the interaction position
+  bool contains(Offset position) => arc.contains(position);
+
+  PieInteractionResult getInteractionResult(
+    Offset localPosition,
+    TouchInteractionType type,
+  ) {
+    return PieInteractionResult(
+      slice: slice,
+      sliceDataIndex: sliceDataIndex,
+      localPosition: localPosition,
+      interactionType: type,
+    );
   }
 }

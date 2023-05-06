@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 extension AsExtension on Object? {
   X as<X>() => this as X;
 
@@ -10,6 +12,23 @@ extension AsExtension on Object? {
     var currObject = this;
     return currObject.asOrNull() ?? defaultValue;
   }
+}
+
+extension Precision on num {
+  double toPrecision(int n) => double.parse(toStringAsFixed(n));
+
+  bool isBetween(num from, num to) {
+    return from < this && this < to;
+  }
+}
+
+class EquatableList<T> extends Equatable {
+  final List<T> list;
+
+  const EquatableList(this.list);
+
+  @override
+  List<Object?> get props => [list];
 }
 
 extension ListTransforms<T> on List<T> {
@@ -32,6 +51,8 @@ extension ListTransforms<T> on List<T> {
   List<T> distinct() => toSet().toList();
 
   List<Type> distinctTypes() => map((e) => e.runtimeType).toSet().toList();
+
+  List<T?> withNullableItems() => whereType<T?>().toList();
 
   void forEachIndexed(void Function(int index, T item) action) {
     for (var index = 0; index < length; index++) {
@@ -70,4 +91,14 @@ extension ContainsKey<K, V> on Map<K, V> {
       onUpdate(this[key]);
     }
   }
+}
+
+extension BoolExtension on bool {
+  get isFalse => this == false;
+}
+
+extension NullChecker on Object? {
+  get isNull => this == null;
+
+  get isNotNull => this != null;
 }

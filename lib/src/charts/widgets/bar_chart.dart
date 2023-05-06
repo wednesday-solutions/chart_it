@@ -1,7 +1,6 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
+import 'package:chart_it/src/charts/data/bars.dart';
+import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +83,7 @@ class _BarChartState extends State<BarChart>
         (widget.chartStyle?.gridStyle ?? defaultBarChartStyle.gridStyle)!;
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -110,7 +109,7 @@ class _BarChartState extends State<BarChart>
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
     _controller.update(
-      targetData: [widget.data],
+      data: [widget.data],
       animation: _provideAnimation(),
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
@@ -125,7 +124,8 @@ class _BarChartState extends State<BarChart>
       gridStyle: validStyle.gridStyle!.copyWith(
         // Unless the user is trying to play around with the xUnitValue,
         // we will default it to the length of bar groups
-        xUnitValue: validStyle.gridStyle?.xUnitValue ?? _controller.maxXRange,
+        xUnitValue: validStyle.gridStyle?.xUnitValue ??
+            _controller.targetData.range.maxXRange,
       ),
     );
     return AnimatedBuilder(
@@ -135,11 +135,9 @@ class _BarChartState extends State<BarChart>
           width: widget.width,
           height: widget.height,
           style: style,
-          currentData: _controller.currentData,
-          targetData: _controller.targetData,
-          painters: _controller.painters,
-          configs: _controller.cachedConfigs,
-          cartesianRangeData: _controller,
+          states: _controller.currentData.states,
+          rangeData: _controller.currentData.range,
+          interactionDispatcher: _controller,
         );
       },
     );
@@ -148,4 +146,10 @@ class _BarChartState extends State<BarChart>
   AnimationController _provideAnimation() =>
       widget.animation ?? _defaultAnimation
         ..duration = widget.animationDuration;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }

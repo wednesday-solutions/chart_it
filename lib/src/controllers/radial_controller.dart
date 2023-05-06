@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
-import 'package:chart_it/src/charts/data/core/radial/radial_mixins.dart';
 import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/painters/radial/pie_painter.dart';
-import 'package:chart_it/src/charts/painters/radial/radial_painter.dart';
+import 'package:chart_it/src/charts/state/painting_state.dart';
+import 'package:chart_it/src/charts/state/pie_series_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -13,34 +15,20 @@ import 'package:flutter/material.dart';
 /// Encapsulates the required Chart Data, Animatable Data, Configs
 /// and Mapped Painters for every [RadialSeries].
 class RadialController extends ChangeNotifier
-    with
-        RadialDataMixin,
-        ChartAnimationsMixin<RadialSeries>,
-        InteractionDispatcher {
-  /// Holds a map of configs for every data series.
-  final Map<RadialSeries, RadialConfig> cachedConfigs = {};
+    with ChartAnimationsMixin<RadialData, RadialSeries>, InteractionDispatcher {
+  final Map<EquatableList<RadialSeries>, RadialData> _cachedValues = {};
 
-  /// Holds a map of painters for every series type.
-  final Map<int, RadialPainter> painters = {};
+  final List<RadialSeries> data;
 
   /// The Current Data which will be lerped across every animation tick.
-  List<RadialSeries> currentData = List.empty();
+  late RadialData currentData;
 
   /// The Target Data to which the chart needs to updates.
-  List<RadialSeries> targetData;
+  late RadialData targetData;
 
-  /// The minimum value across all Series.
+  /// A [Tween] for evaluating every [RadialSeries] when the chart animates.
   @override
-  double minValue = 0.0;
-
-  /// The maximum value across all Series.
-  @override
-  double maxValue = 0.0;
-
-  /// A List of [Tween] for evaluating every [RadialSeries] when
-  /// the chart animates.
-  @override
-  late List<Tween<RadialSeries>> tweenSeries;
+  late Tween<RadialData> tweenData;
 
   /// The Animation Controller to drive the charts animations.
   @override
@@ -64,18 +52,18 @@ class RadialController extends ChangeNotifier
   /// Encapsulates the required Chart Data, Animatable Data, Configs
   /// and Mapped Painters for every [RadialSeries].
   RadialController({
-    required this.targetData,
+    required this.data,
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
   }) {
     animateDataUpdates();
     // // On Initialization, we need to animate our chart if necessary
-    updateDataSeries(targetData, isInitPhase: true);
+    updateDataSeries(data, isInitPhase: true);
   }
 
   update({
-    List<RadialSeries>? targetData,
+    List<RadialSeries>? data,
     AnimationController? animation,
     bool? animateOnUpdate,
     bool? animateOnLoad,
@@ -93,90 +81,93 @@ class RadialController extends ChangeNotifier
       animateDataUpdates();
     }
 
-    if (targetData != null && this.targetData != targetData) {
-      updateDataSeries(targetData, isInitPhase: false);
+    if (data != null && this.data != data) {
+      updateDataSeries(data, isInitPhase: false);
     }
   }
 
   @override
-  void aggregateData(List<RadialSeries> data) {
-    for (var i = 0; i < data.length; i++) {
-      final series = data[i];
+  RadialData constructState(List<RadialSeries> newData) {
+    // Set our Range Holders
+    var minValue = 0.0;
+    var maxValue = 0.0;
+    // Set our State holder
+    var states = <PaintingState>[];
+
+    for (var i = 0; i < newData.length; i++) {
+      final series = newData[i];
       series.when(
         onPieSeries: (pieSeries) {
-          // invalidate painter for PieSeries
-          if (painters.getOrNull(i).runtimeType != PiePainter) {
-            painters[i] = PiePainter();
-          } else {
-            // Update if needed.
-          }
+          // Invalidate Painter for PieSeries
+          var painter = PiePainter();
+          var config = PieSeriesConfig();
 
-          for (var j = 0; j < pieSeries.slices.length; j++) {
-            final slice = pieSeries.slices[j];
+          config.calcSliceRange(pieSeries.slices, (value) {
+            minValue = min(value, minValue);
+            maxValue = max(value, maxValue);
+          });
 
-            var config = cachedConfigs.getOrNull(pieSeries);
-            if (config == null) {
-              config = PieSeriesConfig();
-              cachedConfigs[pieSeries] = config;
-            }
-            assert(config is PieSeriesConfig);
-            (config as PieSeriesConfig).updateEdges(slice, _updateMinMaxValues);
-          }
+          states.add(
+            PieSeriesState(data: pieSeries, config: config, painter: painter),
+          );
         },
       );
     }
+
     // We cannot show Negative Values in Radial Charts, so for now
     // We will throw exception if either of min or max values are negative
     // FIXME: SUBJECT TO CHANGE
     if (minValue.isNegative || maxValue.isNegative) {
       throw ArgumentError('Radial Charts cannot display Negative Values!');
     }
+
+    return RadialData(states: states);
   }
 
   @override
-  RadialConfig? getConfig(RadialSeries series) => cachedConfigs[series];
+  RadialData setData(List<RadialSeries> data) {
+    // Get the cacheKey as a List of our CartesianSeries.
+    var cacheKey = EquatableList<RadialSeries>(data);
+
+    if (_cachedValues.containsKey(cacheKey)) {
+      // Cache entry found. Just return the CartesianData for this Series.
+      targetData = _cachedValues[cacheKey]!;
+    } else {
+      // No entry found, so this is probably a new series. We need to recalculate
+      targetData = constructState(data);
+      // Garbage Collection for cache. We cannot hold too much in it forever.
+      if (_cachedValues.keys.length >= 100) _cachedValues.clear();
+      // Update the cache with new data
+      _cachedValues[cacheKey] = targetData;
+    }
+    return targetData;
+  }
 
   @override
-  List<Tween<RadialSeries>> getTweens({
-    required List<RadialSeries> newSeries,
+  void setAnimatableData(RadialData data) => currentData = data;
+
+  @override
+  Tween<RadialData> getTweens({
+    required RadialData newData,
     required bool isInitPhase,
   }) =>
-      toRadialTweens(
-        isInitPhase ? List.empty() : currentData,
-        newSeries,
-      ) ??
-      List.empty();
-
-  @override
-  void setAnimatableData(List<RadialSeries> data) => currentData = data;
-
-  @override
-  void setData(List<RadialSeries> data) {
-    _resetRangeData();
-    aggregateData(data);
-    targetData = data;
-  }
-
-  _updateMinMaxValues(value) {
-    if (value < minValue) {
-      minValue = value;
-    }
-
-    if (value > maxValue) {
-      maxValue = value;
-    }
-  }
-
-  _resetRangeData() {
-    minValue = 0.0;
-    maxValue = 0.0;
-  }
+      RadialDataTween(
+        begin: isInitPhase ? RadialData.zero() : currentData,
+        end: newData,
+      );
 
   @override
   void onInteraction(
-    ChartInteractionType interactionType,
+    TouchInteractionType interactionType,
     Offset localPosition,
   ) {
-    // TODO: implement onInteraction
+    // Fire all painters to perform Hit Test
+    for (var i = 0; i < targetData.states.length; i++) {
+      final state = targetData.states[i];
+      if (state is PieSeriesState) {
+        var result = state.painter.hitTest(interactionType, localPosition);
+        if (result != null) state.data.interactionEvents.onInteraction(result);
+      }
+    }
   }
 }

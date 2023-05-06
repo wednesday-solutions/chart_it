@@ -10,6 +10,8 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
   @protected
   Tween<K> get tweenData;
 
+  K? latestDataDispatchedToPainting;
+
   set tweenData(Tween<K> newTween);
 
   AnimationController get animation;
@@ -56,9 +58,17 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
     bool isInitPhase = false,
   }) {
     // Update the Target Data to the newest value
-    var newData = setData(newSeries);
+    final targetData = setData(newSeries);
+
+    if (latestDataDispatchedToPainting != null &&
+        latestDataDispatchedToPainting == targetData) {
+      return;
+    } else {
+      latestDataDispatchedToPainting = targetData;
+    }
+
     // Tween a List of Tweens for CartesianSeries
-    tweenData = getTweens(newData: newData, isInitPhase: isInitPhase);
+    tweenData = getTweens(newData: targetData, isInitPhase: isInitPhase);
 
     // Finally animate the differences
     final shouldAnimateOnLoad = isInitPhase && animateOnLoad;
@@ -70,7 +80,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
         ..forward();
     } else {
       // We are to not animate the data updates
-      setAnimatableData(newData);
+      setAnimatableData(targetData);
       notifyListeners();
     }
   }

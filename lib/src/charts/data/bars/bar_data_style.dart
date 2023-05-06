@@ -17,9 +17,6 @@ import 'package:flutter/painting.dart';
 /// 4. Default [BarDataStyle] Style
 /// {@endtemplate}
 class BarDataStyle extends Equatable {
-  /// The Width of the Bar. This value should range between 0.0 & 1.0.
-  final double? barWidth;
-
   /// The fill color of the Bar
   final Color? barColor;
 
@@ -38,7 +35,6 @@ class BarDataStyle extends Equatable {
   /// Encapsulates all the Styling options required for a [BarChart].
   /// {@macro bar_styling_order}
   const BarDataStyle({
-    this.barWidth,
     this.barColor,
     this.gradient,
     this.strokeWidth,
@@ -54,7 +50,6 @@ class BarDataStyle extends Equatable {
   ) {
     if (target != null) {
       return BarDataStyle(
-        barWidth: lerpDouble(current?.barWidth, target.barWidth, t),
         barColor: Color.lerp(current?.barColor, target.barColor, t),
         gradient: Gradient.lerp(current?.gradient, target.gradient, t),
         strokeWidth: lerpDouble(current?.strokeWidth, target.strokeWidth, t),
@@ -68,5 +63,5 @@ class BarDataStyle extends Equatable {
 
   @override
   List<Object?> get props =>
-      [barWidth, barColor, gradient, strokeWidth, strokeColor, cornerRadius];
+      [barColor, gradient, strokeWidth, strokeColor, cornerRadius];
 }

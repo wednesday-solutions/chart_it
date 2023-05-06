@@ -69,16 +69,6 @@ class PieSeries extends RadialSeries<PieInteractionEvents> with EquatableMixin {
   /// Constructs a Factory Instance of [PieSeries] without any Data.
   factory PieSeries.zero() => PieSeries(slices: List.empty());
 
-  @override
-  List<Object?> get props => [
-        donutRadius,
-        donutSpaceColor,
-        donutLabel,
-        donutLabelStyle,
-        seriesStyle,
-        slices,
-      ];
-
   /// Lerps between two [PieSeries] for a factor [t]
   static PieSeries lerp(
     PieSeries? current,
@@ -118,6 +108,15 @@ class PieSeries extends RadialSeries<PieInteractionEvents> with EquatableMixin {
       interactionEvents: target.interactionEvents,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        donutRadius,
+        donutSpaceColor,
+        donutLabelStyle,
+        seriesStyle,
+        slices,
+      ];
 }
 
 /// Defines [PieSeries] specific data variables, which are utilized

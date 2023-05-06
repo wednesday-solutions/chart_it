@@ -146,4 +146,10 @@ class _BarChartState extends State<BarChart>
   AnimationController _provideAnimation() =>
       widget.animation ?? _defaultAnimation
         ..duration = widget.animationDuration;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }

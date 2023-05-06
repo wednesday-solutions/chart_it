@@ -21,4 +21,7 @@ class BarSeriesState
       painter: target.painter,
     );
   }
+
+  @override
+  List<Object?> get props => [super.data];
 }

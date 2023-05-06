@@ -46,7 +46,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..height = height
       ..style = style
       ..states = states
-      ..range = rangeData;
+      ..range = rangeData
+      ..interactionDispatcher = interactionDispatcher;
   }
 }
 
@@ -68,7 +69,10 @@ class CartesianRenderBox extends RenderBox {
   }
 
   final CartesianChartPainter _painter;
-  final InteractionDispatcher interactionDispatcher;
+  InteractionDispatcher _interactionDispatcher;
+  set interactionDispatcher(InteractionDispatcher value) {
+    _interactionDispatcher = value;
+  }
 
   // Mandatory Fields
   set style(CartesianChartStyle value) {
@@ -99,9 +103,10 @@ class CartesianRenderBox extends RenderBox {
     required CartesianChartStyle style,
     required List<PaintingState> states,
     required CartesianRangeResult rangeData,
-    required this.interactionDispatcher,
+    required InteractionDispatcher interactionDispatcher,
   })  : _width = width,
         _height = height,
+        _interactionDispatcher = interactionDispatcher,
         _painter = CartesianChartPainter(
           style: style,
           states: states,
@@ -110,18 +115,21 @@ class CartesianRenderBox extends RenderBox {
 
   _registerGestureRecognizers() {
     _tapGestureRecognizer = TapGestureRecognizer()
-      ..onTapUp = interactionDispatcher.onTapUp;
+      ..onTapUp = _interactionDispatcher.onTapUp
+      ..onTapCancel = _interactionDispatcher.onTapCancel
+      ..onTap = _interactionDispatcher.onTap
+      ..onTapDown = _interactionDispatcher.onTapDown;
 
     _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
-      ..onDoubleTap = interactionDispatcher.onDoubleTap
-      ..onDoubleTapDown = interactionDispatcher.onDoubleTapDown
-      ..onDoubleTapCancel = interactionDispatcher.onDoubleTapCancel;
+      ..onDoubleTap = _interactionDispatcher.onDoubleTap
+      ..onDoubleTapDown = _interactionDispatcher.onDoubleTapDown
+      ..onDoubleTapCancel = _interactionDispatcher.onDoubleTapCancel;
 
     _panGestureRecognizer = PanGestureRecognizer()
-      ..onStart = interactionDispatcher.onPanStart
-      ..onUpdate = interactionDispatcher.onPanUpdate
-      ..onCancel = interactionDispatcher.onPanCancel
-      ..onEnd = interactionDispatcher.onPanEnd;
+      ..onStart = _interactionDispatcher.onPanStart
+      ..onUpdate = _interactionDispatcher.onPanUpdate
+      ..onCancel = _interactionDispatcher.onPanCancel
+      ..onEnd = _interactionDispatcher.onPanEnd;
   }
 
   @override
@@ -143,9 +151,15 @@ class CartesianRenderBox extends RenderBox {
   @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
-      _tapGestureRecognizer.addPointer(event);
-      _doubleTapGestureRecognizer.addPointer(event);
-      _panGestureRecognizer.addPointer(event);
+      if (_interactionDispatcher.tapRecognitionEnabled) {
+        _tapGestureRecognizer.addPointer(event);
+      }
+      if (_interactionDispatcher.doubleTapRecognitionEnabled) {
+        _doubleTapGestureRecognizer.addPointer(event);
+      }
+      if (_interactionDispatcher.dragRecognitionEnabled) {
+        _panGestureRecognizer.addPointer(event);
+      }
     } else if (event is PointerHoverEvent) {
       // TODO: Handle onHover() for Web & Desktops
     } else if (event is PointerScrollEvent || event is PointerScaleEvent) {

@@ -95,7 +95,10 @@ class RadialRenderBox extends RenderBox {
 
   _registerGestureRecognizers() {
     _tapGestureRecognizer = TapGestureRecognizer()
-      ..onTapUp = interactionDispatcher.onTapUp;
+      ..onTapUp = interactionDispatcher.onTapUp
+      ..onTapDown = interactionDispatcher.onTapDown
+      ..onTap = interactionDispatcher.onTap
+      ..onTapCancel = interactionDispatcher.onTapCancel;
 
     _doubleTapGestureRecognizer = DoubleTapGestureRecognizer()
       ..onDoubleTap = interactionDispatcher.onDoubleTap

@@ -25,7 +25,6 @@ const defaultBarChartStyle = CartesianChartStyle(
 const defaultRadialChartStyle = RadialChartStyle();
 
 const defaultBarSeriesStyle = BarDataStyle(
-  barWidth: 1.0,
   barColor: Color(0xFFCBB6F7),
   strokeWidth: 2.0,
   strokeColor: Color(0xFF6A4FA3),

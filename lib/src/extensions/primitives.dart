@@ -92,3 +92,13 @@ extension ContainsKey<K, V> on Map<K, V> {
     }
   }
 }
+
+extension BoolExtension on bool {
+  get isFalse => this == false;
+}
+
+extension NullChecker on Object? {
+  get isNull => this == null;
+
+  get isNotNull => this != null;
+}

@@ -5,7 +5,6 @@ import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
-import 'package:equatable/equatable.dart';
 
 /// Defines a Group of Multiple Bars
 ///
@@ -13,7 +12,7 @@ import 'package:equatable/equatable.dart';
 /// provide us the Y-Value for each individual bar in the group.
 ///
 /// See Also: [BarGroup]
-class MultiBar extends BarGroup with EquatableMixin {
+class MultiBar extends BarGroup {
   /// The list of [BarData] which gives us the Y-Value and
   /// the styling for each individual bars in this group.
   final List<BarData> yValues;
@@ -56,9 +55,6 @@ class MultiBar extends BarGroup with EquatableMixin {
         ),
         assert(groupSpacing >= 0.0, "groupSpacing cannot be Negative!");
 
-  @override
-  List<Object?> get props => [xValue, yValues, label, labelStyle, groupStyle];
-
   /// Lerps between two [MultiBar]s for a factor [t]
   static MultiBar lerp(BarGroup? current, BarGroup target, double t) {
     if ((current is MultiBar?) && target is MultiBar) {
@@ -87,4 +83,7 @@ class MultiBar extends BarGroup with EquatableMixin {
       throw Exception('Both current & target data should be of same series!');
     }
   }
+
+  @override
+  List<Object?> get props => [xValue, yValues, labelStyle, groupStyle];
 }

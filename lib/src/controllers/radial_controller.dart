@@ -6,6 +6,7 @@ import 'package:chart_it/src/charts/data/pie/pie_series.dart';
 import 'package:chart_it/src/charts/painters/radial/pie_painter.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/charts/state/pie_series_state.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ import 'package:flutter/material.dart';
 /// and Mapped Painters for every [RadialSeries].
 class RadialController extends ChangeNotifier
     with ChartAnimationsMixin<RadialData, RadialSeries>, InteractionDispatcher {
-  final Map<Set<RadialSeries>, RadialData> _cachedValues = {};
+  final Map<EquatableList<RadialSeries>, RadialData> _cachedValues = {};
 
   final List<RadialSeries> data;
 
@@ -125,8 +126,8 @@ class RadialController extends ChangeNotifier
 
   @override
   RadialData setData(List<RadialSeries> data) {
-    // Get the cacheKey as a Set of our CartesianSeries.
-    Set<RadialSeries> cacheKey = Set.from(data);
+    // Get the cacheKey as a List of our CartesianSeries.
+    var cacheKey = EquatableList<RadialSeries>(data);
 
     if (_cachedValues.containsKey(cacheKey)) {
       // Cache entry found. Just return the CartesianData for this Series.
@@ -134,8 +135,9 @@ class RadialController extends ChangeNotifier
     } else {
       // No entry found, so this is probably a new series. We need to recalculate
       targetData = constructState(data);
-      // Reset the old cache. Update the cache with new data
-      // _cachedValues.clear();
+      // Garbage Collection for cache. We cannot hold too much in it forever.
+      if (_cachedValues.keys.length >= 100) _cachedValues.clear();
+      // Update the cache with new data
       _cachedValues[cacheKey] = targetData;
     }
     return targetData;

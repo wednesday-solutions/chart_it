@@ -4,6 +4,7 @@ import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/bars/simple_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:equatable/equatable.dart';
 
 /// Sets the Arrangement for all the bars in a [BarGroup].
 ///
@@ -16,7 +17,7 @@ enum BarGroupArrangement { series, stack }
 ///
 /// Holds the X-Value, Labels and Styling.
 /// {@endtemplate}
-abstract class BarGroup {
+abstract class BarGroup with EquatableMixin {
   /// The Value along X-Axis for this [BarGroup].
   ///
   /// This value is not used for plotting on X-Axis.

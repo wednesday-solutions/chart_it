@@ -147,6 +147,8 @@ class CartesianController extends ChangeNotifier
           var painter = BarPainter(useGraphUnits: false);
           var config = BarSeriesConfig();
 
+          updateInteractionDetectionStates(barSeries.interactionEvents);
+
           config.calcBarDataRange(barSeries.barData, (minX, maxX, minY, maxY) {
             minXValue = min(minX, minXValue);
             maxXValue = max(maxX, maxXValue);
@@ -168,8 +170,8 @@ class CartesianController extends ChangeNotifier
 
   @override
   CartesianData setData(List<CartesianSeries> data) {
-    // Get the cacheKey as a Set of our CartesianSeries.
-    var cacheKey = EquatableList(data);
+    // Get the cacheKey as a List of our CartesianSeries.
+    var cacheKey = EquatableList<CartesianSeries>(data);
 
     if (_cachedValues.containsKey(cacheKey)) {
       // Cache entry found. Just return the CartesianData for this Series.
@@ -177,8 +179,9 @@ class CartesianController extends ChangeNotifier
     } else {
       // No entry found, so this is probably a new series. We need to recalculate
       targetData = constructState(data);
-      // Reset the old cache. Update the cache with new data
-      // _cachedValues.clear();
+      // Garbage Collection for cache. We cannot hold too much in it forever.
+      if (_cachedValues.keys.length >= 100) _cachedValues.clear();
+      // Update the cache with new data
       _cachedValues[cacheKey] = targetData;
     }
     return targetData;

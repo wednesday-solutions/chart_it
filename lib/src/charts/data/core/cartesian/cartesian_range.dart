@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:equatable/equatable.dart';
+
 /// Defines a Callback that returns a [CartesianRangeResult] for the
 /// provided [context] of type [CartesianRangeContext].
 typedef CalculateCartesianRange = CartesianRangeResult Function(
@@ -7,17 +9,20 @@ typedef CalculateCartesianRange = CartesianRangeResult Function(
 );
 
 /// Wraps the Minimum & Maximum values for X & Y values in a Cartesian Chart
-class CartesianRangeContext {
+class CartesianRangeContext with EquatableMixin {
   double maxX;
   double maxY;
   double minX;
   double minY;
 
   CartesianRangeContext(this.maxX, this.maxY, this.minX, this.minY);
+
+  @override
+  List<Object?> get props => [maxX, minX, maxY, minY];
 }
 
 /// A Result Wrapper that provides the X & Y Ranges and the unit values.
-class CartesianRangeResult {
+class CartesianRangeResult with EquatableMixin {
   double xUnitValue;
   double yUnitValue;
 
@@ -49,4 +54,15 @@ class CartesianRangeResult {
       minYRange: lerpDouble(current?.minYRange, target.minYRange, t) ?? 0,
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        xUnitValue,
+        yUnitValue,
+        maxXRange,
+        maxYRange,
+        minXRange,
+        minYRange,
+      ];
 }

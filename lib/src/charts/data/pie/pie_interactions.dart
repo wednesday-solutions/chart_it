@@ -14,6 +14,8 @@ class PieInteractionEvents extends TouchInteractionEvents<PieInteractionResult>
   const PieInteractionEvents({
     required super.isEnabled,
     super.onTap,
+    super.onTapDown,
+    super.onTapUp,
     super.onDoubleTap,
     super.onDragStart,
     super.onDrag,

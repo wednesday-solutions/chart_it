@@ -33,7 +33,9 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
         label: 'Bar Chart',
         onTap: () {
           _controller.selectIndex(0);
-          Navigator.of(context).pop();
+          if (CurrentDevice.isMobile) {
+            Navigator.of(context).pop();
+          }
         },
       ),
       SidebarXItem(
@@ -41,7 +43,9 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
         label: 'Pie Chart',
         onTap: () {
           _controller.selectIndex(1);
-          Navigator.of(context).pop();
+          if (CurrentDevice.isMobile) {
+            Navigator.of(context).pop();
+          }
         },
       ),
     ];

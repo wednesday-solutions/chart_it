@@ -1,18 +1,30 @@
-<!-- TODO: Add Banners Above Here -->
 # Chart It
 
+[![wednesday](https://img.shields.io/badge/Wednesday-4247E8?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOSAyOCI+PHBhdGggZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMjMuMDEgMTcuOTVjMCAuNzYtLjM3IDEuNDYtLjk5IDEuODVsLTEuNyAxLjM2Yy0uMTYuMS0uMzYtLjAyLS4zNi0uMjJ2LTguNGEuOTkuOTkgMCAwIDAtLjY3LS45NGwtMi4xLS42N2EuNDMuNDMgMCAwIDAtLjU2LjR2Ny40OWwtMS45OC0yLjQ0YS43LjcgMCAwIDAtLjc1LjAxTDEyIDE4Ljgydi03LjQ1YzAtLjMtLjMtLjUtLjU4LS40bC0xLjkuNzRhMSAxIDAgMCAwLS42Mi45M3Y4LjNjMCAuMi0uMi4zMi0uMzcuMjJMNi44NyAxOS44YTIuMTkgMi4xOSAwIDAgMS0uOTgtMS44NXYtNy4yMmMwLS44Ni40Ny0xLjYzIDEuMjEtMS45OGw2LjM4LTIuOTVjLjUtLjIzIDEuMDgtLjI0IDEuNTktLjAxbDYuNyAyLjk3YTIuMTYgMi4xNiAwIDAgMSAxLjI1IDJ2Ny4xOVptLTYuOTEgNC4zNy0xLjA2LjU0Yy0uNC4yLS44OC4yLTEuMjggMGwtMS4wNi0uNTRjLS4wNiAwLS4wOC0uMS0uMDQtLjE1bDEuNzQtMi4xIDEuNzQgMi4xYy4wNS4wNS4wMi4xNS0uMDQuMTVaTTE0LjUgMGExNCAxNCAwIDEgMCAwIDI4IDE0IDE0IDAgMCAwIDAtMjhaIi8+PC9zdmc+&style=for-the-badge)](https://www.wednesday.is/)
+[![pub version](https://img.shields.io/pub/v/chart_it?labelColor=31C4F3&color=389AD5&logo=flutter&logoColor=blue&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![pub likes](https://img.shields.io/pub/likes/chart_it?labelColor=38C1D0&color=45A4B8&label=pub%20likes&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![pub points](https://img.shields.io/pub/points/chart_it?label=pub%20points&labelColor=38C1D0&color=45A4B8&style=for-the-badge)](https://pub.dev/packages/chart_it)
+[![license](https://img.shields.io/github/license/wednesday-solutions/chart_it?labelColor=EA4661&color=C13C3A&style=for-the-badge)](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE)
+
 Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
+
+|          ![barcharts](pub_images/bar-charts-read-me.gif)           |               ![piecharts](pub_images/pie-charts-read-me.gif)                |
+|:------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+| [Learn More](https://flutter.wednesday.is/charts/guides/bar-chart) | [Learn More](https://flutter.wednesday.is/charts/guides/pie-and-donut-chart) |
 
 ## Installation
 Add the `chart_it` package to your project's `pubspec.yaml` file:
 ```yaml
 dependencies:
-  chart_it: ^0.0.4
+  chart_it: ^0.1.0
 ```
 Alternatively, you can also run the following command in your Flutter Project:
 ```shell
 $ flutter pub add chart_it
 ```
+
+## Documentation
+Check out the [complete documentation here](https://flutter.wednesday.is/charts/flutter-charts).
 
 ## Supported Charts
 All Charts in `chart_it` are categorized in two:
@@ -130,6 +142,9 @@ child: BarChart(
   ...
 ```
 
+## Interactions
+Check out the [Interactions Guide](https://flutter.wednesday.is/charts/guides/interactions) to learn more about interaction with `chart_it`.
+
 # License
 
-Flutter Charts is licensed under the BSD-3-Clause license. Check the [LICENSE](https://github.com/wednesday-solutions/flutter-charts/blob/dev/LICENSE) file for details.
+Flutter Charts is licensed under the BSD-3-Clause license. Check the [LICENSE](https://github.com/wednesday-solutions/chart_it/blob/dev/LICENSE) file for details.

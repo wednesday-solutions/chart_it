@@ -311,8 +311,8 @@ class CartesianChartPainter {
 
     return CartesianChartGeometryData(
         graphPolygon: graphPolygon,
-        graphHeight: graphHeight,
-        graphWidth: graphWidth,
+        graphHeight: graphPolygon.height,
+        graphWidth: graphPolygon.width,
         graphOrigin: graphOrigin,
         axisOrigin: axisOrigin,
         graphUnitWidth: graphUnitWidth,

@@ -102,6 +102,8 @@ class RadialController extends ChangeNotifier
           var painter = PiePainter();
           var config = PieSeriesConfig();
 
+          updateInteractionDetectionStates(pieSeries.interactionEvents);
+
           config.calcSliceRange(pieSeries.slices, (value) {
             minValue = min(value, minValue);
             maxValue = max(value, maxValue);

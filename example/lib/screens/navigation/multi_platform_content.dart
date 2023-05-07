@@ -1,5 +1,5 @@
-import 'package:example/screens/bar_charts.dart';
-import 'package:example/screens/pie_charts.dart';
+import 'package:example/screens/bar_chart.dart';
+import 'package:example/screens/pie_chart.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,12 +31,22 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
       SidebarXItem(
         icon: Icons.bar_chart_rounded,
         label: 'Bar Chart',
-        onTap: () => _controller.selectIndex(0),
+        onTap: () {
+          _controller.selectIndex(0);
+          if (CurrentDevice.isMobile) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
       SidebarXItem(
         icon: Icons.pie_chart_outline,
         label: 'Pie Chart',
-        onTap: () => _controller.selectIndex(1),
+        onTap: () {
+          _controller.selectIndex(1);
+          if (CurrentDevice.isMobile) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     ];
   }
@@ -82,9 +92,9 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
               builder: (context, _) {
                 switch (_controller.selectedIndex) {
                   case 0:
-                    return const TestBarCharts();
+                    return const TestBarChart();
                   case 1:
-                    return const TestPieCharts();
+                    return const TestPieChart();
                   default:
                     return const Text('No Page Found');
                 }
@@ -104,14 +114,34 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
       theme: _collapsedBarTheme(context),
       extendedTheme: _drawerBarTheme(context),
       headerBuilder: (context, isExtended) {
-        var logo = 'graphics/main_logo.svg';
-        var shortHand = 'graphics/main_logo_shorthand.svg';
+        var logo = 'graphics/main_logo_shorthand.svg';
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.px, horizontal: 10.px),
-          child: SvgPicture.asset(
-            isExtended ? logo : shortHand,
-            height: 50.px,
-            colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn),
+          padding: EdgeInsets.only(top: 60, left: 10.px, right: 10.px),
+          child: Row(
+            children: [
+              isExtended || !CurrentDevice.isMobile
+                  ? SvgPicture.asset(
+                      logo,
+                      height: 45.px,
+                      colorFilter:
+                          ColorFilter.mode(colors.primary, BlendMode.srcIn),
+                    )
+                  : const SizedBox(),
+              isExtended && CurrentDevice.isMobile
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Charts",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSecondaryContainer),
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
           ),
         );
       },

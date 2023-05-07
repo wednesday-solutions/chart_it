@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_data.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
@@ -76,7 +78,8 @@ class PieSeries extends RadialSeries<PieInteractionEvents> with EquatableMixin {
     double t,
   ) {
     return PieSeries(
-      donutRadius: target.donutRadius,
+      donutRadius: lerpDouble(current?.donutRadius, target.donutRadius, t) ??
+          target.donutRadius,
       donutSpaceColor: Color.lerp(
         current?.donutSpaceColor,
         target.donutSpaceColor,

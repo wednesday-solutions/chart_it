@@ -1,3 +1,7 @@
+## 0.1.0
+
+* Add Interaction support for charts.
+
 ## 0.0.4
 
 * Bug Fixes for Chart Widgets Styling options.

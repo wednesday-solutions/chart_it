@@ -23,6 +23,9 @@ Alternatively, you can also run the following command in your Flutter Project:
 $ flutter pub add chart_it
 ```
 
+## Documentation
+Check out the [complete documentation here](https://flutter.wednesday.is/charts/flutter-charts).
+
 ## Supported Charts
 All Charts in `chart_it` are categorized in two:
 
@@ -138,6 +141,9 @@ child: BarChart(
   data: BarSeries(
   ...
 ```
+
+## Interactions
+Check out the [Interactions Guide](https://flutter.wednesday.is/charts/guides/interactions) to learn more about interaction with `chart_it`.
 
 # License
 

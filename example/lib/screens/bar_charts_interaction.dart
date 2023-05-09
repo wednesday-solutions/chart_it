@@ -53,12 +53,13 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
       animationDuration: const Duration(milliseconds: 200),
       animateOnLoad: true,
       animateOnUpdate: true,
-      maxYValue: 15,
-      title: const Text('Demo Chart'),
-      chartStyle: CartesianChartStyle(
+      chartStructureData: const CartesianChartStructureData(
+        maxXValue: 15,
+        xUnitValue: 1.0,
+        yUnitValue: 5.0,
+      ),
+      chartStylingData: CartesianChartStylingData(
         backgroundColor: theme.colorScheme.surface,
-        alignment: CartesianChartAlignment.spaceEvenly,
-        orientation: CartesianChartOrientation.vertical,
         axisStyle: CartesianAxisStyle(
           axisWidth: 3.0,
           showXAxisLabels: false,
@@ -74,10 +75,9 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
           show: true,
           gridLineWidth: 1.0,
           gridLineColor: theme.colorScheme.onBackground,
-          xUnitValue: 1.0,
-          yUnitValue: 5.0,
         ),
       ),
+      title: const Text('Demo Chart'),
       data: getSeries(),
     );
   }

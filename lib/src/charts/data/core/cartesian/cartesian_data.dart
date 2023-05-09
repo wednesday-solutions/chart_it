@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
+import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
@@ -8,27 +11,97 @@ import 'package:flutter/material.dart';
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
 
-/// Alignment of the Data Points for any Cartesian Charts
-enum CartesianChartAlignment {
-  start,
-  end,
-  center,
-  spaceEvenly,
-  spaceAround,
-  spaceBetween,
+// /// Alignment of the Data Points for any Cartesian Charts
+// enum CartesianChartAlignment {
+//   start,
+//   end,
+//   center,
+//   spaceEvenly,
+//   spaceAround,
+//   spaceBetween,
+// }
+
+class GridUnitsData extends Equatable {
+  final double xUnitValue;
+  final double xUnitsCount;
+  final double yUnitValue;
+  final double yUnitsCount;
+  final double totalXRange;
+  final double totalYRange;
+
+  const GridUnitsData({
+    required this.xUnitValue,
+    required this.xUnitsCount,
+    required this.yUnitValue,
+    required this.yUnitsCount,
+    required this.totalXRange,
+    required this.totalYRange,
+  });
+
+  // static const GridUnitsData zero = GridUnitsData(
+  //   xUnitValue: 0.0,
+  //   xUnitsCount: 0.0,
+  //   yUnitValue: 0.0,
+  //   yUnitsCount: 0.0,
+  //   totalXRange: 0.0,
+  //   totalYRange: 0.0,
+  // );
+
+  static GridUnitsData lerp(GridUnitsData? a, GridUnitsData b, double t) {
+    return GridUnitsData(
+      xUnitValue:
+          lerpDouble(a?.xUnitValue ?? b.xUnitValue, b.xUnitValue, t) ?? 0.0,
+      xUnitsCount:
+          lerpDouble(a?.xUnitsCount ?? b.xUnitsCount, b.xUnitsCount, t) ?? 0.0,
+      yUnitValue:
+          lerpDouble(a?.yUnitValue ?? b.yUnitValue, b.yUnitValue, t) ?? 0.0,
+      yUnitsCount:
+          lerpDouble(a?.yUnitsCount ?? b.yUnitsCount, b.yUnitsCount, t) ?? 0.0,
+      totalXRange:
+          lerpDouble(a?.totalXRange ?? b.totalXRange, b.totalXRange, t) ?? 0.0,
+      totalYRange:
+          lerpDouble(a?.totalYRange ?? b.totalYRange, b.totalYRange, t) ?? 0.0,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        xUnitsCount,
+        xUnitValue,
+        yUnitsCount,
+        yUnitValue,
+        totalXRange,
+        totalYRange
+      ];
 }
 
 /// Orientation of the Chart
-enum CartesianChartOrientation { vertical, horizontal }
+enum CartesianChartOrientation {
+  vertical,
+  // Horizontal not yet supported
+  // horizontal,
+}
 
 class CartesianData with EquatableMixin {
   List<PaintingState> states;
   CartesianRangeResult range;
+  GridUnitsData gridUnitsData;
 
-  CartesianData({required this.states, required this.range});
+  CartesianData({
+    required this.states,
+    required this.range,
+    required this.gridUnitsData,
+  });
 
-  factory CartesianData.zero(CartesianRangeResult targetRange) {
-    return CartesianData(states: List.empty(), range: targetRange);
+  factory CartesianData.zero({
+    required CartesianRangeResult targetRange,
+    required GridUnitsData gridUnitsData,
+  }) {
+    return CartesianData(
+      states: List.empty(),
+      range: targetRange,
+      gridUnitsData: gridUnitsData,
+    );
   }
 
   static CartesianData lerp(
@@ -39,11 +112,13 @@ class CartesianData with EquatableMixin {
     return CartesianData(
       states: PaintingState.lerpStateList(current?.states, target.states, t),
       range: CartesianRangeResult.lerp(current?.range, target.range, t),
+      gridUnitsData:
+          GridUnitsData.lerp(current?.gridUnitsData, target.gridUnitsData, t),
     );
   }
 
   @override
-  List<Object> get props => [states, range];
+  List<Object> get props => [states, range, gridUnitsData];
 }
 
 class CartesianDataTween extends Tween<CartesianData> {

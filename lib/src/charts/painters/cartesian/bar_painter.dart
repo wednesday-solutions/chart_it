@@ -100,7 +100,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     required Canvas canvas,
     required CartesianChartGeometryData chart,
     required CartesianConfig config,
-    required CartesianChartStyle style,
+    required CartesianChartStylingData style,
   }) {
     assert(
       config is BarSeriesConfig,
@@ -173,7 +173,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
   @override
   EdgeInsets performAxisLabelLayout(
       {required CartesianSeries series,
-      required CartesianChartStyle style,
+      required CartesianChartStylingData style,
       required double graphUnitWidth,
       required double valueUnitWidth}) {
     assert(series is BarSeries);
@@ -205,7 +205,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       required Canvas canvas,
       required CartesianChartGeometryData chart,
       required double dxOffset,
-      required CartesianChartStyle style,
+      required CartesianChartStylingData style,
       required _BarPainterData data}) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
@@ -246,7 +246,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       required Canvas canvas,
       required CartesianChartGeometryData chart,
       required double dxOffset,
-      required CartesianChartStyle style,
+      required CartesianChartStylingData style,
       required _BarPainterData data}) {
     // var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
@@ -361,7 +361,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     required CartesianChartGeometryData chart,
     required double dxOffset,
     required BarGroup group,
-    required CartesianChartStyle style,
+    required CartesianChartStylingData style,
     required _BarPainterData data,
     required int groupIndex,
   }) {
@@ -382,7 +382,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       {required Canvas canvas,
       required CartesianChartGeometryData chart,
       required BarData barData,
-      required CartesianChartStyle style,
+      required CartesianChartStylingData style,
       required _BarPainterData data}) {
     if (barData.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(

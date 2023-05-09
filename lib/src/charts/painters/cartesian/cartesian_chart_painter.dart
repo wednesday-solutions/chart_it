@@ -12,9 +12,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 class CartesianChartPainter {
-  CartesianChartStyle style;
+  CartesianChartStylingData style;
+  CartesianChartStructureData structure;
   List<PaintingState> states;
   CartesianRangeResult rangeData;
+  GridUnitsData gridUnitsData;
 
   late Paint _bgPaint;
   late Paint _gridBorder;
@@ -27,6 +29,8 @@ class CartesianChartPainter {
     required this.style,
     required this.states,
     required this.rangeData,
+    required this.structure,
+    required this.gridUnitsData,
   }) {
     _bgPaint = Paint();
     _gridBorder = Paint()..style = PaintingStyle.stroke;
@@ -40,7 +44,8 @@ class CartesianChartPainter {
   void paint(Canvas canvas, Size size) {
     // Calculate constraints for the graph
     late final _TextPainterLayoutData labelPainters;
-    final geometryData = _calculateGraphConstraints(size, (UnitData unitData) {
+    final geometryData =
+        _calculateGraphConstraints(size, gridUnitsData, (GridUnitsData unitData) {
       labelPainters = _layoutLabels(
         canvas,
         unitData,
@@ -52,7 +57,10 @@ class CartesianChartPainter {
     // Paint the background
     // var bg = Paint()..color = style.backgroundColor;
     canvas.clipRect(Offset.zero & size);
-    canvas.drawPaint(_bgPaint..color = style.backgroundColor);
+
+    if (style.backgroundColor != null) {
+      canvas.drawPaint(_bgPaint..color = style.backgroundColor!);
+    }
 
     _drawGridLines(canvas, geometryData);
 
@@ -181,7 +189,7 @@ class CartesianChartPainter {
   }
 
   EdgeInsets _calculateLabelInsets(
-      UnitData unitData, _TextPainterLayoutData labelPainters, Size size) {
+      GridUnitsData unitData, _TextPainterLayoutData labelPainters, Size size) {
     final leftInset = labelPainters.maxYLabelWidth + _labelPlacementOffset;
     final width = size.width - leftInset;
     var maxPainterLabelInsets = EdgeInsets.zero;
@@ -210,7 +218,7 @@ class CartesianChartPainter {
 
   _TextPainterLayoutData _layoutLabels(
     Canvas canvas,
-    UnitData unitData,
+    GridUnitsData unitData,
   ) {
     final maxIterations = max(unitData.xUnitsCount, unitData.yUnitsCount);
     final showXLabels = style.axisStyle?.showXAxisLabels ?? true;
@@ -258,31 +266,18 @@ class CartesianChartPainter {
 
   CartesianChartGeometryData _calculateGraphConstraints(
     Size widgetSize,
-    EdgeInsets Function(UnitData unitData) layoutAxisLabels,
+    GridUnitsData gridUnitsData,
+    EdgeInsets Function(GridUnitsData unitData) layoutAxisLabels,
   ) {
     // TODO: Calculate the effective width & height of the graph
     final graphOrigin = Offset(widgetSize.width * 0.5, widgetSize.height * 0.5);
     final graphWidth = widgetSize.width;
     final graphHeight = widgetSize.height;
 
-    final xUnitValue = style.gridStyle!.xUnitValue!.toDouble();
-    final yUnitValue = style.gridStyle!.yUnitValue!.toDouble();
+    final xUnitValue = gridUnitsData.xUnitValue.toDouble();
+    final yUnitValue = gridUnitsData.yUnitValue.toDouble();
 
-    final totalXRange = rangeData.maxXRange.abs() + rangeData.minXRange.abs();
-    final xUnitsCount = totalXRange / xUnitValue;
-
-    final totalYRange = rangeData.maxYRange.abs() + rangeData.minYRange.abs();
-    final yUnitsCount = totalYRange / yUnitValue;
-
-    final unitData = UnitData(
-        xUnitValue: xUnitValue,
-        xUnitsCount: xUnitsCount,
-        yUnitValue: yUnitValue,
-        yUnitsCount: yUnitsCount,
-        totalXRange: totalXRange,
-        totalYRange: totalYRange);
-
-    final labelInsets = layoutAxisLabels(unitData);
+    final labelInsets = layoutAxisLabels(gridUnitsData);
 
     final graphPolygon = Rect.fromLTRB(
       labelInsets.left,
@@ -293,12 +288,12 @@ class CartesianChartPainter {
 
     // We will get unitWidth & unitHeight by dividing the
     // graphWidth & graphHeight into X parts
-    final graphUnitWidth = graphPolygon.width / xUnitsCount;
-    final graphUnitHeight = graphPolygon.height / yUnitsCount;
+    final graphUnitWidth = graphPolygon.width / gridUnitsData.xUnitsCount;
+    final graphUnitHeight = graphPolygon.height / gridUnitsData.yUnitsCount;
 
     // Get the unitValue if the data range was within the graph's constraints
-    final valueUnitWidth = graphPolygon.width / totalXRange;
-    final valueUnitHeight = graphPolygon.height / totalYRange;
+    final valueUnitWidth = graphPolygon.width / gridUnitsData.totalXRange;
+    final valueUnitHeight = graphPolygon.height / gridUnitsData.totalYRange;
 
     // Calculate the Offset for Axis Origin
     var negativeXRange =
@@ -310,19 +305,20 @@ class CartesianChartPainter {
     final axisOrigin = Offset(xOffset, yOffset);
 
     return CartesianChartGeometryData(
-        graphPolygon: graphPolygon,
-        graphHeight: graphPolygon.height,
-        graphWidth: graphPolygon.width,
-        graphOrigin: graphOrigin,
-        axisOrigin: axisOrigin,
-        graphUnitWidth: graphUnitWidth,
-        graphUnitHeight: graphUnitHeight,
-        valueUnitWidth: valueUnitWidth,
-        valueUnitHeight: valueUnitHeight,
-        totalXRange: totalXRange,
-        totalYRange: totalYRange,
-        unitData: unitData,
-        graphEdgeInsets: labelInsets);
+      graphPolygon: graphPolygon,
+      graphHeight: graphPolygon.height,
+      graphWidth: graphPolygon.width,
+      graphOrigin: graphOrigin,
+      axisOrigin: axisOrigin,
+      graphUnitWidth: graphUnitWidth,
+      graphUnitHeight: graphUnitHeight,
+      valueUnitWidth: valueUnitWidth,
+      valueUnitHeight: valueUnitHeight,
+      totalXRange: gridUnitsData.totalXRange,
+      totalYRange: gridUnitsData.totalYRange,
+      unitData: gridUnitsData,
+      graphEdgeInsets: labelInsets,
+    );
   }
 }
 
@@ -342,7 +338,7 @@ class CartesianChartGeometryData extends Equatable {
   final double totalXRange;
   final double totalYRange;
 
-  final UnitData unitData;
+  final GridUnitsData unitData;
   final EdgeInsets graphEdgeInsets;
 
   const CartesianChartGeometryData({
@@ -360,21 +356,6 @@ class CartesianChartGeometryData extends Equatable {
     required this.unitData,
     required this.graphEdgeInsets,
   });
-
-  const CartesianChartGeometryData.zero()
-      : graphPolygon = Rect.zero,
-        graphHeight = 0,
-        graphWidth = 0,
-        graphOrigin = Offset.zero,
-        axisOrigin = Offset.zero,
-        graphUnitWidth = 0,
-        graphUnitHeight = 0,
-        totalXRange = 0,
-        totalYRange = 0,
-        valueUnitWidth = 0,
-        valueUnitHeight = 0,
-        unitData = UnitData.zero,
-        graphEdgeInsets = EdgeInsets.zero;
 
   @override
   List<Object?> get props => [
@@ -405,7 +386,7 @@ class CartesianChartGeometryData extends Equatable {
     double? valueUnitHeight,
     double? totalXRange,
     double? totalYRange,
-    UnitData? unitData,
+    GridUnitsData? unitData,
     EdgeInsets? graphEdgeInsets,
   }) {
     return CartesianChartGeometryData(
@@ -424,42 +405,6 @@ class CartesianChartGeometryData extends Equatable {
       graphEdgeInsets: graphEdgeInsets ?? this.graphEdgeInsets,
     );
   }
-}
-
-class UnitData extends Equatable {
-  final double xUnitValue;
-  final double xUnitsCount;
-  final double yUnitValue;
-  final double yUnitsCount;
-  final double totalXRange;
-  final double totalYRange;
-
-  const UnitData({
-    required this.xUnitValue,
-    required this.xUnitsCount,
-    required this.yUnitValue,
-    required this.yUnitsCount,
-    required this.totalXRange,
-    required this.totalYRange,
-  });
-
-  static const UnitData zero = UnitData(
-      xUnitValue: 0.0,
-      xUnitsCount: 0.0,
-      yUnitValue: 0.0,
-      yUnitsCount: 0.0,
-      totalXRange: 0.0,
-      totalYRange: 0.0);
-
-  @override
-  List<Object?> get props => [
-        xUnitsCount,
-        xUnitValue,
-        yUnitsCount,
-        yUnitValue,
-        totalXRange,
-        totalYRange
-      ];
 }
 
 class _TextPainterLayoutData extends Equatable {

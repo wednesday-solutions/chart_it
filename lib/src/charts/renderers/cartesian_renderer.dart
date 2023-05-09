@@ -6,15 +6,89 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+// class AxisLabels extends LeafRenderObjectWidget {
+//   const AxisLabels({super.key});
+//
+//   @override
+//   RenderObject createRenderObject(BuildContext context) {
+//     return RenderAxisLabels();
+//   }
+// }
+//
+// class RenderAxisLabels extends RenderBox {}
+//
+// enum ChartScaffoldSlot { center, left, bottom, right, top }
+//
+// class CartesianScaffold extends RenderObjectWidget
+//     with SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot> {
+//   final Widget Function()? leftLabel;
+//   final Widget Function()? rightLabel;
+//   final Widget Function()? topLabel;
+//   final Widget Function()? bottomLabel;
+//   final Widget chart;
+//
+//   CartesianScaffold({
+//     this.leftLabel,
+//     this.rightLabel,
+//     this.topLabel,
+//     this.bottomLabel,
+//     required this.chart,
+//     super.key,
+//   });
+//
+//   @override
+//   Widget? childForSlot(ChartScaffoldSlot slot) {
+//     switch (slot) {
+//       case ChartScaffoldSlot.left:
+//         if (leftLabel != null) {
+//           return const AxisLabels();
+//         }
+//         break;
+//       case ChartScaffoldSlot.right:
+//         // TODO: Handle this case.
+//         break;
+//       case ChartScaffoldSlot.top:
+//         // TODO: Handle this case.
+//         break;
+//       case ChartScaffoldSlot.bottom:
+//         // TODO: Handle this case.
+//         break;
+//       case ChartScaffoldSlot.center:
+//         return chart;
+//     }
+//     return null;
+//   }
+//
+//   @override
+//   SlottedContainerRenderObjectMixin<ChartScaffoldSlot> createRenderObject(
+//       BuildContext context) {
+//     return _RenderCartesianScaffold();
+//   }
+//
+//   @override
+//   // TODO: implement slots
+//   Iterable<ChartScaffoldSlot> get slots => ChartScaffoldSlot.values;
+// }
+//
+// class _RenderCartesianScaffold extends RenderBox
+//     with SlottedContainerRenderObjectMixin<ChartScaffoldSlot> {
+//   @override
+//   Size computeDryLayout(BoxConstraints constraints) {
+//     return super.computeDryLayout(constraints);
+//   }
+// }
+
 class CartesianRenderer extends LeafRenderObjectWidget {
   final double? width;
   final double? height;
 
   // Mandatory Fields
-  final CartesianChartStyle style;
+  final CartesianChartStylingData style;
+  final CartesianChartStructureData structure;
   final List<PaintingState> states;
   final CartesianRangeResult rangeData;
   final InteractionDispatcher interactionDispatcher;
+  final GridUnitsData gridUnitsData;
 
   const CartesianRenderer({
     Key? key,
@@ -24,6 +98,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
     required this.states,
     required this.rangeData,
     required this.interactionDispatcher,
+    required this.structure,
+    required this.gridUnitsData,
   }) : super(key: key);
 
   @override
@@ -35,6 +111,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       states: states,
       rangeData: rangeData,
       interactionDispatcher: interactionDispatcher,
+      structure: structure,
+      gridUnitsData: gridUnitsData,
     );
   }
 
@@ -45,6 +123,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..width = width
       ..height = height
       ..style = style
+      ..structure = structure
+      ..gridUnitsData = gridUnitsData
       ..states = states
       ..range = rangeData
       ..interactionDispatcher = interactionDispatcher;
@@ -70,14 +150,27 @@ class CartesianRenderBox extends RenderBox {
 
   final CartesianChartPainter _painter;
   InteractionDispatcher _interactionDispatcher;
+
   set interactionDispatcher(InteractionDispatcher value) {
     _interactionDispatcher = value;
   }
 
   // Mandatory Fields
-  set style(CartesianChartStyle value) {
+  set style(CartesianChartStylingData value) {
     if (_painter.style == value) return;
     _painter.style = value;
+    markNeedsPaint();
+  }
+
+  set structure(CartesianChartStructureData value) {
+    if (_painter.style == value) return;
+    _painter.structure = value;
+    markNeedsPaint();
+  }
+
+  set gridUnitsData(GridUnitsData value) {
+    if (_painter.gridUnitsData == value) return;
+    _painter.gridUnitsData = value;
     markNeedsPaint();
   }
 
@@ -100,10 +193,12 @@ class CartesianRenderBox extends RenderBox {
   CartesianRenderBox({
     double? width,
     double? height,
-    required CartesianChartStyle style,
+    required CartesianChartStylingData style,
+    required CartesianChartStructureData structure,
     required List<PaintingState> states,
     required CartesianRangeResult rangeData,
     required InteractionDispatcher interactionDispatcher,
+    required GridUnitsData gridUnitsData,
   })  : _width = width,
         _height = height,
         _interactionDispatcher = interactionDispatcher,
@@ -111,6 +206,8 @@ class CartesianRenderBox extends RenderBox {
           style: style,
           states: states,
           rangeData: rangeData,
+          structure: structure,
+          gridUnitsData: gridUnitsData
         );
 
   _registerGestureRecognizers() {

@@ -3,51 +3,77 @@ import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-/// Provides the Styling options for any Cartesian Chart.
-///
-/// Customization Options include BackgroundColor, Chart Alignment,
-/// Orientation, Grid Styling and Axis Styling.
-class CartesianChartStyle extends Equatable {
-  /// The Background Color of the Chart.
-  final Color backgroundColor;
-
-  /// The Alignment for Cartesian Data Points.
-  final CartesianChartAlignment alignment;
-
+class CartesianChartStructureData extends Equatable {
   /// The Orientation of the Chart. Defaults to Vertical.
   final CartesianChartOrientation orientation;
 
+  /// Value of a Unit Distance along X-Axis
+  final num xUnitValue;
+
+  /// Value of a Unit Distance along Y-Axis
+  final num yUnitValue;
+
+  final num? maxXValue;
+
+  final num? maxYValue;
+
+  const CartesianChartStructureData({
+    this.orientation = CartesianChartOrientation.vertical,
+    this.xUnitValue = 1,
+    this.yUnitValue = 1,
+    this.maxXValue,
+    this.maxYValue,
+  });
+
+  @override
+  List<Object?> get props =>
+      [orientation, xUnitValue, yUnitValue, maxXValue, maxYValue];
+
+  CartesianChartStructureData copyWith({
+    CartesianChartOrientation? orientation,
+    num? xUnitValue,
+    num? yUnitValue,
+    num? maxXValue,
+    num? maxYValue,
+  }) {
+    return CartesianChartStructureData(
+      orientation: orientation ?? this.orientation,
+      xUnitValue: xUnitValue ?? this.xUnitValue,
+      yUnitValue: yUnitValue ?? this.yUnitValue,
+      maxXValue: maxXValue ?? this.maxXValue,
+      maxYValue: maxYValue ?? this.maxYValue,
+    );
+  }
+}
+
+class CartesianChartStylingData extends Equatable {
   /// Styling for the Grid Lines.
   final CartesianGridStyle? gridStyle;
 
   /// Styling for the Axis Lines.
   final CartesianAxisStyle? axisStyle;
 
-  const CartesianChartStyle({
-    this.backgroundColor = const Color(0xFFF7FFF7),
-    this.alignment = CartesianChartAlignment.spaceEvenly,
-    this.orientation = CartesianChartOrientation.vertical,
+  /// The Background Color of the Chart.
+  final Color? backgroundColor;
+
+  const CartesianChartStylingData({
     this.gridStyle,
     this.axisStyle,
+    this.backgroundColor,
   });
 
   @override
-  List<Object?> get props =>
-      [backgroundColor, alignment, orientation, gridStyle, axisStyle];
+  List<Object?> get props => [gridStyle, axisStyle, backgroundColor];
 
-  CartesianChartStyle copyWith({
-    Color? backgroundColor,
-    CartesianChartAlignment? alignment,
-    CartesianChartOrientation? orientation,
+  CartesianChartStylingData copyWith({
     CartesianGridStyle? gridStyle,
     CartesianAxisStyle? axisStyle,
+    Color? backgroundColor,
   }) {
-    return CartesianChartStyle(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      alignment: alignment ?? this.alignment,
-      orientation: orientation ?? this.orientation,
+    return CartesianChartStylingData(
       gridStyle: gridStyle ?? this.gridStyle,
       axisStyle: axisStyle ?? this.axisStyle,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
     );
   }
 }
@@ -60,12 +86,6 @@ class CartesianGridStyle extends Equatable {
   /// Hides or Shows the Grid Lines. Visible by Default.
   final bool show;
 
-  /// Value of a Unit Distance along X-Axis
-  final num? xUnitValue;
-
-  /// Value of a Unit Distance along Y-Axis
-  final num? yUnitValue;
-
   /// The Width/Thickness of the Grid Lines
   final double gridLineWidth;
 
@@ -74,15 +94,12 @@ class CartesianGridStyle extends Equatable {
 
   const CartesianGridStyle({
     this.show = true,
-    this.xUnitValue,
-    this.yUnitValue,
     this.gridLineWidth = 0.5,
     this.gridLineColor = Colors.black45,
   });
 
   @override
-  List<Object?> get props =>
-      [show, xUnitValue, yUnitValue, gridLineWidth, gridLineColor];
+  List<Object?> get props => [show, gridLineWidth, gridLineColor];
 
   CartesianGridStyle copyWith({
     bool? show,
@@ -93,8 +110,6 @@ class CartesianGridStyle extends Equatable {
   }) {
     return CartesianGridStyle(
       show: show ?? this.show,
-      xUnitValue: xUnitValue ?? this.xUnitValue,
-      yUnitValue: yUnitValue ?? this.yUnitValue,
       gridLineWidth: gridLineWidth ?? this.gridLineWidth,
       gridLineColor: gridLineColor ?? this.gridLineColor,
     );
@@ -105,9 +120,6 @@ class CartesianGridStyle extends Equatable {
 ///
 /// Customization Options for Axis Lines, Ticks and Labels
 class CartesianAxisStyle extends Equatable {
-  final int? xBaseline;
-  final int? yBaseline;
-
   /// Hides or Shows the Unit Labels along X-Axis.
   /// Visible by Default.
   final bool showXAxisLabels;
@@ -135,8 +147,6 @@ class CartesianAxisStyle extends Equatable {
   final ChartTextStyle? tickLabelStyle;
 
   const CartesianAxisStyle({
-    this.xBaseline,
-    this.yBaseline,
     this.showXAxisLabels = true,
     this.showYAxisLabels = true,
     this.axisWidth = 2.0,
@@ -149,8 +159,6 @@ class CartesianAxisStyle extends Equatable {
 
   @override
   List<Object?> get props => [
-        xBaseline,
-        yBaseline,
         showXAxisLabels,
         showYAxisLabels,
         axisWidth,
@@ -174,8 +182,6 @@ class CartesianAxisStyle extends Equatable {
     ChartTextStyle? tickLabelStyle,
   }) {
     return CartesianAxisStyle(
-      xBaseline: xBaseline ?? this.xBaseline,
-      yBaseline: yBaseline ?? this.yBaseline,
       showXAxisLabels: showXAxisLabels ?? this.showXAxisLabels,
       showYAxisLabels: showYAxisLabels ?? this.showYAxisLabels,
       axisWidth: axisWidth ?? this.axisWidth,

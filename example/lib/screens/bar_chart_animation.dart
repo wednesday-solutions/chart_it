@@ -16,7 +16,7 @@ class TestBarChartsAnimation extends StatefulWidget {
 class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
         setState(() {});
@@ -24,12 +24,14 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
       child: BarChart(
         height: 400,
         title: const Text('Demo Chart'),
-        chartStyle: CartesianChartStyle(
+        chartStructureData: const CartesianChartStructureData(
+          xUnitValue: 1.0,
+          yUnitValue: 10.0,
+        ),
+        chartStylingData: CartesianChartStylingData(
           backgroundColor: theme.colorScheme.surface,
-          alignment: CartesianChartAlignment.spaceEvenly,
-          orientation: CartesianChartOrientation.vertical,
           axisStyle: CartesianAxisStyle(
-            axisWidth: 3.0,
+            axisWidth: 4.0,
             showXAxisLabels: false,
             axisColor: theme.colorScheme.onBackground,
             tickColor: theme.colorScheme.onBackground,
@@ -43,8 +45,6 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
             show: true,
             gridLineWidth: 1.0,
             gridLineColor: theme.colorScheme.onBackground,
-            xUnitValue: 1.0,
-            yUnitValue: 10.0,
           ),
         ),
         data: BarSeries(

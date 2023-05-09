@@ -8,7 +8,7 @@ abstract class CartesianPainter<T extends TouchInteractionResult> {
 
   EdgeInsets performAxisLabelLayout({
     required CartesianSeries series,
-    required CartesianChartStyle style,
+    required CartesianChartStylingData style,
     required double graphUnitWidth,
     required double valueUnitWidth,
   });
@@ -18,5 +18,5 @@ abstract class CartesianPainter<T extends TouchInteractionResult> {
       required Canvas canvas,
       required CartesianChartGeometryData chart,
       required CartesianConfig config,
-      required CartesianChartStyle style});
+      required CartesianChartStylingData style});
 }

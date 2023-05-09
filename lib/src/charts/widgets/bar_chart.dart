@@ -71,7 +71,7 @@ class BarChart extends CartesianChart {
     super.height,
     super.animateOnLoad = true,
     super.animateOnUpdate = true,
-    super.animationDuration = const Duration(milliseconds: 3000),
+    super.animationDuration = const Duration(milliseconds: 500),
     super.animation,
     super.chartStructureData,
     super.chartStylingData,

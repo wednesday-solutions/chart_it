@@ -104,11 +104,14 @@ class _BarChartState extends State<BarChart>
       animateOnLoad: widget.animateOnLoad,
       animateOnUpdate: widget.animateOnUpdate,
       structureData: widget.chartStructureData,
+      stylingData: widget.chartStylingData,
       calculateRange: (context) {
-        var maxXRange = widget.data.barData.length.toDouble();
-        var maxYRange = widget.chartStructureData.maxYValue?.toDouble() ?? context.maxY;
+        var maxXRange = widget.chartStructureData.maxXValue?.toDouble() ??
+            widget.data.barData.length.toDouble();
+        var maxYRange =
+            widget.chartStructureData.maxYValue?.toDouble() ?? context.maxY;
         return CartesianRangeResult(
-          xUnitValue: structure.xUnitValue.toDouble() ?? maxXRange,
+          xUnitValue: 1,
           yUnitValue: structure.yUnitValue.toDouble() ?? maxYRange,
           // For Bar charts, we don't consider x values, be it +ve or -ve
           minXRange: 0,
@@ -125,11 +128,13 @@ class _BarChartState extends State<BarChart>
     super.didUpdateWidget(oldWidget);
     // We will update our Chart when new data is provided
     _controller.update(
-        data: [widget.data],
-        animation: _provideAnimation(),
-        animateOnLoad: widget.animateOnLoad,
-        animateOnUpdate: widget.animateOnUpdate,
-        structureData: widget.chartStructureData);
+      data: [widget.data],
+      animation: _provideAnimation(),
+      animateOnLoad: widget.animateOnLoad,
+      animateOnUpdate: widget.animateOnUpdate,
+      structureData: widget.chartStructureData,
+      stylingData: widget.chartStylingData,
+    );
   }
 
   @override

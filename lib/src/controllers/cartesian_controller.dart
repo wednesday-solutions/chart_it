@@ -11,7 +11,23 @@ import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
+// class Holder extends Equatable {
+//   final List<CartesianSeries> series;
+//   final CartesianChartStylingData style;
+//   final CartesianChartStructureData structure;
+//
+//   const Holder({
+//     required this.series,
+//     required this.style,
+//     required this.structure,
+//   });
+//
+//   @override
+//   List<Object?> get props => [series, style, structure];
+// }
 
 /// The Animation and Data Controller for a Cartesian Chart.
 ///
@@ -53,6 +69,7 @@ class CartesianController extends ChangeNotifier
   bool animateOnUpdate;
 
   CartesianChartStructureData structureData;
+  CartesianChartStylingData stylingData;
 
   /// The Animation and Data Controller for a Cartesian Chart.
   ///
@@ -65,6 +82,7 @@ class CartesianController extends ChangeNotifier
     this.animateOnLoad = true,
     required this.calculateRange,
     required this.structureData,
+    required this.stylingData
   }) {
     animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
@@ -77,6 +95,7 @@ class CartesianController extends ChangeNotifier
     bool? animateOnUpdate,
     bool? animateOnLoad,
     required CartesianChartStructureData structureData,
+    required CartesianChartStylingData stylingData,
   }) {
     if (animateOnLoad != null && this.animateOnLoad != animateOnLoad) {
       this.animateOnLoad = animateOnLoad;
@@ -92,8 +111,11 @@ class CartesianController extends ChangeNotifier
     }
 
     if (data != null && this.data != data) {
+      final oldStyle = this.stylingData;
+      final oldStructure = this.structureData;
       this.structureData = structureData;
-      updateDataSeries(data, isInitPhase: false);
+      this.stylingData = stylingData;
+      updateDataSeries(data, isInitPhase: false, forceUpdate: oldStructure != structureData || oldStyle != stylingData);
     }
   }
 
@@ -140,7 +162,7 @@ class CartesianController extends ChangeNotifier
       series.when(
         onBarSeries: (barSeries) {
           // Invalidate Painter for BarSeries
-          var painter = BarPainter(useGraphUnits: false);
+          var painter = BarPainter(useGraphUnits: true);
           var config = BarSeriesConfig();
 
           updateInteractionDetectionStates(barSeries.interactionEvents);

@@ -54,7 +54,6 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
       animateOnLoad: true,
       animateOnUpdate: true,
       chartStructureData: const CartesianChartStructureData(
-        maxXValue: 15,
         xUnitValue: 1.0,
         yUnitValue: 5.0,
       ),

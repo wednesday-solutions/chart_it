@@ -20,7 +20,7 @@ class CartesianChartStructureData extends Equatable {
   const CartesianChartStructureData({
     this.orientation = CartesianChartOrientation.vertical,
     this.xUnitValue = 1,
-    this.yUnitValue = 1,
+    this.yUnitValue = 10,
     this.maxXValue,
     this.maxYValue,
   });

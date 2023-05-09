@@ -62,7 +62,9 @@ class CartesianChartPainter {
       canvas.drawPaint(_bgPaint..color = style.backgroundColor!);
     }
 
-    _drawGridLines(canvas, geometryData);
+    if (style.gridStyle?.show == true) {
+      _drawGridLines(canvas, geometryData);
+    }
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
@@ -318,6 +320,7 @@ class CartesianChartPainter {
       totalYRange: gridUnitsData.totalYRange,
       unitData: gridUnitsData,
       graphEdgeInsets: labelInsets,
+      xUnitValue: xUnitValue
     );
   }
 }
@@ -341,6 +344,8 @@ class CartesianChartGeometryData extends Equatable {
   final GridUnitsData unitData;
   final EdgeInsets graphEdgeInsets;
 
+  final double xUnitValue;
+
   const CartesianChartGeometryData({
     required this.graphPolygon,
     required this.graphHeight,
@@ -355,6 +360,7 @@ class CartesianChartGeometryData extends Equatable {
     required this.totalYRange,
     required this.unitData,
     required this.graphEdgeInsets,
+    required this.xUnitValue,
   });
 
   @override
@@ -371,7 +377,8 @@ class CartesianChartGeometryData extends Equatable {
         totalXRange,
         totalYRange,
         unitData,
-        graphEdgeInsets
+        graphEdgeInsets,
+        xUnitValue
       ];
 
   CartesianChartGeometryData copyWith({
@@ -388,6 +395,7 @@ class CartesianChartGeometryData extends Equatable {
     double? totalYRange,
     GridUnitsData? unitData,
     EdgeInsets? graphEdgeInsets,
+    double? xUnitValue,
   }) {
     return CartesianChartGeometryData(
       graphPolygon: graphPolygon ?? this.graphPolygon,
@@ -403,6 +411,7 @@ class CartesianChartGeometryData extends Equatable {
       totalYRange: totalYRange ?? this.totalYRange,
       unitData: unitData ?? this.unitData,
       graphEdgeInsets: graphEdgeInsets ?? this.graphEdgeInsets,
+      xUnitValue: xUnitValue ?? this.xUnitValue,
     );
   }
 }

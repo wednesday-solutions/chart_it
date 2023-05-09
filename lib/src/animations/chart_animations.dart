@@ -56,12 +56,14 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
   void updateDataSeries(
     List<T> newSeries, {
     bool isInitPhase = false,
+    bool forceUpdate = false,
   }) {
     // Update the Target Data to the newest value
     final targetData = setData(newSeries);
 
     if (latestDataDispatchedToPainting != null &&
-        latestDataDispatchedToPainting == targetData) {
+        latestDataDispatchedToPainting == targetData &&
+        !forceUpdate) {
       return;
     } else {
       latestDataDispatchedToPainting = targetData;

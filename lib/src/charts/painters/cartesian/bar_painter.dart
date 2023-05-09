@@ -109,7 +109,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     _interactionData.clear();
 
     final unitWidth =
-        useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
+        (useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth) / chart.xUnitValue;
 
     final data = _BarPainterData(
       series: lerpSeries as BarSeries,

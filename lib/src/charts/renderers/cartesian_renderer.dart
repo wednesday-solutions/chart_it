@@ -7,17 +7,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class AxisLabels extends MultiChildRenderObjectWidget {
-  AxisLabels({super.key});
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return RenderAxisLabels();
-  }
-}
-
-class RenderAxisLabels extends RenderBox {}
-
 class CartesianRenderer extends LeafRenderObjectWidget {
   final double? width;
   final double? height;

@@ -101,8 +101,8 @@ class _BarChartState extends State<BarChart>
               gridUnitsData: _controller.currentData.gridUnitsData,
               stylingData: stylingData,
               chart: CartesianRenderer(
-                width: widget.width,
-                height: widget.height,
+                // width: widget.width,
+                // height: widget.height,
                 style: stylingData,
                 structure: widget.chartStructureData,
                 states: _controller.currentData.states,

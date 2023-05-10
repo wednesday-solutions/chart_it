@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/renderers/axis_labels.dart';
+import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -43,23 +45,33 @@ class CartesianScaffold extends RenderObjectWidget
   Widget? childForSlot(ChartScaffoldSlot slot) {
     switch (slot) {
       case ChartScaffoldSlot.left:
-        return Column(
-          children: [
-            Text("${gridUnitsData.xUnitValue} asdfasdfklsjfdaklsjf;safjas;"),
-            const Text("20")
-          ],
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.vertical,
+          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.right,),
         );
+        break;
       case ChartScaffoldSlot.right:
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.vertical,
+          labelBuilder: (_, value) => Icon(Icons.favorite),
+        );
         break;
       case ChartScaffoldSlot.top:
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.horizontal,
+          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.center,),
+        );
         break;
       case ChartScaffoldSlot.bottom:
-        return Row(
-          children: [
-            Text("${gridUnitsData.xUnitValue} asdfasdfklsjfdaklsjf;safjas;"),
-            const Text("20")
-          ],
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.horizontal,
+          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.center,),
         );
+        break;
       case ChartScaffoldSlot.center:
         return chart;
     }
@@ -132,94 +144,116 @@ class RenderCartesianScaffold extends RenderBox
 
   @override
   void performLayout() {
-    size = computeDryLayout(constraints);
+    size = _performLayout(constraints);
   }
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
+    return _performLayout(constraints, dry: true);
+  }
+
+  Size _performLayout(BoxConstraints constraints, {bool dry = false}) {
     Size leftSize = Size.zero;
     Size rightSize = Size.zero;
     Size topSize = Size.zero;
     Size bottomSize = Size.zero;
 
     // TODO: Get from properties
-    final maxWidth = min(constraints.maxWidth, double.infinity);
+    final maxWidth = min(constraints.maxWidth, double.maxFinite);
     final maxHeight = min(constraints.maxHeight, 400.0);
-    final leftWidthPercentage = 0.1;
-    final rightWidthPercentage = 0.1;
-    final topHeightPercentage = 0.1;
-    final bottomHeightPercentage = 0.1;
+
+    double bottomMinHeight = childForSlot(ChartScaffoldSlot.bottom)?.getMinIntrinsicWidth(constraints.maxWidth) ?? 0.0;
+    double leftMinWidth = childForSlot(ChartScaffoldSlot.left)?.getMinIntrinsicWidth(constraints.maxHeight) ?? 0.0;
+    double rightMinWidth = childForSlot(ChartScaffoldSlot.right)?.getMinIntrinsicWidth(constraints.maxHeight) ?? 0.0;
+    double topMinHeight = childForSlot(ChartScaffoldSlot.top)?.getMinIntrinsicWidth(constraints.maxHeight) ?? 0.0;
 
     RenderBox? renderBox = childForSlot(ChartScaffoldSlot.left);
-
     if (renderBox != null) {
-      renderBox.layout(
-        BoxConstraints(
-          maxWidth: maxWidth * leftWidthPercentage,
-          maxHeight: maxHeight,
+      leftSize = _layoutRenderBox(
+        renderBox: renderBox,
+        constraints: BoxConstraints(
+          maxWidth: leftMinWidth,
+          maxHeight: maxHeight - (bottomMinHeight + topMinHeight),
         ),
-        parentUsesSize: true,
       );
 
-      (renderBox.parentData as CartesianScaffoldParentData).offset =
-          Offset.zero;
+      if (!dry) {
+        _positionRenderBox(renderBox: renderBox, offset: Offset(0, topMinHeight));
+      }
 
-      leftSize = renderBox.size;
+      leftMinWidth = renderBox.size.width;
     }
 
     renderBox = childForSlot(ChartScaffoldSlot.bottom);
 
     if (renderBox != null) {
-      renderBox.layout(
-        BoxConstraints(
-          maxWidth: maxWidth,
-          maxHeight: maxHeight * bottomHeightPercentage,
+      bottomSize = _layoutRenderBox(
+        renderBox: renderBox,
+        constraints: BoxConstraints(
+          maxWidth: maxWidth - (leftMinWidth + rightMinWidth),
+          maxHeight: bottomMinHeight,
         ),
-        parentUsesSize: true,
       );
 
-      (renderBox.parentData as CartesianScaffoldParentData).offset = Offset(
-        0,
-        maxHeight - renderBox.size.height,
-      );
+      if (!dry) {
+        _positionRenderBox(
+          renderBox: renderBox,
+          offset: Offset(
+            leftMinWidth,
+            maxHeight - (renderBox.size.height / 2),
+          ),
+        );
+      }
 
-      bottomSize = renderBox.size;
+      bottomMinHeight = renderBox.size.height;
     }
 
     renderBox = childForSlot(ChartScaffoldSlot.right);
 
     if (renderBox != null) {
-      renderBox.layout(
-        BoxConstraints(
-          maxWidth: maxWidth * rightWidthPercentage,
-          maxHeight: maxHeight,
+      rightSize = _layoutRenderBox(
+        renderBox: renderBox,
+        constraints: BoxConstraints(
+          maxWidth: rightMinWidth,
+          maxHeight: maxHeight - (bottomMinHeight + topMinHeight),
         ),
-        parentUsesSize: true,
       );
 
-      (renderBox.parentData as CartesianScaffoldParentData).offset = Offset(
-        maxWidth - renderBox.size.width,
-        0,
-      );
+      if (!dry) {
+        _positionRenderBox(
+          renderBox: renderBox,
+          offset: Offset(
+            maxWidth - renderBox.size.width,
+            topMinHeight,
+          ),
+        );
+      }
 
-      rightSize = renderBox.size;
+      rightMinWidth = renderBox.size.width;
     }
 
     renderBox = childForSlot(ChartScaffoldSlot.top);
 
     if (renderBox != null) {
-      renderBox.layout(
-        BoxConstraints(
-          maxWidth: maxWidth,
-          maxHeight: maxHeight * topHeightPercentage,
+      topSize = _layoutRenderBox(
+        renderBox: renderBox,
+        constraints: BoxConstraints(
+          maxWidth: maxWidth - (leftMinWidth + rightMinWidth),
+          maxHeight: topMinHeight,
         ),
-        parentUsesSize: true,
       );
 
-      (renderBox.parentData as CartesianScaffoldParentData).offset =
-          Offset.zero;
+      if (!dry) {
+        _positionRenderBox(
+          renderBox: renderBox,
+          offset: Offset(
+            leftMinWidth,
+            0
+          ),
+        );
+      }
 
-      topSize = renderBox.size;
+      topMinHeight = renderBox.size.height;
     }
 
     assert(childForSlot(ChartScaffoldSlot.center) != null);
@@ -232,32 +266,35 @@ class RenderCartesianScaffold extends RenderBox
 
     renderBox.layout(chartConstraints, parentUsesSize: true);
 
-    (renderBox.parentData as CartesianScaffoldParentData).offset = Offset(
-      leftSize.width,
-      topSize.height,
-    );
+    if (!dry) {
+      (renderBox.parentData as CartesianScaffoldParentData).offset = Offset(
+        leftSize.width,
+        topSize.height,
+      );
+    }
 
-    return constraints.constrain(Size(maxWidth, maxHeight));
+    return Size(maxWidth, maxHeight);
   }
 
-  @override
-  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    for (final RenderBox child in children) {
-      final BoxParentData parentData =
-          child.parentData! as CartesianScaffoldParentData;
-      final bool isHit = result.addWithPaintOffset(
-        offset: parentData.offset,
-        position: position,
-        hitTest: (BoxHitTestResult result, Offset transformed) {
-          assert(transformed == position - parentData.offset);
-          return child.hitTest(result, position: transformed);
-        },
-      );
-      if (isHit) {
-        return true;
-      }
-    }
-    return false;
+  Size _layoutRenderBox({
+    required RenderBox renderBox,
+    required BoxConstraints constraints,
+  }) {
+    renderBox.layout(
+      constraints,
+      parentUsesSize: true,
+    );
+
+    (renderBox.parentData as CartesianScaffoldParentData).offset = Offset.zero;
+
+    return renderBox.size;
+  }
+
+  _positionRenderBox({
+    required RenderBox renderBox,
+    required Offset offset,
+  }) {
+    (renderBox.parentData as CartesianScaffoldParentData).offset = offset;
   }
 
   @override
@@ -266,14 +303,14 @@ class RenderCartesianScaffold extends RenderBox
     final chartParentData =
         chartRenderBox.parentData as CartesianScaffoldParentData;
 
-    final geometryData = _calculateGraphConstraints(
+    final geometryData = _calculatePaintingGeometryData(
       chartRenderBox.size,
       chartParentData.offset,
       _gridUnitsData,
     );
 
     if (_stylingData.gridStyle?.show == true) {
-      _drawGridLines(context.canvas, geometryData);
+      _drawGrid(context.canvas, geometryData);
     }
 
     RenderBox? renderBox = childForSlot(ChartScaffoldSlot.left);
@@ -330,8 +367,7 @@ class RenderCartesianScaffold extends RenderBox
     context.paintChild(renderBox, childParentData.offset);
   }
 
-  void _drawGridLines(
-      Canvas canvas, CartesianPaintingGeometryData geometryData) {
+  void _drawGrid(Canvas canvas, CartesianPaintingGeometryData geometryData) {
     var border = _gridBorder
       ..color = _stylingData.gridStyle!.gridLineColor
       ..strokeWidth = _stylingData.gridStyle!.gridLineWidth;
@@ -406,7 +442,7 @@ class RenderCartesianScaffold extends RenderBox
     canvas.drawPath(axis, axisPaint);
   }
 
-  CartesianPaintingGeometryData _calculateGraphConstraints(
+  CartesianPaintingGeometryData _calculatePaintingGeometryData(
     Size widgetSize,
     Offset origin,
     GridUnitsData gridUnitsData,
@@ -445,5 +481,25 @@ class RenderCartesianScaffold extends RenderBox
       unitData: gridUnitsData,
       xUnitValue: xUnitValue,
     );
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    for (final RenderBox child in children) {
+      final BoxParentData parentData =
+          child.parentData! as CartesianScaffoldParentData;
+      final bool isHit = result.addWithPaintOffset(
+        offset: parentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          assert(transformed == position - parentData.offset);
+          return child.hitTest(result, position: transformed);
+        },
+      );
+      if (isHit) {
+        return true;
+      }
+    }
+    return false;
   }
 }

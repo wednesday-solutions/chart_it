@@ -2,59 +2,10 @@ import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
+import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
+import 'package:chart_it/src/charts/widgets/cartesian_chart.dart';
 import 'package:chart_it/src/controllers/cartesian_controller.dart';
 import 'package:flutter/material.dart';
-
-class CartesianChart extends StatefulWidget {
-  /// Width of the Chart
-  final double? width;
-
-  /// Height of the Chart
-  final double? height;
-
-  /// Animates the Charts from zero values to given Data when the
-  /// Chart loads for the first time.
-  ///
-  /// Defaults to true.
-  final bool animateOnLoad;
-
-  /// Controls if the charts should auto animate any updates to the data
-  ///
-  /// Defaults to true.
-  final bool animateOnUpdate;
-
-  /// The Duration for which the chart should animate
-  final Duration animationDuration;
-
-  /// A custom Animation controller to drive the chart animations
-  final AnimationController? animation;
-
-  final CartesianChartStylingData chartStylingData;
-
-  final CartesianChartStructureData chartStructureData;
-
-  const CartesianChart({
-    Key? key,
-    this.width,
-    this.height,
-    required this.animateOnLoad,
-    required this.animateOnUpdate,
-    required this.animationDuration,
-    this.animation,
-    this.chartStylingData = const CartesianChartStylingData(),
-    this.chartStructureData = const CartesianChartStructureData(),
-  }) : super(key: key);
-
-  @override
-  State<CartesianChart> createState() => _CartesianChartState();
-}
-
-class _CartesianChartState extends State<CartesianChart> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
 
 /// Draws a BarChart for the Provided Data
 class BarChart extends CartesianChart {
@@ -65,7 +16,7 @@ class BarChart extends CartesianChart {
   final BarSeries data;
 
   const BarChart({
-    Key? key,
+    super.key,
     this.title,
     super.width,
     super.height,
@@ -76,7 +27,7 @@ class BarChart extends CartesianChart {
     super.chartStructureData,
     super.chartStylingData,
     required this.data,
-  }) : super(key: key);
+  });
 
   @override
   State<BarChart> createState() => _BarChartState();
@@ -140,23 +91,25 @@ class _BarChartState extends State<BarChart>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return CartesianRenderer(
-          width: widget.width,
-          height: widget.height,
-          style: widget.chartStylingData.copyWith(
+        animation: _controller,
+        builder: (context, _) {
+          final stylingData = widget.chartStylingData.copyWith(
             backgroundColor: widget.chartStylingData.backgroundColor ??
                 Theme.of(context).colorScheme.background,
-          ),
-          structure: widget.chartStructureData,
-          states: _controller.currentData.states,
-          rangeData: _controller.currentData.range,
-          gridUnitsData: _controller.currentData.gridUnitsData,
-          interactionDispatcher: _controller,
-        );
-      },
-    );
+          );
+          return CartesianScaffold(
+              gridUnitsData: _controller.currentData.gridUnitsData,
+              stylingData: stylingData,
+              chart: CartesianRenderer(
+                width: widget.width,
+                height: widget.height,
+                style: stylingData,
+                structure: widget.chartStructureData,
+                states: _controller.currentData.states,
+                gridUnitsData: _controller.currentData.gridUnitsData,
+                interactionDispatcher: _controller,
+              ));
+        });
   }
 
   AnimationController _provideAnimation() =>

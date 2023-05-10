@@ -25,7 +25,7 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
         height: 400,
         title: const Text('Demo Chart'),
         chartStructureData: CartesianChartStructureData(
-          xUnitValue: 2
+          xUnitValue: 1
         ),
         chartStylingData: CartesianChartStylingData(
           backgroundColor: theme.colorScheme.surface,

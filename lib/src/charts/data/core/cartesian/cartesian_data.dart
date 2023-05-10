@@ -28,6 +28,10 @@ class GridUnitsData extends Equatable {
   final double yUnitsCount;
   final double totalXRange;
   final double totalYRange;
+  final double maxXRange;
+  final double maxYRange;
+  final double minXRange;
+  final double minYRange;
 
   const GridUnitsData({
     required this.xUnitValue,
@@ -36,31 +40,38 @@ class GridUnitsData extends Equatable {
     required this.yUnitsCount,
     required this.totalXRange,
     required this.totalYRange,
+    required this.maxXRange,
+    required this.maxYRange,
+    required this.minXRange,
+    required this.minYRange,
   });
 
-  // static const GridUnitsData zero = GridUnitsData(
-  //   xUnitValue: 0.0,
-  //   xUnitsCount: 0.0,
-  //   yUnitValue: 0.0,
-  //   yUnitsCount: 0.0,
-  //   totalXRange: 0.0,
-  //   totalYRange: 0.0,
-  // );
-
-  static GridUnitsData lerp(GridUnitsData? a, GridUnitsData b, double t) {
+  static GridUnitsData lerp(
+      GridUnitsData? current, GridUnitsData target, double t) {
+    // TODO: Check which values of current can be null.
     return GridUnitsData(
-      xUnitValue:
-          lerpDouble(a?.xUnitValue ?? b.xUnitValue, b.xUnitValue, t) ?? 0.0,
-      xUnitsCount:
-          lerpDouble(a?.xUnitsCount ?? b.xUnitsCount, b.xUnitsCount, t) ?? 0.0,
-      yUnitValue:
-          lerpDouble(a?.yUnitValue ?? b.yUnitValue, b.yUnitValue, t) ?? 0.0,
-      yUnitsCount:
-          lerpDouble(a?.yUnitsCount ?? b.yUnitsCount, b.yUnitsCount, t) ?? 0.0,
-      totalXRange:
-          lerpDouble(a?.totalXRange ?? b.totalXRange, b.totalXRange, t) ?? 0.0,
-      totalYRange:
-          lerpDouble(a?.totalYRange ?? b.totalYRange, b.totalYRange, t) ?? 0.0,
+      xUnitValue: lerpDouble(
+              current?.xUnitValue ?? target.xUnitValue, target.xUnitValue, t) ??
+          1,
+      xUnitsCount: lerpDouble(current?.xUnitsCount ?? target.xUnitsCount,
+              target.xUnitsCount, t) ??
+          0.0,
+      yUnitValue: lerpDouble(
+              current?.yUnitValue ?? target.yUnitValue, target.yUnitValue, t) ??
+          1,
+      yUnitsCount: lerpDouble(current?.yUnitsCount ?? target.yUnitsCount,
+              target.yUnitsCount, t) ??
+          0.0,
+      totalXRange: lerpDouble(current?.totalXRange ?? target.totalXRange,
+              target.totalXRange, t) ??
+          0.0,
+      totalYRange: lerpDouble(current?.totalYRange ?? target.totalYRange,
+              target.totalYRange, t) ??
+          0.0,
+      maxXRange: lerpDouble(current?.maxXRange, target.maxXRange, t) ?? 0,
+      maxYRange: lerpDouble(current?.maxYRange, target.maxYRange, t) ?? 0,
+      minXRange: lerpDouble(current?.minXRange, target.minXRange, t) ?? 0,
+      minYRange: lerpDouble(current?.minYRange, target.minYRange, t) ?? 0,
     );
   }
 
@@ -84,22 +95,18 @@ enum CartesianChartOrientation {
 
 class CartesianData with EquatableMixin {
   List<PaintingState> states;
-  CartesianRangeResult range;
   GridUnitsData gridUnitsData;
 
   CartesianData({
     required this.states,
-    required this.range,
     required this.gridUnitsData,
   });
 
   factory CartesianData.zero({
-    required CartesianRangeResult targetRange,
     required GridUnitsData gridUnitsData,
   }) {
     return CartesianData(
       states: List.empty(),
-      range: targetRange,
       gridUnitsData: gridUnitsData,
     );
   }
@@ -111,14 +118,13 @@ class CartesianData with EquatableMixin {
   ) {
     return CartesianData(
       states: PaintingState.lerpStateList(current?.states, target.states, t),
-      range: CartesianRangeResult.lerp(current?.range, target.range, t),
       gridUnitsData:
           GridUnitsData.lerp(current?.gridUnitsData, target.gridUnitsData, t),
     );
   }
 
   @override
-  List<Object> get props => [states, range, gridUnitsData];
+  List<Object> get props => [states, gridUnitsData];
 }
 
 class CartesianDataTween extends Tween<CartesianData> {

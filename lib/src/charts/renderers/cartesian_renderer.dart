@@ -6,77 +6,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-// class AxisLabels extends LeafRenderObjectWidget {
-//   const AxisLabels({super.key});
-//
-//   @override
-//   RenderObject createRenderObject(BuildContext context) {
-//     return RenderAxisLabels();
-//   }
-// }
-//
-// class RenderAxisLabels extends RenderBox {}
-//
-// enum ChartScaffoldSlot { center, left, bottom, right, top }
-//
-// class CartesianScaffold extends RenderObjectWidget
-//     with SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot> {
-//   final Widget Function()? leftLabel;
-//   final Widget Function()? rightLabel;
-//   final Widget Function()? topLabel;
-//   final Widget Function()? bottomLabel;
-//   final Widget chart;
-//
-//   CartesianScaffold({
-//     this.leftLabel,
-//     this.rightLabel,
-//     this.topLabel,
-//     this.bottomLabel,
-//     required this.chart,
-//     super.key,
-//   });
-//
-//   @override
-//   Widget? childForSlot(ChartScaffoldSlot slot) {
-//     switch (slot) {
-//       case ChartScaffoldSlot.left:
-//         if (leftLabel != null) {
-//           return const AxisLabels();
-//         }
-//         break;
-//       case ChartScaffoldSlot.right:
-//         // TODO: Handle this case.
-//         break;
-//       case ChartScaffoldSlot.top:
-//         // TODO: Handle this case.
-//         break;
-//       case ChartScaffoldSlot.bottom:
-//         // TODO: Handle this case.
-//         break;
-//       case ChartScaffoldSlot.center:
-//         return chart;
-//     }
-//     return null;
-//   }
-//
-//   @override
-//   SlottedContainerRenderObjectMixin<ChartScaffoldSlot> createRenderObject(
-//       BuildContext context) {
-//     return _RenderCartesianScaffold();
-//   }
-//
-//   @override
-//   // TODO: implement slots
-//   Iterable<ChartScaffoldSlot> get slots => ChartScaffoldSlot.values;
-// }
-//
-// class _RenderCartesianScaffold extends RenderBox
-//     with SlottedContainerRenderObjectMixin<ChartScaffoldSlot> {
-//   @override
-//   Size computeDryLayout(BoxConstraints constraints) {
-//     return super.computeDryLayout(constraints);
-//   }
-// }
+class AxisLabels extends MultiChildRenderObjectWidget {
+  AxisLabels({super.key});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderAxisLabels();
+  }
+}
+
+class RenderAxisLabels extends RenderBox {}
 
 class CartesianRenderer extends LeafRenderObjectWidget {
   final double? width;
@@ -86,7 +25,6 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   final CartesianChartStylingData style;
   final CartesianChartStructureData structure;
   final List<PaintingState> states;
-  final CartesianRangeResult rangeData;
   final InteractionDispatcher interactionDispatcher;
   final GridUnitsData gridUnitsData;
 
@@ -96,7 +34,6 @@ class CartesianRenderer extends LeafRenderObjectWidget {
     this.height,
     required this.style,
     required this.states,
-    required this.rangeData,
     required this.interactionDispatcher,
     required this.structure,
     required this.gridUnitsData,
@@ -109,7 +46,6 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       height: height,
       style: style,
       states: states,
-      rangeData: rangeData,
       interactionDispatcher: interactionDispatcher,
       structure: structure,
       gridUnitsData: gridUnitsData,
@@ -126,7 +62,6 @@ class CartesianRenderer extends LeafRenderObjectWidget {
       ..structure = structure
       ..gridUnitsData = gridUnitsData
       ..states = states
-      ..range = rangeData
       ..interactionDispatcher = interactionDispatcher;
   }
 }
@@ -180,12 +115,6 @@ class CartesianRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  set range(CartesianRangeResult value) {
-    if (_painter.rangeData == value) return;
-    _painter.rangeData = value;
-    markNeedsPaint();
-  }
-
   late final TapGestureRecognizer _tapGestureRecognizer;
   late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
   late final PanGestureRecognizer _panGestureRecognizer;
@@ -196,7 +125,6 @@ class CartesianRenderBox extends RenderBox {
     required CartesianChartStylingData style,
     required CartesianChartStructureData structure,
     required List<PaintingState> states,
-    required CartesianRangeResult rangeData,
     required InteractionDispatcher interactionDispatcher,
     required GridUnitsData gridUnitsData,
   })  : _width = width,
@@ -205,9 +133,8 @@ class CartesianRenderBox extends RenderBox {
         _painter = CartesianChartPainter(
           style: style,
           states: states,
-          rangeData: rangeData,
           structure: structure,
-          gridUnitsData: gridUnitsData
+          gridUnitsData: gridUnitsData,
         );
 
   _registerGestureRecognizers() {
@@ -274,10 +201,14 @@ class CartesianRenderBox extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
+    print("painting chart");
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);
     _painter.paint(canvas, size);
     canvas.restore();
   }
+
+  @override
+  bool get isRepaintBoundary => true;
 }

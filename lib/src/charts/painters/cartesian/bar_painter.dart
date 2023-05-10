@@ -114,7 +114,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     final data = _BarPainterData(
       series: lerpSeries as BarSeries,
       config: config as BarSeriesConfig,
-      vRatio: chart.graphHeight / chart.totalYRange,
+      vRatio: chart.graphPolygon.height / chart.unitData.totalYRange,
       unitWidth: unitWidth,
       graphUnitWidth: chart.graphUnitWidth,
       valueUnitWidth: chart.valueUnitHeight,
@@ -156,15 +156,15 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         }
       }
 
-      _drawGroupLabel(
-        canvas: canvas,
-        chart: chart,
-        dxOffset: dx,
-        group: group,
-        groupIndex: i,
-        style: style,
-        data: data,
-      );
+      // _drawGroupLabel(
+      //   canvas: canvas,
+      //   chart: chart,
+      //   dxOffset: dx,
+      //   group: group,
+      //   groupIndex: i,
+      //   style: style,
+      //   data: data,
+      // );
 
       dx += unitWidth;
     }

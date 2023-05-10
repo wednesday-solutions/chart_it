@@ -15,7 +15,6 @@ class CartesianChartPainter {
   CartesianChartStylingData style;
   CartesianChartStructureData structure;
   List<PaintingState> states;
-  CartesianRangeResult rangeData;
   GridUnitsData gridUnitsData;
 
   late Paint _bgPaint;
@@ -28,7 +27,6 @@ class CartesianChartPainter {
   CartesianChartPainter({
     required this.style,
     required this.states,
-    required this.rangeData,
     required this.structure,
     required this.gridUnitsData,
   }) {
@@ -51,20 +49,20 @@ class CartesianChartPainter {
         unitData,
       );
 
-      return _calculateLabelInsets(unitData, labelPainters, size);
+      return EdgeInsets.zero;
     });
 
     // Paint the background
     // var bg = Paint()..color = style.backgroundColor;
     canvas.clipRect(Offset.zero & size);
 
-    if (style.backgroundColor != null) {
-      canvas.drawPaint(_bgPaint..color = style.backgroundColor!);
-    }
-
-    if (style.gridStyle?.show == true) {
-      _drawGridLines(canvas, geometryData);
-    }
+    // if (style.backgroundColor != null) {
+    //   canvas.drawPaint(_bgPaint..color = style.backgroundColor!);
+    // }
+    //
+    // if (style.gridStyle?.show == true) {
+    //   _drawGridLines(canvas, geometryData);
+    // }
 
     // Finally for every data series, we will construct a painter and handover
     // the canvas to them to draw the data sets into the required chart
@@ -84,8 +82,8 @@ class CartesianChartPainter {
     }
 
     // We will draw axis on top of the painted chart data.
-    _drawAxis(canvas, geometryData);
-    _drawLabels(labelPainters, canvas, geometryData);
+    // _drawAxis(canvas, geometryData);
+    // _drawLabels(labelPainters, canvas, geometryData);
   }
 
   void _drawGridLines(Canvas canvas, CartesianChartGeometryData geometryData) {
@@ -146,7 +144,7 @@ class CartesianChartPainter {
     axis.lineTo(geometryData.graphPolygon.right,
         geometryData.axisOrigin.dy); // +ve x axis
 
-    if (rangeData.minYRange.isNegative) {
+    if (gridUnitsData.minYRange.isNegative) {
       // Paint negative Y-axis if we have negative values
       axis.moveTo(geometryData.graphPolygon.bottomLeft.dx,
           geometryData.graphPolygon.bottomLeft.dy);
@@ -154,7 +152,7 @@ class CartesianChartPainter {
           geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // -ve y axis
     }
 
-    if (rangeData.minXRange.isNegative) {
+    if (gridUnitsData.minXRange.isNegative) {
       // Paint negative X-axis if we have Negative values
       axis.lineTo(geometryData.graphPolygon.left,
           geometryData.axisOrigin.dy); // -ve x axis
@@ -246,7 +244,7 @@ class CartesianChartPainter {
 
       if (showYLabels && i <= unitData.yUnitsCount) {
         final painter = ChartTextPainter.fromChartTextStyle(
-          text: (rangeData.minYRange + (unitData.yUnitValue * i))
+          text: (gridUnitsData.minYRange + (unitData.yUnitValue * i))
               .toPrecision(2)
               .toString(),
           chartTextStyle: textStyle.copyWith(align: TextAlign.end),
@@ -299,25 +297,21 @@ class CartesianChartPainter {
 
     // Calculate the Offset for Axis Origin
     var negativeXRange =
-        (rangeData.minXRange.abs() / xUnitValue) * graphUnitWidth;
+        (gridUnitsData.minXRange.abs() / xUnitValue) * graphUnitWidth;
     var negativeYRange =
-        (rangeData.minYRange.abs() / yUnitValue) * graphUnitHeight;
+        (gridUnitsData.minYRange.abs() / yUnitValue) * graphUnitHeight;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     final axisOrigin = Offset(xOffset, yOffset);
 
     return CartesianChartGeometryData(
       graphPolygon: graphPolygon,
-      graphHeight: graphPolygon.height,
-      graphWidth: graphPolygon.width,
       graphOrigin: graphOrigin,
       axisOrigin: axisOrigin,
       graphUnitWidth: graphUnitWidth,
       graphUnitHeight: graphUnitHeight,
       valueUnitWidth: valueUnitWidth,
       valueUnitHeight: valueUnitHeight,
-      totalXRange: gridUnitsData.totalXRange,
-      totalYRange: gridUnitsData.totalYRange,
       unitData: gridUnitsData,
       graphEdgeInsets: labelInsets,
       xUnitValue: xUnitValue
@@ -327,8 +321,6 @@ class CartesianChartPainter {
 
 class CartesianChartGeometryData extends Equatable {
   final Rect graphPolygon;
-  final double graphHeight;
-  final double graphWidth;
   final Offset graphOrigin;
   final Offset axisOrigin;
 
@@ -338,9 +330,6 @@ class CartesianChartGeometryData extends Equatable {
   final double valueUnitWidth;
   final double valueUnitHeight;
 
-  final double totalXRange;
-  final double totalYRange;
-
   final GridUnitsData unitData;
   final EdgeInsets graphEdgeInsets;
 
@@ -348,16 +337,12 @@ class CartesianChartGeometryData extends Equatable {
 
   const CartesianChartGeometryData({
     required this.graphPolygon,
-    required this.graphHeight,
-    required this.graphWidth,
     required this.graphOrigin,
     required this.axisOrigin,
     required this.graphUnitWidth,
     required this.graphUnitHeight,
     required this.valueUnitWidth,
     required this.valueUnitHeight,
-    required this.totalXRange,
-    required this.totalYRange,
     required this.unitData,
     required this.graphEdgeInsets,
     required this.xUnitValue,
@@ -366,16 +351,12 @@ class CartesianChartGeometryData extends Equatable {
   @override
   List<Object?> get props => [
         graphPolygon,
-        graphHeight,
-        graphWidth,
         graphOrigin,
         axisOrigin,
         graphUnitWidth,
         graphUnitHeight,
         valueUnitWidth,
         valueUnitHeight,
-        totalXRange,
-        totalYRange,
         unitData,
         graphEdgeInsets,
         xUnitValue
@@ -383,32 +364,24 @@ class CartesianChartGeometryData extends Equatable {
 
   CartesianChartGeometryData copyWith({
     Rect? graphPolygon,
-    double? graphHeight,
-    double? graphWidth,
     Offset? graphOrigin,
     Offset? axisOrigin,
     double? graphUnitWidth,
     double? graphUnitHeight,
     double? valueUnitWidth,
     double? valueUnitHeight,
-    double? totalXRange,
-    double? totalYRange,
     GridUnitsData? unitData,
     EdgeInsets? graphEdgeInsets,
     double? xUnitValue,
   }) {
     return CartesianChartGeometryData(
       graphPolygon: graphPolygon ?? this.graphPolygon,
-      graphHeight: graphHeight ?? this.graphHeight,
-      graphWidth: graphWidth ?? this.graphWidth,
       graphOrigin: graphOrigin ?? this.graphOrigin,
       axisOrigin: axisOrigin ?? this.axisOrigin,
       graphUnitWidth: graphUnitWidth ?? this.graphUnitWidth,
       graphUnitHeight: graphUnitHeight ?? this.graphUnitHeight,
       valueUnitWidth: valueUnitWidth ?? this.valueUnitWidth,
       valueUnitHeight: valueUnitHeight ?? this.valueUnitHeight,
-      totalXRange: totalXRange ?? this.totalXRange,
-      totalYRange: totalYRange ?? this.totalYRange,
       unitData: unitData ?? this.unitData,
       graphEdgeInsets: graphEdgeInsets ?? this.graphEdgeInsets,
       xUnitValue: xUnitValue ?? this.xUnitValue,

@@ -200,11 +200,14 @@ class CartesianController extends ChangeNotifier
       yUnitsCount: yUnitsCount,
       totalXRange: totalXRange,
       totalYRange: totalYRange,
+      maxXRange: rangeResult.maxXRange,
+      maxYRange: rangeResult.maxYRange,
+      minXRange: rangeResult.minXRange,
+      minYRange: rangeResult.minYRange,
     );
 
     return CartesianData(
       states: states,
-      range: rangeResult,
       gridUnitsData: gridUnitData,
     );
   }
@@ -239,7 +242,6 @@ class CartesianController extends ChangeNotifier
       CartesianDataTween(
         begin: isInitPhase
             ? CartesianData.zero(
-                targetRange: newData.range,
                 gridUnitsData: newData.gridUnitsData,
               )
             : currentData,

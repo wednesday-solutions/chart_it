@@ -1,5 +1,6 @@
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/gestures.dart';
@@ -201,11 +202,12 @@ class CartesianRenderBox extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    print("painting chart");
+    assert (parentData is CartesianScaffoldParentData, "${parentData.runtimeType} is not a subclass of $CartesianScaffoldParentData. $CartesianRenderer should be a direct child of $CartesianScaffold.");
+    final paintingGeometryData = (parentData as CartesianScaffoldParentData).paintingGeometryData;
     final canvas = context.canvas
       ..save()
       ..translate(offset.dx, offset.dy);
-    _painter.paint(canvas, size);
+    _painter.paint(canvas, size, paintingGeometryData);
     canvas.restore();
   }
 

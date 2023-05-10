@@ -46,6 +46,19 @@ class GridUnitsData extends Equatable {
     required this.minYRange,
   });
 
+  static const zero = GridUnitsData(
+    xUnitValue: 1,
+    xUnitsCount: 1,
+    yUnitValue: 1,
+    yUnitsCount: 1,
+    totalXRange: 0,
+    totalYRange: 0,
+    maxXRange: 0,
+    maxYRange: 0,
+    minXRange: 0,
+    minYRange: 0,
+  );
+
   static GridUnitsData lerp(
       GridUnitsData? current, GridUnitsData target, double t) {
     // TODO: Check which values of current can be null.
@@ -82,8 +95,17 @@ class GridUnitsData extends Equatable {
         yUnitsCount,
         yUnitValue,
         totalXRange,
-        totalYRange
+        totalYRange,
+        maxXRange,
+        maxYRange,
+        minXRange,
+        minYRange
       ];
+
+  @override
+  String toString() {
+    return 'GridUnitsData{xUnitValue: $xUnitValue, xUnitsCount: $xUnitsCount, yUnitValue: $yUnitValue, yUnitsCount: $yUnitsCount, totalXRange: $totalXRange, totalYRange: $totalYRange, maxXRange: $maxXRange, maxYRange: $maxYRange, minXRange: $minXRange, minYRange: $minYRange}';
+  }
 }
 
 /// Orientation of the Chart

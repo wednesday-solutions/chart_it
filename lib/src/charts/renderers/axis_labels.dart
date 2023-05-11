@@ -44,10 +44,11 @@ class AxisLabelsRenderer extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderAxisLabels(
-        gridUnitsData: gridUnitsData,
-        orientation: orientation,
-        constraintEdgeLabels: constraintEdgeLabels,
-        centerLabels: centerLabels);
+      gridUnitsData: gridUnitsData,
+      orientation: orientation,
+      constraintEdgeLabels: constraintEdgeLabels,
+      centerLabels: centerLabels,
+    );
   }
 
   @override
@@ -72,13 +73,8 @@ class RenderAxisLabels extends RenderBox
   set gridUnitsData(GridUnitsData value) {
     if (_gridUnitsData == value) return;
 
-    if (_gridUnitsData.xUnitsCount != value.xUnitsCount ||
-        _gridUnitsData.yUnitsCount != value.yUnitsCount) {
-      markNeedsLayout();
-    }
-
     _gridUnitsData = value;
-    markNeedsPaint();
+    markNeedsLayout();
   }
 
   AxisOrientation _orientation;

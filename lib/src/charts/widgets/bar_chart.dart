@@ -43,7 +43,6 @@ class _BarChartState extends State<BarChart>
       vsync: this,
     );
 
-    var structure = widget.chartStructureData;
     // Now we can provide the chart details to the observer
     _controller = CartesianController(
       data: [widget.data],
@@ -53,6 +52,7 @@ class _BarChartState extends State<BarChart>
       structureData: widget.chartStructureData,
       stylingData: widget.chartStylingData,
       calculateRange: (context) {
+        final structure = widget.chartStructureData;
         var maxXRange = structure.maxXValue?.toDouble() ??
             widget.data.barData.length.toDouble();
         var maxYRange = structure.maxYValue?.toDouble() ?? context.maxY;
@@ -94,6 +94,7 @@ class _BarChartState extends State<BarChart>
         );
         return CartesianScaffold(
           gridUnitsData: _controller.currentData.gridUnitsData,
+          structure: widget.chartStructureData,
           stylingData: stylingData,
           width: widget.width,
           height: widget.height,

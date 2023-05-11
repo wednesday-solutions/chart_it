@@ -10,21 +10,6 @@ import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
-// class Holder extends Equatable {
-//   final List<CartesianSeries> series;
-//   final CartesianChartStylingData style;
-//   final CartesianChartStructureData structure;
-//
-//   const Holder({
-//     required this.series,
-//     required this.style,
-//     required this.structure,
-//   });
-//
-//   @override
-//   List<Object?> get props => [series, style, structure];
-// }
-
 /// The Animation and Data Controller for a Cartesian Chart.
 ///
 /// Encapsulates the required Chart Data, Animatable Data, Configs
@@ -211,11 +196,11 @@ class CartesianController extends ChangeNotifier
   }
 
   @override
-  CartesianData setData(List<CartesianSeries> data) {
+  CartesianData setData(List<CartesianSeries> data, bool forceUpdate) {
     // Get the cacheKey as a List of our CartesianSeries.
     var cacheKey = EquatableList<CartesianSeries>(data);
 
-    if (_cachedValues.containsKey(cacheKey)) {
+    if (_cachedValues.containsKey(cacheKey) && !forceUpdate) {
       // Cache entry found. Just return the CartesianData for this Series.
       targetData = _cachedValues[cacheKey]!;
     } else {

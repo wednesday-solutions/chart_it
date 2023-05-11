@@ -29,6 +29,7 @@ class CartesianScaffold extends RenderObjectWidget
   final Widget chart;
   final GridUnitsData gridUnitsData;
   final CartesianChartStylingData stylingData;
+  final CartesianChartStructureData structure;
   final double? width;
   final double? height;
 
@@ -43,6 +44,7 @@ class CartesianScaffold extends RenderObjectWidget
     required this.stylingData,
     this.width,
     this.height,
+    required this.structure,
   });
 
   @override
@@ -378,9 +380,8 @@ class RenderCartesianScaffold extends RenderBox
       context.canvas.restore();
     }
 
-    if (_stylingData.gridStyle?.show == true) {
-      _drawGrid(context.canvas, chartParentData.paintingGeometryData);
-    }
+    _drawGrid(context.canvas, chartParentData.paintingGeometryData);
+
 
     RenderBox? renderBox = childForSlot(ChartScaffoldSlot.left);
     if (renderBox != null) {
@@ -448,7 +449,10 @@ class RenderCartesianScaffold extends RenderBox
     for (var i = 0; i <= geometryData.unitData.xUnitsCount; i++) {
       var p1 = Offset(x, geometryData.graphPolygon.bottom);
       var p2 = Offset(x, geometryData.graphPolygon.top);
-      canvas.drawLine(p1, p2, border);
+
+      if (_stylingData.gridStyle?.show == true) {
+        canvas.drawLine(p1, p2, border);
+      }
 
       // Draw ticks along x-axis
       final tickConfig = _stylingData.axisStyle?.tickConfig;
@@ -464,7 +468,7 @@ class RenderCartesianScaffold extends RenderBox
 
         if (tickConfig.showTickOnTopAxis) {
           canvas.drawLine(
-            p1,
+            p2,
             Offset(p2.dx, p2.dy - tickConfig.tickLength),
             _gridTick,
           );
@@ -481,7 +485,10 @@ class RenderCartesianScaffold extends RenderBox
 
       var p1 = Offset(geometryData.graphPolygon.left, y);
       var p2 = Offset(geometryData.graphPolygon.right, y);
-      canvas.drawLine(p1, p2, border);
+
+      if (_stylingData.gridStyle?.show == true) {
+        canvas.drawLine(p1, p2, border);
+      }
 
       // Draw ticks along y-axis
       final tickConfig = _stylingData.axisStyle?.tickConfig;
@@ -497,7 +504,7 @@ class RenderCartesianScaffold extends RenderBox
 
         if (tickConfig.showTickOnRightAxis) {
           canvas.drawLine(
-            p1,
+            p2,
             Offset(p2.dx + tickConfig.tickLength, p1.dy),
             _gridTick,
           );

@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class CartesianChartContainer extends LeafRenderObjectWidget {
-  final double? width;
-  final double? height;
 
   // Mandatory Fields
   final CartesianChartStylingData style;
@@ -21,8 +19,6 @@ class CartesianChartContainer extends LeafRenderObjectWidget {
 
   const CartesianChartContainer({
     Key? key,
-    this.width,
-    this.height,
     required this.style,
     required this.states,
     required this.interactionDispatcher,
@@ -33,8 +29,6 @@ class CartesianChartContainer extends LeafRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderCartesianChartContainer(
-      width: width,
-      height: height,
       style: style,
       states: states,
       interactionDispatcher: interactionDispatcher,
@@ -47,8 +41,6 @@ class CartesianChartContainer extends LeafRenderObjectWidget {
   void updateRenderObject(BuildContext context, RenderObject renderObject) {
     assert(renderObject is RenderCartesianChartContainer);
     (renderObject as RenderCartesianChartContainer)
-      ..width = width
-      ..height = height
       ..style = style
       ..structure = structure
       ..gridUnitsData = gridUnitsData
@@ -58,22 +50,6 @@ class CartesianChartContainer extends LeafRenderObjectWidget {
 }
 
 class RenderCartesianChartContainer extends RenderBox {
-  double? _width;
-
-  set width(double? value) {
-    if (_width == value) return;
-    _width = value;
-    markNeedsLayout();
-  }
-
-  double? _height;
-
-  set height(double? value) {
-    if (_height == value) return;
-    _height = value;
-    markNeedsLayout();
-  }
-
   final CartesianChartPainter _painter;
   InteractionDispatcher _interactionDispatcher;
 
@@ -118,9 +94,7 @@ class RenderCartesianChartContainer extends RenderBox {
     required List<PaintingState> states,
     required InteractionDispatcher interactionDispatcher,
     required GridUnitsData gridUnitsData,
-  })  : _width = width,
-        _height = height,
-        _interactionDispatcher = interactionDispatcher,
+  })  : _interactionDispatcher = interactionDispatcher,
         _painter = CartesianChartPainter(
           style: style,
           states: states,
@@ -152,7 +126,7 @@ class RenderCartesianChartContainer extends RenderBox {
 
   @override
   Size computeDryLayout(BoxConstraints constraints) =>
-      Size(_width ?? constraints.maxWidth, _height ?? constraints.maxHeight);
+      Size(constraints.maxWidth, constraints.maxHeight);
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -196,11 +170,7 @@ class RenderCartesianChartContainer extends RenderBox {
         "${parentData.runtimeType} is not a subclass of $CartesianScaffoldParentData. $CartesianChartContainer should be a direct child of $CartesianScaffold.");
     final paintingGeometryData =
         (parentData as CartesianScaffoldParentData).paintingGeometryData;
-    // final canvas = context.canvas
-    //   ..save()
-    //   ..translate(offset.dx, offset.dy);
     _painter.paint(context.canvas, size, paintingGeometryData);
-    // canvas.restore();
   }
 
   @override

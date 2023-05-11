@@ -82,6 +82,7 @@ class BarData extends Equatable {
 enum BarLabelPosition {
   /// Draws the label inside of the bar.
   insideBar,
+
   /// Draws the label outside of the bar.
   outsideBar
 }

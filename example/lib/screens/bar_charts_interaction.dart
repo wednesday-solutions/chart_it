@@ -1,6 +1,5 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TestBarChartsInteraction extends StatefulWidget {
   const TestBarChartsInteraction({Key? key}) : super(key: key);
@@ -61,7 +60,6 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
         backgroundColor: theme.colorScheme.surface,
         axisStyle: CartesianAxisStyle(
           axisWidth: 3.0,
-          showXAxisLabels: false,
           axisColor: theme.colorScheme.onBackground,
           tickConfig: AxisTickConfig.forAllAxis(
               tickColor: theme.colorScheme.onBackground, showTicks: true),
@@ -81,8 +79,6 @@ int _interactionIndex = -1;
 int _barIndex = -1;
 
 List<BarGroup> makeGroupData(BuildContext context) {
-  var theme = Theme.of(context);
-
   List<BarGroup> barSeries = List.generate(4, (index) {
     if (index % 2 == 0) {
       return SimpleBar(

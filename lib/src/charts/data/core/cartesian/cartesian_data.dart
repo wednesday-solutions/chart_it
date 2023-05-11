@@ -1,4 +1,3 @@
-
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
-import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 
 /// Defines a Simple singular Bar with a Single Y-Value

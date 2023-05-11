@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 var rng = Random();
 
@@ -28,7 +27,6 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
           backgroundColor: theme.colorScheme.surface,
           axisStyle: CartesianAxisStyle(
             axisWidth: 4.0,
-            showXAxisLabels: false,
             axisColor: theme.colorScheme.onBackground,
             tickConfig: AxisTickConfig.forAllAxis(
                 tickColor: theme.colorScheme.inverseSurface),
@@ -57,7 +55,6 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
 }
 
 List<BarGroup> makeGroupData(BuildContext context) {
-  var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
   List<BarGroup> barSeries = List.generate(next(3, 5).toInt(), (index) {

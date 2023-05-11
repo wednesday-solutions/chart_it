@@ -127,11 +127,11 @@ class RadialController extends ChangeNotifier
   }
 
   @override
-  RadialData setData(List<RadialSeries> data) {
+  RadialData setData(List<RadialSeries> data, bool forceUpdate) {
     // Get the cacheKey as a List of our CartesianSeries.
     var cacheKey = EquatableList<RadialSeries>(data);
 
-    if (_cachedValues.containsKey(cacheKey)) {
+    if (_cachedValues.containsKey(cacheKey) && !forceUpdate) {
       // Cache entry found. Just return the CartesianData for this Series.
       targetData = _cachedValues[cacheKey]!;
     } else {

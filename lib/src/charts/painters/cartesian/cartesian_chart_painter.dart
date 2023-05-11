@@ -1,4 +1,3 @@
-
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';

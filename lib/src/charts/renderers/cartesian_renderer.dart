@@ -8,7 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class CartesianRenderer extends LeafRenderObjectWidget {
+class CartesianChartContainer extends LeafRenderObjectWidget {
   final double? width;
   final double? height;
 
@@ -19,7 +19,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   final InteractionDispatcher interactionDispatcher;
   final GridUnitsData gridUnitsData;
 
-  const CartesianRenderer({
+  const CartesianChartContainer({
     Key? key,
     this.width,
     this.height,
@@ -32,7 +32,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return CartesianRenderBox(
+    return RenderCartesianChartContainer(
       width: width,
       height: height,
       style: style,
@@ -45,8 +45,8 @@ class CartesianRenderer extends LeafRenderObjectWidget {
 
   @override
   void updateRenderObject(BuildContext context, RenderObject renderObject) {
-    assert(renderObject is CartesianRenderBox);
-    (renderObject as CartesianRenderBox)
+    assert(renderObject is RenderCartesianChartContainer);
+    (renderObject as RenderCartesianChartContainer)
       ..width = width
       ..height = height
       ..style = style
@@ -57,7 +57,7 @@ class CartesianRenderer extends LeafRenderObjectWidget {
   }
 }
 
-class CartesianRenderBox extends RenderBox {
+class RenderCartesianChartContainer extends RenderBox {
   double? _width;
 
   set width(double? value) {
@@ -110,7 +110,7 @@ class CartesianRenderBox extends RenderBox {
   late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
   late final PanGestureRecognizer _panGestureRecognizer;
 
-  CartesianRenderBox({
+  RenderCartesianChartContainer({
     double? width,
     double? height,
     required CartesianChartStylingData style,
@@ -193,7 +193,7 @@ class CartesianRenderBox extends RenderBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     assert(parentData is CartesianScaffoldParentData,
-        "${parentData.runtimeType} is not a subclass of $CartesianScaffoldParentData. $CartesianRenderer should be a direct child of $CartesianScaffold.");
+        "${parentData.runtimeType} is not a subclass of $CartesianScaffoldParentData. $CartesianChartContainer should be a direct child of $CartesianScaffold.");
     final paintingGeometryData =
         (parentData as CartesianScaffoldParentData).paintingGeometryData;
     // final canvas = context.canvas

@@ -72,7 +72,6 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
           gridLineColor: theme.colorScheme.onBackground,
         ),
       ),
-      title: const Text('Demo Chart'),
       data: getSeries(),
     );
   }
@@ -88,12 +87,6 @@ List<BarGroup> makeGroupData(BuildContext context) {
     if (index % 2 == 0) {
       return SimpleBar(
         xValue: index + 1,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValue: BarData(
             yValue: _interactionIndex == index
                 ? 9 + index / 2 * 0.5
@@ -103,12 +96,6 @@ List<BarGroup> makeGroupData(BuildContext context) {
       return MultiBar(
         xValue: index + 1,
         groupSpacing: 10.0,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValues: [
           BarData(
             barStyle: const BarDataStyle(

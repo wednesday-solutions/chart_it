@@ -42,8 +42,6 @@ class MultiBar extends BarGroup {
     // defaults to series i.e. side by side
     this.arrangement = BarGroupArrangement.series,
     this.groupSpacing = 0.0,
-    super.label,
-    super.labelStyle,
     super.groupStyle,
   })  : assert(yValues.isNotEmpty, "At least one yValue is required!"),
         // Ensure that groupSpacing is not applied when arrangement is stack
@@ -67,12 +65,6 @@ class MultiBar extends BarGroup {
           target.groupSpacing,
           t,
         ).asOrDefault(0.0),
-        label: target.label,
-        labelStyle: ChartTextStyle.lerp(
-          current?.labelStyle,
-          target.labelStyle,
-          t,
-        ),
         groupStyle: BarDataStyle.lerp(
           current?.groupStyle,
           target.groupStyle,
@@ -86,5 +78,5 @@ class MultiBar extends BarGroup {
 
   @override
   List<Object?> get props =>
-      [xValue, yValues, labelStyle, groupStyle, groupSpacing, arrangement];
+      [xValue, yValues, groupStyle, groupSpacing, arrangement];
 }

@@ -24,13 +24,6 @@ abstract class BarGroup with EquatableMixin {
   /// The plotting is done based on the index of this item in the list.
   final num xValue;
 
-  /// Callback for the label underneath a [BarGroup].
-  /// The X-Value is provided as a param, and a string is to be returned.
-  final LabelMapper? label;
-
-  /// Text Styling for the [label].
-  final ChartTextStyle? labelStyle;
-
   /// Styling for the Bars in this [BarGroup].
   ///
   /// {@macro bar_styling_order}
@@ -39,8 +32,6 @@ abstract class BarGroup with EquatableMixin {
   /// {@macro bar_group}
   BarGroup({
     required this.xValue,
-    this.label,
-    this.labelStyle,
     this.groupStyle,
   });
 

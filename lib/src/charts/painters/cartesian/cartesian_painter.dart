@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 abstract class CartesianPainter<T extends TouchInteractionResult> {
   T? hitTest(TouchInteractionType type, Offset localPosition);
 
-  void paint(
-      {required CartesianSeries lerpSeries,
-      required Canvas canvas,
-      required CartesianPaintingGeometryData chart,
-      required CartesianConfig config,
-      required CartesianChartStylingData style});
+  void paint({
+    required CartesianSeries lerpSeries,
+    required Canvas canvas,
+    required CartesianPaintingGeometryData chart,
+    required CartesianConfig config,
+    required CartesianChartStylingData style,
+  });
 }

@@ -8,15 +8,11 @@ import 'package:flutter/material.dart';
 
 /// Draws a BarChart for the Provided Data
 class BarChart extends CartesianChart {
-  /// Title of the Chart
-  final Text? title;
-
   /// The Data which will be Drawn as Bars
   final BarSeries data;
 
   const BarChart({
     super.key,
-    this.title,
     super.width,
     super.height,
     super.animateOnLoad = true,
@@ -57,10 +53,9 @@ class _BarChartState extends State<BarChart>
       structureData: widget.chartStructureData,
       stylingData: widget.chartStylingData,
       calculateRange: (context) {
-        var maxXRange = widget.chartStructureData.maxXValue?.toDouble() ??
+        var maxXRange = structure.maxXValue?.toDouble() ??
             widget.data.barData.length.toDouble();
-        var maxYRange =
-            widget.chartStructureData.maxYValue?.toDouble() ?? context.maxY;
+        var maxYRange = structure.maxYValue?.toDouble() ?? context.maxY;
         return CartesianRangeResult(
           xUnitValue: 1,
           yUnitValue: structure.yUnitValue.toDouble(),
@@ -91,29 +86,31 @@ class _BarChartState extends State<BarChart>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          final stylingData = widget.chartStylingData.copyWith(
-            backgroundColor: widget.chartStylingData.backgroundColor ??
-                Theme.of(context).colorScheme.background,
-          );
-          return CartesianScaffold(
-              gridUnitsData: _controller.currentData.gridUnitsData,
-              stylingData: stylingData,
-              width: widget.width,
-              height: widget.height,
-              leftLabel: widget.axisLabelBuilder.left,
-              rightLabel: widget.axisLabelBuilder.right,
-              bottomLabel: widget.axisLabelBuilder.bottom,
-              topLabel: widget.axisLabelBuilder.top,
-              chart: CartesianRenderer(
-                style: stylingData,
-                structure: widget.chartStructureData,
-                states: _controller.currentData.states,
-                gridUnitsData: _controller.currentData.gridUnitsData,
-                interactionDispatcher: _controller,
-              ));
-        });
+      animation: _controller,
+      builder: (context, _) {
+        final stylingData = widget.chartStylingData.copyWith(
+          backgroundColor: widget.chartStylingData.backgroundColor ??
+              Theme.of(context).colorScheme.background,
+        );
+        return CartesianScaffold(
+          gridUnitsData: _controller.currentData.gridUnitsData,
+          stylingData: stylingData,
+          width: widget.width,
+          height: widget.height,
+          leftLabel: widget.axisLabelBuilder.left,
+          rightLabel: widget.axisLabelBuilder.right,
+          bottomLabel: widget.axisLabelBuilder.bottom,
+          topLabel: widget.axisLabelBuilder.top,
+          chart: CartesianChartContainer(
+            style: stylingData,
+            structure: widget.chartStructureData,
+            states: _controller.currentData.states,
+            gridUnitsData: _controller.currentData.gridUnitsData,
+            interactionDispatcher: _controller,
+          ),
+        );
+      },
+    );
   }
 
   AnimationController _provideAnimation() =>

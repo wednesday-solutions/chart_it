@@ -23,7 +23,6 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
       },
       child: BarChart(
         height: 400,
-        title: const Text('Demo Chart'),
         chartStructureData: const CartesianChartStructureData(xUnitValue: 1),
         chartStylingData: CartesianChartStylingData(
           backgroundColor: theme.colorScheme.surface,
@@ -65,24 +64,12 @@ List<BarGroup> makeGroupData(BuildContext context) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValue: BarData(yValue: next(-15, 90)),
       );
     } else {
       return MultiBar(
         xValue: index + 1,
         groupSpacing: 10.0,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValues: [
           BarData(
             barStyle: const BarDataStyle(

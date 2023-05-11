@@ -1,4 +1,3 @@
-import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_renderer.dart';
@@ -64,7 +63,7 @@ class _BarChartState extends State<BarChart>
             widget.chartStructureData.maxYValue?.toDouble() ?? context.maxY;
         return CartesianRangeResult(
           xUnitValue: 1,
-          yUnitValue: structure.yUnitValue.toDouble() ?? maxYRange,
+          yUnitValue: structure.yUnitValue.toDouble(),
           // For Bar charts, we don't consider x values, be it +ve or -ve
           minXRange: 0,
           maxXRange: maxXRange,

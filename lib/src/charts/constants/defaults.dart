@@ -1,5 +1,4 @@
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_styling.dart';
 import 'package:chart_it/src/charts/data/core/radial/radial_styling.dart';
 import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/data/pie/slice_data_style.dart';

@@ -1,10 +1,7 @@
-import 'dart:ui';
 
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);

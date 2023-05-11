@@ -1,5 +1,4 @@
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';

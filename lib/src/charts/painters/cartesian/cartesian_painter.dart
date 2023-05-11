@@ -1,6 +1,5 @@
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/interactions/data/touch_interactions.dart';
 import 'package:flutter/material.dart';
 

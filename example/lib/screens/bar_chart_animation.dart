@@ -24,17 +24,15 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
       child: BarChart(
         height: 400,
         title: const Text('Demo Chart'),
-
-        chartStructureData: CartesianChartStructureData(
-          xUnitValue: 1
-        ),
+        chartStructureData: const CartesianChartStructureData(xUnitValue: 1),
         chartStylingData: CartesianChartStylingData(
           backgroundColor: theme.colorScheme.surface,
           axisStyle: CartesianAxisStyle(
             axisWidth: 4.0,
             showXAxisLabels: false,
             axisColor: theme.colorScheme.onBackground,
-            tickConfig: AxisTickConfig.forAllAxis(tickColor: theme.colorScheme.inverseSurface),
+            tickConfig: AxisTickConfig.forAllAxis(
+                tickColor: theme.colorScheme.inverseSurface),
           ),
           gridStyle: CartesianGridStyle(
             show: true,

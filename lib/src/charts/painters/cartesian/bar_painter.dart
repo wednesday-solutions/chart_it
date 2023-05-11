@@ -1,10 +1,8 @@
-import 'dart:math';
 
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/interactions.dart';
@@ -14,7 +12,6 @@ import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter<BarInteractionResult> {
   final List<_BarInteractionData> _interactionData = List.empty(growable: true);
-  final _groupLabelTextPainters = <ChartTextPainter?>[];
 
   _BarPainterData? _data;
   bool useGraphUnits;

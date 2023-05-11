@@ -110,14 +110,14 @@ class CartesianData with EquatableMixin {
   }
 
   static CartesianData lerp(
-      CartesianData? current,
-      CartesianData target,
-      double t,
-      ) {
+    CartesianData? current,
+    CartesianData target,
+    double t,
+  ) {
     return CartesianData(
       states: PaintingState.lerpStateList(current?.states, target.states, t),
       gridUnitsData:
-      GridUnitsData.lerp(current?.gridUnitsData, target.gridUnitsData, t),
+          GridUnitsData.lerp(current?.gridUnitsData, target.gridUnitsData, t),
     );
   }
 
@@ -178,15 +178,15 @@ class CartesianPaintingGeometryData extends Equatable {
 
   @override
   List<Object?> get props => [
-    graphPolygon,
-    axisOrigin,
-    graphUnitWidth,
-    graphUnitHeight,
-    valueUnitWidth,
-    valueUnitHeight,
-    unitData,
-    xUnitValue
-  ];
+        graphPolygon,
+        axisOrigin,
+        graphUnitWidth,
+        graphUnitHeight,
+        valueUnitWidth,
+        valueUnitHeight,
+        unitData,
+        xUnitValue
+      ];
 
   CartesianPaintingGeometryData copyWith({
     Rect? graphPolygon,
@@ -216,4 +216,3 @@ class CartesianPaintingGeometryData extends Equatable {
     return 'CartesianPaintingGeometryData{graphPolygon: $graphPolygon, axisOrigin: $axisOrigin, graphUnitWidth: $graphUnitWidth, graphUnitHeight: $graphUnitHeight, valueUnitWidth: $valueUnitWidth, valueUnitHeight: $valueUnitHeight, unitData: $unitData, xUnitValue: $xUnitValue}';
   }
 }
-

@@ -2,17 +2,12 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/chart_animations.dart';
-import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 // class Holder extends Equatable {
@@ -76,15 +71,14 @@ class CartesianController extends ChangeNotifier
   ///
   /// Encapsulates the required Chart Data, Animatable Data, Configs
   /// and Mapped Painters for every [CartesianSeries].
-  CartesianController({
-    required this.data,
-    required this.animation,
-    this.animateOnUpdate = true,
-    this.animateOnLoad = true,
-    required this.calculateRange,
-    required this.structureData,
-    required this.stylingData
-  }) {
+  CartesianController(
+      {required this.data,
+      required this.animation,
+      this.animateOnUpdate = true,
+      this.animateOnLoad = true,
+      required this.calculateRange,
+      required this.structureData,
+      required this.stylingData}) {
     animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
     updateDataSeries(data, isInitPhase: true);
@@ -116,7 +110,10 @@ class CartesianController extends ChangeNotifier
       final oldStructure = this.structureData;
       this.structureData = structureData;
       this.stylingData = stylingData;
-      updateDataSeries(data, isInitPhase: false, forceUpdate: oldStructure != structureData || oldStyle != stylingData);
+      updateDataSeries(data,
+          isInitPhase: false,
+          forceUpdate:
+              oldStructure != structureData || oldStyle != stylingData);
     }
   }
 

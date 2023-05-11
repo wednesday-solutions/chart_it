@@ -64,9 +64,7 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
           showXAxisLabels: false,
           axisColor: theme.colorScheme.onBackground,
           tickConfig: AxisTickConfig.forAllAxis(
-            tickColor: theme.colorScheme.onBackground,
-            showTicks: true
-          ),
+              tickColor: theme.colorScheme.onBackground, showTicks: true),
         ),
         gridStyle: CartesianGridStyle(
           show: true,

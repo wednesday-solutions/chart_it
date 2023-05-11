@@ -73,10 +73,8 @@ class BarData extends Equatable {
       lerpList(current, target, t, lerp: lerp);
 
   @override
-  List<Object?> get props => [startYFrom, yValue, labelStyle, barStyle, labelPosition];
+  List<Object?> get props =>
+      [startYFrom, yValue, labelStyle, barStyle, labelPosition];
 }
 
-enum BarLabelPosition {
-  insideBar,
-  outsideBar
-}
+enum BarLabelPosition { insideBar, outsideBar }

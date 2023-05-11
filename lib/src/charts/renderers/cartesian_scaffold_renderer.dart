@@ -4,6 +4,7 @@ import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/renderers/axis_labels.dart';
+import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -51,43 +52,46 @@ class CartesianScaffold extends RenderObjectWidget
         return AxisLabels(
           gridUnitsData: gridUnitsData,
           orientation: AxisOrientation.vertical,
-          labelBuilder: (_, value) => Text(
-            value.toString(),
-            textAlign: TextAlign.right,
-            style: TextStyle(color: Colors.white),
+          labelBuilder: (_, value) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              value.toString().substring(0, 1),
+              textAlign: TextAlign.right,
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         );
         break;
       case ChartScaffoldSlot.right:
-        // return AxisLabels(
-        //   gridUnitsData: gridUnitsData,
-        //   orientation: AxisOrientation.vertical,
-        //   constraintEdgeLabels: true,
-        //   labelBuilder: (_, value) => Icon(Icons.favorite),
-        // );
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.vertical,
+          constraintEdgeLabels: true,
+          labelBuilder: (_, value) => Icon(Icons.favorite),
+        );
         break;
       case ChartScaffoldSlot.top:
-        // return AxisLabels(
-        //   gridUnitsData: gridUnitsData,
-        //   orientation: AxisOrientation.horizontal,
-        //   labelBuilder: (_, value) => Text(
-        //     value.toString(),
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(color: Colors.white),
-        //   ),
-        // );
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.horizontal,
+          labelBuilder: (_, value) => Text(
+            value.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+        );
         break;
       case ChartScaffoldSlot.bottom:
-        // return AxisLabels(
-        //   gridUnitsData: gridUnitsData,
-        //   orientation: AxisOrientation.horizontal,
-        //   centerLabels: true,
-        //   labelBuilder: (_, value) => Text(
-        //     value.toString(),
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(color: Colors.white),
-        //   ),
-        // );
+        return AxisLabels(
+          gridUnitsData: gridUnitsData,
+          orientation: AxisOrientation.horizontal,
+          centerLabels: true,
+          labelBuilder: (_, value) => Text(
+            value.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+        );
         break;
       case ChartScaffoldSlot.center:
         return chart;
@@ -197,18 +201,36 @@ class RenderCartesianScaffold extends RenderBox
     final maxWidth = min(constraints.maxWidth, _width ?? double.maxFinite);
     final maxHeight = min(constraints.maxHeight, _height ?? double.maxFinite);
 
-    double bottomIntrinsicHeight = childForSlot(ChartScaffoldSlot.bottom)
-            ?.getMinIntrinsicHeight(constraints.maxWidth) ??
-        0.0;
-    double leftIntrinsicWidth = childForSlot(ChartScaffoldSlot.left)
-            ?.getMinIntrinsicWidth(constraints.maxHeight) ??
-        0.0;
-    double rightIntrinsicWidth = childForSlot(ChartScaffoldSlot.right)
-            ?.getMinIntrinsicWidth(constraints.maxHeight) ??
-        0.0;
-    double topIntrinsicHeight = childForSlot(ChartScaffoldSlot.top)
-            ?.getMinIntrinsicHeight(constraints.maxHeight) ??
-        0.0;
+    final bottom = childForSlot(ChartScaffoldSlot.bottom);
+    final top = childForSlot(ChartScaffoldSlot.top);
+    final left = childForSlot(ChartScaffoldSlot.left);
+    final right = childForSlot(ChartScaffoldSlot.right);
+
+    double bottomIntrinsicHeight =
+        bottom?.getMinIntrinsicHeight(constraints.maxWidth) ?? 0.0;
+    double leftIntrinsicWidth =
+        left?.getMinIntrinsicWidth(constraints.maxHeight) ?? 0.0;
+    double rightIntrinsicWidth =
+        right?.getMinIntrinsicWidth(constraints.maxHeight) ?? 0.0;
+    double topIntrinsicHeight =
+        top?.getMinIntrinsicHeight(constraints.maxHeight) ?? 0.0;
+
+    final tickConfig = _stylingData.axisStyle?.tickConfig;
+    if (tickConfig != null) {
+      if (tickConfig.showTickOnLeftAxis) {
+        leftIntrinsicWidth += tickConfig.tickLength;
+      }
+      if (tickConfig.showTickOnBottomAxis) {
+        bottomIntrinsicHeight += tickConfig.tickLength;
+      }
+      if (tickConfig.showTickOnRightAxis) {
+        rightIntrinsicWidth += tickConfig.tickLength;
+      }
+      if (tickConfig.showTickOnTopAxis) {
+        topIntrinsicHeight += tickConfig.tickLength;
+      }
+    }
+
 
     final chartConstraints = BoxConstraints(
       maxWidth: maxWidth - leftIntrinsicWidth - rightIntrinsicWidth,
@@ -275,10 +297,11 @@ class RenderCartesianScaffold extends RenderBox
       );
 
       if (!dry) {
+        final tickOffset = tickConfig?.showTickOnRightAxis == true ? tickConfig!.tickLength : 0.0;
         _positionRenderBox(
           renderBox: renderBox,
           offset: Offset(
-            maxWidth - renderBox.size.width,
+            maxWidth - renderBox.size.width + tickOffset,
             topIntrinsicHeight,
           ),
           paintingGeometryData: paintingGeometryData,
@@ -317,7 +340,7 @@ class RenderCartesianScaffold extends RenderBox
     if (!dry) {
       _positionRenderBox(
         renderBox: renderBox,
-        offset: Offset(leftIntrinsicWidth, topIntrinsicHeight),
+        offset: Offset(leftIntrinsicWidth, 0),
         paintingGeometryData: paintingGeometryData,
       );
     }
@@ -353,7 +376,11 @@ class RenderCartesianScaffold extends RenderBox
         chartRenderBox.parentData as CartesianScaffoldParentData;
 
     if (_stylingData.backgroundColor != null) {
+      context.canvas
+        ..save()
+        ..clipRect(offset & size);
       context.canvas.drawPaint(_bgPaint..color = _stylingData.backgroundColor!);
+      context.canvas.restore();
     }
 
     if (_stylingData.gridStyle?.show == true) {
@@ -412,9 +439,14 @@ class RenderCartesianScaffold extends RenderBox
       ..color = _stylingData.gridStyle!.gridLineColor
       ..strokeWidth = _stylingData.gridStyle!.gridLineWidth;
 
-    var tickPaint = _gridTick
-      ..color = _stylingData.axisStyle!.tickColor
-      ..strokeWidth = _stylingData.axisStyle!.tickWidth;
+    var tickColor = _stylingData.axisStyle?.tickConfig.tickColor;
+    if (tickColor != null) {
+      _gridTick.color = tickColor;
+    }
+    var tickWidth = _stylingData.axisStyle?.tickConfig.tickWidth;
+    if (tickWidth != null) {
+      _gridTick.strokeWidth = tickWidth;
+    }
 
     var x = geometryData.graphPolygon.left;
     // create vertical lines
@@ -424,11 +456,25 @@ class RenderCartesianScaffold extends RenderBox
       canvas.drawLine(p1, p2, border);
 
       // Draw ticks along x-axis
-      canvas.drawLine(
-        p1,
-        Offset(p1.dx, p1.dy + _stylingData.axisStyle!.tickLength),
-        tickPaint,
-      );
+      final tickConfig = _stylingData.axisStyle?.tickConfig;
+
+      if (tickConfig != null) {
+        if (tickConfig.showTickOnBottomAxis) {
+          canvas.drawLine(
+            p1,
+            Offset(p1.dx, p1.dy + tickConfig.tickLength),
+            _gridTick,
+          );
+        }
+
+        if (tickConfig.showTickOnTopAxis) {
+          canvas.drawLine(
+            p1,
+            Offset(p2.dx, p2.dy - tickConfig.tickLength),
+            _gridTick,
+          );
+        }
+      }
 
       x += geometryData.graphUnitWidth;
     }
@@ -443,11 +489,25 @@ class RenderCartesianScaffold extends RenderBox
       canvas.drawLine(p1, p2, border);
 
       // Draw ticks along y-axis
-      canvas.drawLine(
-        p1,
-        Offset(p1.dx - _stylingData.axisStyle!.tickLength, p1.dy),
-        tickPaint,
-      );
+      final tickConfig = _stylingData.axisStyle?.tickConfig;
+
+      if (tickConfig != null) {
+        if (tickConfig.showTickOnLeftAxis) {
+          canvas.drawLine(
+            p1,
+            Offset(p1.dx - tickConfig.tickLength, p1.dy),
+            _gridTick,
+          );
+        }
+
+        if (tickConfig.showTickOnRightAxis) {
+          canvas.drawLine(
+            p1,
+            Offset(p2.dx + tickConfig.tickLength, p1.dy),
+            _gridTick,
+          );
+        }
+      }
     }
   }
 

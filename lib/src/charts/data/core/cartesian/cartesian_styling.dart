@@ -116,6 +116,53 @@ class CartesianGridStyle extends Equatable {
   }
 }
 
+class AxisTickConfig extends Equatable {
+  /// The Length of the Tick drawn along Axes
+  final double tickLength;
+
+  /// The Width/Thickness of the Tick drawn along Axes
+  final double tickWidth;
+
+  /// The Color of the Tick drawn along Axes
+  final Color tickColor;
+
+  final bool showTickOnLeftAxis;
+  final bool showTickOnTopAxis;
+  final bool showTickOnBottomAxis;
+  final bool showTickOnRightAxis;
+
+  const AxisTickConfig({
+    this.tickLength = 15.0,
+    this.tickWidth = 1.0,
+    this.tickColor = Colors.black45,
+    this.showTickOnLeftAxis = false,
+    this.showTickOnTopAxis = false,
+    this.showTickOnBottomAxis = false,
+    this.showTickOnRightAxis = false,
+  });
+
+  const AxisTickConfig.forAllAxis({
+    this.tickLength = 15.0,
+    this.tickWidth = 1.0,
+    this.tickColor = Colors.black45,
+    bool showTicks = false,
+  })  : showTickOnTopAxis = showTicks,
+        showTickOnRightAxis = showTicks,
+        showTickOnBottomAxis = showTicks,
+        showTickOnLeftAxis = showTicks;
+
+  @override
+  List<Object?> get props => [
+        tickLength,
+        tickWidth,
+        tickColor,
+        showTickOnLeftAxis,
+        showTickOnTopAxis,
+        showTickOnBottomAxis,
+        showTickOnRightAxis,
+      ];
+}
+
 /// Provides the Styling options for a Cartesian Axis.
 ///
 /// Customization Options for Axis Lines, Ticks and Labels
@@ -134,28 +181,14 @@ class CartesianAxisStyle extends Equatable {
   /// The Color of the Axis Lines
   final Color axisColor;
 
-  /// The Length of the Tick drawn along Axes
-  final double tickLength;
+  final AxisTickConfig tickConfig;
 
-  /// The Width/Thickness of the Tick drawn along Axes
-  final double tickWidth;
-
-  /// The Color of the Tick drawn along Axes
-  final Color tickColor;
-
-  /// Styling for the Tick Labels
-  final ChartTextStyle? tickLabelStyle;
-
-  const CartesianAxisStyle({
-    this.showXAxisLabels = true,
-    this.showYAxisLabels = true,
-    this.axisWidth = 2.0,
-    this.axisColor = Colors.black45,
-    this.tickLength = 10.0,
-    this.tickWidth = 1.0,
-    this.tickColor = Colors.black45,
-    this.tickLabelStyle,
-  });
+  const CartesianAxisStyle(
+      {this.showXAxisLabels = true,
+      this.showYAxisLabels = true,
+      this.axisWidth = 2.0,
+      this.axisColor = Colors.black45,
+      this.tickConfig = const AxisTickConfig()});
 
   @override
   List<Object?> get props => [
@@ -163,10 +196,7 @@ class CartesianAxisStyle extends Equatable {
         showYAxisLabels,
         axisWidth,
         axisColor,
-        tickLength,
-        tickWidth,
-        tickColor,
-        tickLabelStyle,
+        tickConfig,
       ];
 
   CartesianAxisStyle copyWith({
@@ -176,20 +206,14 @@ class CartesianAxisStyle extends Equatable {
     bool? showYAxisLabels,
     double? axisWidth,
     Color? axisColor,
-    double? tickLength,
-    double? tickWidth,
-    Color? tickColor,
-    ChartTextStyle? tickLabelStyle,
+    AxisTickConfig? tickConfig,
   }) {
     return CartesianAxisStyle(
       showXAxisLabels: showXAxisLabels ?? this.showXAxisLabels,
       showYAxisLabels: showYAxisLabels ?? this.showYAxisLabels,
       axisWidth: axisWidth ?? this.axisWidth,
       axisColor: axisColor ?? this.axisColor,
-      tickLength: tickLength ?? this.tickLength,
-      tickWidth: tickWidth ?? this.tickWidth,
-      tickColor: tickColor ?? this.tickColor,
-      tickLabelStyle: tickLabelStyle ?? this.tickLabelStyle,
+      tickConfig: tickConfig ?? this.tickConfig,
     );
   }
 }

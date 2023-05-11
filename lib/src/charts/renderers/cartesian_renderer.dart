@@ -194,11 +194,11 @@ class CartesianRenderBox extends RenderBox {
   void paint(PaintingContext context, Offset offset) {
     assert (parentData is CartesianScaffoldParentData, "${parentData.runtimeType} is not a subclass of $CartesianScaffoldParentData. $CartesianRenderer should be a direct child of $CartesianScaffold.");
     final paintingGeometryData = (parentData as CartesianScaffoldParentData).paintingGeometryData;
-    final canvas = context.canvas
-      ..save()
-      ..translate(offset.dx, offset.dy);
-    _painter.paint(canvas, size, paintingGeometryData);
-    canvas.restore();
+    // final canvas = context.canvas
+    //   ..save()
+    //   ..translate(offset.dx, offset.dy);
+    _painter.paint(context.canvas, size, paintingGeometryData);
+    // canvas.restore();
   }
 
   @override

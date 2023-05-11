@@ -63,11 +63,9 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
           axisWidth: 3.0,
           showXAxisLabels: false,
           axisColor: theme.colorScheme.onBackground,
-          tickColor: theme.colorScheme.onBackground,
-          tickLabelStyle: ChartTextStyle(
-            textStyle: GoogleFonts.poppins(
-              color: theme.colorScheme.inverseSurface,
-            ),
+          tickConfig: AxisTickConfig.forAllAxis(
+            tickColor: theme.colorScheme.onBackground,
+            showTicks: true
           ),
         ),
         gridStyle: CartesianGridStyle(

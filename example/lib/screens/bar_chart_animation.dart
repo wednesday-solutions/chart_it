@@ -33,12 +33,7 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
             axisWidth: 4.0,
             showXAxisLabels: false,
             axisColor: theme.colorScheme.onBackground,
-            tickColor: theme.colorScheme.onBackground,
-            tickLabelStyle: ChartTextStyle(
-              textStyle: GoogleFonts.poppins(
-                color: theme.colorScheme.inverseSurface,
-              ),
-            ),
+            tickConfig: AxisTickConfig.forAllAxis(tickColor: theme.colorScheme.inverseSurface, showTicks: true),
           ),
           gridStyle: CartesianGridStyle(
             show: true,
@@ -77,7 +72,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
             color: theme.colorScheme.inverseSurface,
           ),
         ),
-        yValue: BarData(yValue: next(10, 90)),
+        yValue: BarData(yValue: next(-15, 90)),
       );
     } else {
       return MultiBar(
@@ -107,7 +102,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 90),
+            yValue: next(-10, 90),
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -126,7 +121,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 90),
+            yValue: next(-20, 90),
           ),
         ],
       );

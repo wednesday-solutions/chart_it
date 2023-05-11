@@ -74,9 +74,12 @@ class RenderAxisLabels extends RenderBox
     if (_gridUnitsData == value) return;
 
     if (_gridUnitsData.xUnitsCount != value.xUnitsCount ||
-        _gridUnitsData.yUnitsCount != value.yUnitsCount) {
+        _gridUnitsData.yUnitsCount != value.yUnitsCount ||
+        _gridUnitsData.totalYRange != value.totalYRange ||
+        _gridUnitsData.totalXRange != value.totalXRange) {
       markNeedsLayout();
     }
+
     _gridUnitsData = value;
     markNeedsPaint();
   }

@@ -382,7 +382,6 @@ class RenderCartesianScaffold extends RenderBox
 
     _drawGrid(context.canvas, chartParentData.paintingGeometryData);
 
-
     RenderBox? renderBox = childForSlot(ChartScaffoldSlot.left);
     if (renderBox != null) {
       _paintChild(

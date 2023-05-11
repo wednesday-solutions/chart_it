@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class CartesianChartContainer extends LeafRenderObjectWidget {
-
   // Mandatory Fields
   final CartesianChartStylingData style;
   final CartesianChartStructureData structure;

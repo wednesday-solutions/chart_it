@@ -8,13 +8,13 @@ import 'package:flutter/rendering.dart';
 
 enum AxisOrientation { vertical, horizontal }
 
-class AxisLabels extends MultiChildRenderObjectWidget {
+class AxisLabelsRenderer extends MultiChildRenderObjectWidget {
   final GridUnitsData gridUnitsData;
   final AxisOrientation orientation;
   final bool constraintEdgeLabels;
   final bool centerLabels;
 
-  AxisLabels({
+  AxisLabelsRenderer({
     super.key,
     required this.gridUnitsData,
     required this.orientation,
@@ -74,9 +74,7 @@ class RenderAxisLabels extends RenderBox
     if (_gridUnitsData == value) return;
 
     if (_gridUnitsData.xUnitsCount != value.xUnitsCount ||
-        _gridUnitsData.yUnitsCount != value.yUnitsCount ||
-        _gridUnitsData.totalYRange != value.totalYRange ||
-        _gridUnitsData.totalXRange != value.totalXRange) {
+        _gridUnitsData.yUnitsCount != value.yUnitsCount) {
       markNeedsLayout();
     }
 
@@ -132,15 +130,15 @@ class RenderAxisLabels extends RenderBox
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
-    var child = firstChild;
     late final BoxConstraints childConstraints;
     final paintingGeometryData =
         (parentData as CartesianScaffoldParentData).paintingGeometryData;
 
     if (_orientation == AxisOrientation.vertical) {
       childConstraints = BoxConstraints(
-          maxWidth: constraints.maxWidth,
-          maxHeight: constraints.maxHeight / _gridUnitsData.yUnitsCount,);
+        maxWidth: constraints.maxWidth,
+        maxHeight: constraints.maxHeight / _gridUnitsData.yUnitsCount,
+      );
 
       var child = firstChild;
       Offset childOffset = Offset(0, constraints.maxHeight);
@@ -196,7 +194,6 @@ class RenderAxisLabels extends RenderBox
             paintOffset -= Offset(child.size.width / 2, 0);
           }
         }
-
 
         (child.parentData as MultiChildLayoutParentData).offset =
             paintOffset - Offset(child.size.width / 2, 0);

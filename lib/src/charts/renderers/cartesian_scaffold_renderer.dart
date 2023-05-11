@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/renderers/axis_labels.dart';
-import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -20,12 +18,14 @@ class CartesianScaffoldParentData extends ContainerBoxParentData<RenderBox> {
 
 enum ChartScaffoldSlot { center, left, bottom, right, top }
 
+typedef LabelBuilder = Widget Function(int index, double value);
+
 class CartesianScaffold extends RenderObjectWidget
     with SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot> {
-  final Widget Function()? leftLabel;
-  final Widget Function()? rightLabel;
-  final Widget Function()? topLabel;
-  final Widget Function()? bottomLabel;
+  final LabelBuilder? leftLabel;
+  final LabelBuilder? rightLabel;
+  final LabelBuilder? topLabel;
+  final LabelBuilder? bottomLabel;
   final Widget chart;
   final GridUnitsData gridUnitsData;
   final CartesianChartStylingData stylingData;
@@ -49,49 +49,42 @@ class CartesianScaffold extends RenderObjectWidget
   Widget? childForSlot(ChartScaffoldSlot slot) {
     switch (slot) {
       case ChartScaffoldSlot.left:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.vertical,
-          labelBuilder: (_, value) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.toString().substring(0, 1),
-              textAlign: TextAlign.right,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        );
+        if (leftLabel != null) {
+          return AxisLabelsRenderer(
+            gridUnitsData: gridUnitsData,
+            orientation: AxisOrientation.vertical,
+            labelBuilder: leftLabel!,
+          );
+        }
         break;
       case ChartScaffoldSlot.right:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.vertical,
-          constraintEdgeLabels: true,
-          labelBuilder: (_, value) => Icon(Icons.favorite),
-        );
+        if (rightLabel != null) {
+          return AxisLabelsRenderer(
+            gridUnitsData: gridUnitsData,
+            orientation: AxisOrientation.vertical,
+            constraintEdgeLabels: true,
+            labelBuilder: rightLabel!,
+          );
+        }
         break;
       case ChartScaffoldSlot.top:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.horizontal,
-          labelBuilder: (_, value) => Text(
-            value.toString(),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-        );
+        if (topLabel != null) {
+          return AxisLabelsRenderer(
+            gridUnitsData: gridUnitsData,
+            orientation: AxisOrientation.horizontal,
+            labelBuilder: topLabel!,
+          );
+        }
         break;
       case ChartScaffoldSlot.bottom:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.horizontal,
-          centerLabels: true,
-          labelBuilder: (_, value) => Text(
-            value.toString(),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-        );
+        if (bottomLabel != null) {
+          return AxisLabelsRenderer(
+            gridUnitsData: gridUnitsData,
+            orientation: AxisOrientation.horizontal,
+            centerLabels: true,
+            labelBuilder: bottomLabel!,
+          );
+        }
         break;
       case ChartScaffoldSlot.center:
         return chart;
@@ -103,10 +96,11 @@ class CartesianScaffold extends RenderObjectWidget
   SlottedContainerRenderObjectMixin<ChartScaffoldSlot> createRenderObject(
       BuildContext context) {
     return RenderCartesianScaffold(
-        gridUnitsData: gridUnitsData,
-        stylingData: stylingData,
-        width: width,
-        height: height);
+      gridUnitsData: gridUnitsData,
+      stylingData: stylingData,
+      width: width,
+      height: height,
+    );
   }
 
   @override
@@ -130,7 +124,7 @@ class RenderCartesianScaffold extends RenderBox
   set gridUnitsData(GridUnitsData value) {
     if (_gridUnitsData == value) return;
     _gridUnitsData = value;
-    markNeedsPaint();
+    markNeedsLayout();
   }
 
   CartesianChartStylingData _stylingData;
@@ -231,7 +225,6 @@ class RenderCartesianScaffold extends RenderBox
       }
     }
 
-
     final chartConstraints = BoxConstraints(
       maxWidth: maxWidth - leftIntrinsicWidth - rightIntrinsicWidth,
       maxHeight: maxHeight - bottomIntrinsicHeight - topIntrinsicHeight,
@@ -297,7 +290,9 @@ class RenderCartesianScaffold extends RenderBox
       );
 
       if (!dry) {
-        final tickOffset = tickConfig?.showTickOnRightAxis == true ? tickConfig!.tickLength : 0.0;
+        final tickOffset = tickConfig?.showTickOnRightAxis == true
+            ? tickConfig!.tickLength
+            : 0.0;
         _positionRenderBox(
           renderBox: renderBox,
           offset: Offset(

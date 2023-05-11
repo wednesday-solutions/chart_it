@@ -20,12 +20,14 @@ class AxisLabels extends MultiChildRenderObjectWidget {
     this.constraintEdgeLabels = false,
     this.centerLabels = false,
     required Widget Function(int index, double value) labelBuilder,
-  }) : assert(!(constraintEdgeLabels && centerLabels), "Both centerLabels and constraintEdgeLabels cannot be true at the same time."), super(
+  })  : assert(!(constraintEdgeLabels && centerLabels),
+            "Both centerLabels and constraintEdgeLabels cannot be true at the same time."),
+        super(
           children: List.generate(
             (orientation == AxisOrientation.vertical
                     ? gridUnitsData.yUnitsCount.toInt()
                     : gridUnitsData.xUnitsCount.toInt()) +
-                1,
+                (centerLabels ? 0 : 1),
             (index) {
               final minValue = orientation == AxisOrientation.vertical
                   ? gridUnitsData.minYRange
@@ -207,25 +209,54 @@ class RenderAxisLabels extends RenderBox
         (parentData as CartesianScaffoldParentData).paintingGeometryData;
 
     if (_orientation == AxisOrientation.vertical) {
+      // var child = firstChild;
+      // Offset childOffset = Offset(offset.dx,
+      //     paintingGeometryData.graphPolygon.bottom - (child?.size.height ?? 0));
+      // var index = 0;
+      // while (child != null) {
+      //   context.paintChild(child, childOffset);
+      //   childOffset = Offset(
+      //       offset.dx, childOffset.dy - paintingGeometryData.graphUnitHeight);
+      //
+      //   if (_constraintEdgeLabels) {
+      //     if (index == 0) {
+      //       childOffset += Offset(0, child.size.height / 2);
+      //     }
+      //
+      //     if (index == childCount - 2) {
+      //       childOffset += Offset(0, child.size.height / 4);
+      //     }
+      //   }
+      //
+      //   index++;
+      //   child = (child.parentData as MultiChildLayoutParentData).nextSibling;
+      // }
+
       var child = firstChild;
-      Offset childOffset = Offset(offset.dx,
-          paintingGeometryData.graphPolygon.bottom - (child?.size.height ?? 0));
+      Offset childOffset =
+          Offset(offset.dx, paintingGeometryData.graphPolygon.bottom);
       var index = 0;
       while (child != null) {
-        context.paintChild(child, childOffset);
-        childOffset = Offset(
-            offset.dx, childOffset.dy - paintingGeometryData.graphUnitHeight);
+        Offset paintingOffset = childOffset;
+
+        if (_centerLabels) {
+          paintingOffset -= Offset(0, paintingGeometryData.graphUnitHeight / 2);
+        }
 
         if (_constraintEdgeLabels) {
           if (index == 0) {
-            childOffset += Offset(0, child.size.height / 2);
+            paintingOffset -= Offset(0, child.size.height / 2);
           }
 
-          if (index == childCount - 2) {
-            childOffset += Offset(0, child.size.height / 4);
+          if (index == childCount - 1) {
+            paintingOffset += Offset(0, child.size.height / 2);
           }
         }
 
+        context.paintChild(
+            child, paintingOffset - Offset(0, child.size.height / 2));
+
+        childOffset -= Offset(0, paintingGeometryData.graphUnitHeight);
         index++;
         child = (child.parentData as MultiChildLayoutParentData).nextSibling;
       }
@@ -256,7 +287,7 @@ class RenderAxisLabels extends RenderBox
       // }
 
       var child = firstChild;
-      Offset childOffset = Offset(offset.dx, offset.dy);
+      Offset childOffset = offset;
       var index = 0;
       while (child != null) {
         Offset paintOffset = childOffset;

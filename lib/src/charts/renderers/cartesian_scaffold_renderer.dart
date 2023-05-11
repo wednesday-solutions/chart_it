@@ -48,13 +48,15 @@ class CartesianScaffold extends RenderObjectWidget
         return AxisLabels(
           gridUnitsData: gridUnitsData,
           orientation: AxisOrientation.vertical,
-          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.right,),
+          centerLabels: true,
+          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.right, style: TextStyle(color: Colors.white),),
         );
         break;
       case ChartScaffoldSlot.right:
         return AxisLabels(
           gridUnitsData: gridUnitsData,
           orientation: AxisOrientation.vertical,
+          constraintEdgeLabels: true,
           labelBuilder: (_, value) => Icon(Icons.favorite),
         );
         break;
@@ -62,14 +64,15 @@ class CartesianScaffold extends RenderObjectWidget
         return AxisLabels(
           gridUnitsData: gridUnitsData,
           orientation: AxisOrientation.horizontal,
-          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.center,),
+          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
         );
         break;
       case ChartScaffoldSlot.bottom:
         return AxisLabels(
           gridUnitsData: gridUnitsData,
           orientation: AxisOrientation.horizontal,
-          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.center,),
+          centerLabels: true,
+          labelBuilder: (_, value) => Text(value.toString(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
         );
         break;
       case ChartScaffoldSlot.center:

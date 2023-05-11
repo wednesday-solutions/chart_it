@@ -1,4 +1,5 @@
 import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';

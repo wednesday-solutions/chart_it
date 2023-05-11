@@ -4,6 +4,7 @@ import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
+/// Holds the unit values and ranges of the chart.
 class GridUnitsData extends Equatable {
   final double xUnitValue;
   final double xUnitsCount;

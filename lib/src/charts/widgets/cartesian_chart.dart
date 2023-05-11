@@ -25,10 +25,14 @@ abstract class CartesianChart extends StatefulWidget {
   /// A custom Animation controller to drive the chart animations
   final AnimationController? animation;
 
+  /// Styling data to alter the visual appearance of the chart.
   final CartesianChartStylingData chartStylingData;
 
+  /// Data to alter the structuring of the chart.
+  /// Such as max values of the chart and the value of a single grid unit.
   final CartesianChartStructureData chartStructureData;
 
+  /// Builder to create labels along all the axis.
   final AxisLabelBuilder axisLabelBuilder;
 
   const CartesianChart({

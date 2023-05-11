@@ -28,6 +28,7 @@ class BarData extends Equatable {
   /// Text Styling for the [label].
   final ChartTextStyle? labelStyle;
 
+  /// Determines the position of the Bar Label.
   final BarLabelPosition labelPosition;
 
   /// Styling for the Individual Bar in this [BarData].
@@ -77,4 +78,10 @@ class BarData extends Equatable {
       [startYFrom, yValue, labelStyle, barStyle, labelPosition];
 }
 
-enum BarLabelPosition { insideBar, outsideBar }
+/// Determines the position of the Bar Label.
+enum BarLabelPosition {
+  /// Draws the label inside of the bar.
+  insideBar,
+  /// Draws the label outside of the bar.
+  outsideBar
+}

@@ -154,48 +154,9 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         }
       }
 
-      // _drawGroupLabel(
-      //   canvas: canvas,
-      //   chart: chart,
-      //   dxOffset: dx,
-      //   group: group,
-      //   groupIndex: i,
-      //   style: style,
-      //   data: data,
-      // );
-
       dx += unitWidth;
     }
   }
-
-  // @override
-  // EdgeInsets performAxisLabelLayout(
-  //     {required CartesianSeries series,
-  //     required CartesianChartStylingData style,
-  //     required double graphUnitWidth,
-  //     required double valueUnitWidth}) {
-  //   assert(series is BarSeries);
-  //   var maxHeight = 0.0;
-  //   for (var i = 0; i < (series as BarSeries).barData.length; i++) {
-  //     final group = series.barData[i];
-  //     if (group.label != null) {
-  //       // TODO: rotate the text if it doesn't fit within the unitWidth
-  //       final painter = ChartTextPainter.fromChartTextStyle(
-  //         text: group.label!(group.xValue),
-  //         maxWidth: useGraphUnits ? graphUnitWidth : valueUnitWidth,
-  //         chartTextStyle:
-  //             group.labelStyle ?? series.labelStyle ?? defaultChartTextStyle,
-  //       )..layout();
-  //       maxHeight = max(maxHeight, painter.height);
-  //       _groupLabelTextPainters.add(painter);
-  //     } else {
-  //       _groupLabelTextPainters.add(null);
-  //     }
-  //   }
-  //
-  //   return EdgeInsets.only(
-  //       bottom: maxHeight + style.axisStyle!.tickLength + 15);
-  // }
 
   _drawSimpleBar(
       {required SimpleBar group,

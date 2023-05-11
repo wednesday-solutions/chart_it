@@ -3,6 +3,7 @@ import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
+/// Represents data that can influence the structuring of a chart.
 class CartesianChartStructureData extends Equatable {
   /// The Orientation of the Chart. Defaults to Vertical.
   final CartesianChartOrientation orientation;
@@ -13,10 +14,13 @@ class CartesianChartStructureData extends Equatable {
   /// Value of a Unit Distance along Y-Axis
   final num yUnitValue;
 
+  /// The maximum value on X axis.
   final num? maxXValue;
 
+  /// The maximum value on Y axis.
   final num? maxYValue;
 
+  /// Represents data that can influence the structuring of a chart.
   const CartesianChartStructureData({
     this.orientation = CartesianChartOrientation.vertical,
     this.xUnitValue = 1,
@@ -46,6 +50,11 @@ class CartesianChartStructureData extends Equatable {
   }
 }
 
+/// Represents data that alters the visual appearance of the chart.
+///
+/// See also:
+/// * [CartesianGridStyle]
+/// * [CartesianAxisStyle]
 class CartesianChartStylingData extends Equatable {
   /// Styling for the Grid Lines.
   final CartesianGridStyle? gridStyle;
@@ -56,6 +65,11 @@ class CartesianChartStylingData extends Equatable {
   /// The Background Color of the Chart.
   final Color? backgroundColor;
 
+  /// Represents data that alters the visual appearance of the chart.
+  ///
+  /// See also:
+  /// * [CartesianGridStyle]
+  /// * [CartesianAxisStyle]
   const CartesianChartStylingData({
     this.gridStyle,
     this.axisStyle,
@@ -92,6 +106,10 @@ class CartesianGridStyle extends Equatable {
   /// The Color of the Grid Lines
   final Color gridLineColor;
 
+  /// Provides the Styling options for a Cartesian Grid.
+  ///
+  /// Customization Options include Show/Hide, Line Color,
+  /// Line Width and Unit Values for a Graph Unit formed by Grid Intersections.
   const CartesianGridStyle({
     this.show = true,
     this.gridLineWidth = 0.5,
@@ -116,21 +134,34 @@ class CartesianGridStyle extends Equatable {
   }
 }
 
+/// Represents data that affects the painting of ticks for all axis.
 class AxisTickConfig extends Equatable {
   /// The Length of the Tick drawn along Axes
+  /// Defaults to 15.
   final double tickLength;
 
   /// The Width/Thickness of the Tick drawn along Axes
+  /// Defaults to 1.
   final double tickWidth;
 
   /// The Color of the Tick drawn along Axes
   final Color tickColor;
 
+  /// Show or hide the ticks along left Y axis.
   final bool showTickOnLeftAxis;
+
+  /// Show or hide the ticks along top X axis.
   final bool showTickOnTopAxis;
+
+  /// Show or hide the ticks along bottom X axis.
   final bool showTickOnBottomAxis;
+
+  /// Show or hide the ticks along right Y axis.
   final bool showTickOnRightAxis;
 
+  /// Represents data that affects the painting of ticks for all axis.
+  ///
+  /// Gives individual control for each axis.
   const AxisTickConfig({
     this.tickLength = 15.0,
     this.tickWidth = 1.0,
@@ -141,6 +172,9 @@ class AxisTickConfig extends Equatable {
     this.showTickOnRightAxis = false,
   });
 
+  /// Represents data that affects the painting of ticks for all axis.
+  ///
+  /// A convenient constructor to show and hide ticks for all axis together.
   const AxisTickConfig.forAllAxis({
     this.tickLength = 15.0,
     this.tickWidth = 1.0,
@@ -167,33 +201,26 @@ class AxisTickConfig extends Equatable {
 ///
 /// Customization Options for Axis Lines, Ticks and Labels
 class CartesianAxisStyle extends Equatable {
-  /// Hides or Shows the Unit Labels along X-Axis.
-  /// Visible by Default.
-  final bool showXAxisLabels;
-
-  /// Hides or Shows the Unit Labels along Y-Axis.
-  /// Visible by Default.
-  final bool showYAxisLabels;
-
   /// The Width of the Axis Lines
   final double axisWidth;
 
   /// The Color of the Axis Lines
   final Color axisColor;
 
+  /// Configuration data for painting ticks on all axis.
   final AxisTickConfig tickConfig;
 
-  const CartesianAxisStyle(
-      {this.showXAxisLabels = true,
-      this.showYAxisLabels = true,
-      this.axisWidth = 2.0,
-      this.axisColor = Colors.black45,
-      this.tickConfig = const AxisTickConfig()});
+  /// Provides the Styling options for a Cartesian Axis.
+  ///
+  /// Customization Options for Axis Lines, Ticks and Labels
+  const CartesianAxisStyle({
+    this.axisWidth = 2.0,
+    this.axisColor = Colors.black45,
+    this.tickConfig = const AxisTickConfig(),
+  });
 
   @override
   List<Object?> get props => [
-        showXAxisLabels,
-        showYAxisLabels,
         axisWidth,
         axisColor,
         tickConfig,
@@ -209,8 +236,6 @@ class CartesianAxisStyle extends Equatable {
     AxisTickConfig? tickConfig,
   }) {
     return CartesianAxisStyle(
-      showXAxisLabels: showXAxisLabels ?? this.showXAxisLabels,
-      showYAxisLabels: showYAxisLabels ?? this.showYAxisLabels,
       axisWidth: axisWidth ?? this.axisWidth,
       axisColor: axisColor ?? this.axisColor,
       tickConfig: tickConfig ?? this.tickConfig,

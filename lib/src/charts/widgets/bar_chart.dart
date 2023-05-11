@@ -100,9 +100,9 @@ class _BarChartState extends State<BarChart>
           return CartesianScaffold(
               gridUnitsData: _controller.currentData.gridUnitsData,
               stylingData: stylingData,
+              width: widget.width,
+              height: widget.height,
               chart: CartesianRenderer(
-                // width: widget.width,
-                // height: widget.height,
                 style: stylingData,
                 structure: widget.chartStructureData,
                 states: _controller.currentData.states,

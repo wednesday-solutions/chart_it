@@ -23,12 +23,6 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
   /// {@macro bar_styling_order}
   final BarDataStyle? seriesStyle;
 
-  /// Sets uniform styling for All the Group Labels in this [BarSeries].
-  ///
-  /// This styling can be overridden by:
-  /// * labelStyle in any [BarGroup]
-  final ChartTextStyle? labelStyle;
-
   /// The DataSet for our BarChart. It is Structured as a [BarGroup]
   /// that provides the X-Value and can contain a
   /// single or multiple group of bars.
@@ -42,7 +36,6 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
   ///
   /// See Also: [CartesianSeries]
   BarSeries({
-    this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.barData,
     super.interactionEvents = const BarInteractionEvents(isEnabled: false),
@@ -53,7 +46,7 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
 
   @override
   List<Object?> get props =>
-      [labelStyle, seriesStyle, barData, interactionEvents];
+      [seriesStyle, barData, interactionEvents];
 
   /// Lerps between two [BarSeries] for a factor [t]
   static BarSeries lerp(
@@ -62,11 +55,6 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
     double t,
   ) {
     return BarSeries(
-      labelStyle: ChartTextStyle.lerp(
-        current?.labelStyle,
-        target.labelStyle,
-        t,
-      ),
       seriesStyle: BarDataStyle.lerp(
         current?.seriesStyle,
         target.seriesStyle,

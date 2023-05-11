@@ -59,35 +59,35 @@ class CartesianScaffold extends RenderObjectWidget
         );
         break;
       case ChartScaffoldSlot.right:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.vertical,
-          constraintEdgeLabels: true,
-          labelBuilder: (_, value) => Icon(Icons.favorite),
-        );
+        // return AxisLabels(
+        //   gridUnitsData: gridUnitsData,
+        //   orientation: AxisOrientation.vertical,
+        //   constraintEdgeLabels: true,
+        //   labelBuilder: (_, value) => Icon(Icons.favorite),
+        // );
         break;
       case ChartScaffoldSlot.top:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.horizontal,
-          labelBuilder: (_, value) => Text(
-            value.toString(),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-        );
+        // return AxisLabels(
+        //   gridUnitsData: gridUnitsData,
+        //   orientation: AxisOrientation.horizontal,
+        //   labelBuilder: (_, value) => Text(
+        //     value.toString(),
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(color: Colors.white),
+        //   ),
+        // );
         break;
       case ChartScaffoldSlot.bottom:
-        return AxisLabels(
-          gridUnitsData: gridUnitsData,
-          orientation: AxisOrientation.horizontal,
-          centerLabels: true,
-          labelBuilder: (_, value) => Text(
-            value.toString(),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-        );
+        // return AxisLabels(
+        //   gridUnitsData: gridUnitsData,
+        //   orientation: AxisOrientation.horizontal,
+        //   centerLabels: true,
+        //   labelBuilder: (_, value) => Text(
+        //     value.toString(),
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(color: Colors.white),
+        //   ),
+        // );
         break;
       case ChartScaffoldSlot.center:
         return chart;
@@ -194,8 +194,8 @@ class RenderCartesianScaffold extends RenderBox
 
   Size _performLayout(BoxConstraints constraints, {bool dry = false}) {
     // TODO: Get from properties
-    final maxWidth = min(constraints.maxWidth, double.maxFinite);
-    final maxHeight = min(constraints.maxHeight, 400.0);
+    final maxWidth = min(constraints.maxWidth, _width ?? double.maxFinite);
+    final maxHeight = min(constraints.maxHeight, _height ?? double.maxFinite);
 
     double bottomIntrinsicHeight = childForSlot(ChartScaffoldSlot.bottom)
             ?.getMinIntrinsicHeight(constraints.maxWidth) ??

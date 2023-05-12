@@ -212,6 +212,13 @@ class CartesianPaintingGeometryData extends Equatable {
     );
   }
 
+  CartesianPaintingGeometryData atOffset(Offset offset) {
+    return copyWith(
+      graphPolygon: graphPolygon.translate(offset.dx, offset.dy),
+      axisOrigin: axisOrigin + offset,
+    );
+  }
+
   @override
   String toString() {
     return 'CartesianPaintingGeometryData{graphPolygon: $graphPolygon, axisOrigin: $axisOrigin, graphUnitWidth: $graphUnitWidth, graphUnitHeight: $graphUnitHeight, valueUnitWidth: $valueUnitWidth, valueUnitHeight: $valueUnitHeight, unitData: $unitData, xUnitValue: $xUnitValue}';

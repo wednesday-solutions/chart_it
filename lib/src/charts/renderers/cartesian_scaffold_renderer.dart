@@ -158,12 +158,12 @@ class RenderCartesianScaffold extends RenderBox
   final Paint _gridTick;
   final Paint _axisPaint;
 
-  RenderCartesianScaffold(
-      {required GridUnitsData gridUnitsData,
-      required CartesianChartStylingData stylingData,
-      double? width,
-      double? height})
-      : _gridUnitsData = gridUnitsData,
+  RenderCartesianScaffold({
+    required GridUnitsData gridUnitsData,
+    required CartesianChartStylingData stylingData,
+    double? width,
+    double? height,
+  })  : _gridUnitsData = gridUnitsData,
         _stylingData = stylingData,
         _width = width,
         _height = height,
@@ -234,9 +234,12 @@ class RenderCartesianScaffold extends RenderBox
 
     final paintingGeometryData = _calculatePaintingGeometryData(
       Size(chartConstraints.maxWidth, chartConstraints.maxHeight),
-      Offset(leftIntrinsicWidth, topIntrinsicHeight),
+      Offset.zero,
       _gridUnitsData,
     );
+
+    final tickOffset =
+        tickConfig?.showTickOnRightAxis == true ? tickConfig!.tickLength : 0.0;
 
     RenderBox? renderBox = childForSlot(ChartScaffoldSlot.left);
     if (renderBox != null) {
@@ -273,7 +276,7 @@ class RenderCartesianScaffold extends RenderBox
           renderBox: renderBox,
           offset: Offset(
             leftIntrinsicWidth,
-            maxHeight - (renderBox.size.height / 2),
+            maxHeight - bottomIntrinsicHeight + tickOffset,
           ),
           paintingGeometryData: paintingGeometryData,
         );
@@ -292,9 +295,6 @@ class RenderCartesianScaffold extends RenderBox
       );
 
       if (!dry) {
-        final tickOffset = tickConfig?.showTickOnRightAxis == true
-            ? tickConfig!.tickLength
-            : 0.0;
         _positionRenderBox(
           renderBox: renderBox,
           offset: Offset(
@@ -337,7 +337,7 @@ class RenderCartesianScaffold extends RenderBox
     if (!dry) {
       _positionRenderBox(
         renderBox: renderBox,
-        offset: Offset(leftIntrinsicWidth, 0),
+        offset: Offset(leftIntrinsicWidth, topIntrinsicHeight),
         paintingGeometryData: paintingGeometryData,
       );
     }
@@ -380,13 +380,18 @@ class RenderCartesianScaffold extends RenderBox
       context.canvas.restore();
     }
 
-    _drawGrid(context.canvas, chartParentData.paintingGeometryData);
+    _drawGrid(
+      context.canvas,
+      chartParentData.paintingGeometryData
+          .atOffset(chartParentData.offset + offset),
+    );
 
     RenderBox? renderBox = childForSlot(ChartScaffoldSlot.left);
     if (renderBox != null) {
       _paintChild(
         renderBox: renderBox,
         context: context,
+        offset: offset,
       );
     }
 
@@ -395,6 +400,7 @@ class RenderCartesianScaffold extends RenderBox
       _paintChild(
         renderBox: renderBox,
         context: context,
+        offset: offset,
       );
     }
 
@@ -403,6 +409,7 @@ class RenderCartesianScaffold extends RenderBox
       _paintChild(
         renderBox: renderBox,
         context: context,
+        offset: offset,
       );
     }
 
@@ -411,25 +418,34 @@ class RenderCartesianScaffold extends RenderBox
       _paintChild(
         renderBox: renderBox,
         context: context,
+        offset: offset,
       );
     }
 
-    context.paintChild(chartRenderBox, chartParentData.offset);
+    context.paintChild(chartRenderBox, offset + chartParentData.offset);
 
     // We will draw axis on top of the painted chart data.
-    _drawAxis(context.canvas, chartParentData.paintingGeometryData);
+    _drawAxis(
+      context.canvas,
+      chartParentData.paintingGeometryData
+          .atOffset(chartParentData.offset + offset),
+    );
   }
 
   void _paintChild({
     required RenderBox renderBox,
     required PaintingContext context,
+    required Offset offset,
   }) {
     CartesianScaffoldParentData childParentData =
         renderBox.parentData as CartesianScaffoldParentData;
-    context.paintChild(renderBox, childParentData.offset);
+    context.paintChild(renderBox, childParentData.offset + offset);
   }
 
-  void _drawGrid(Canvas canvas, CartesianPaintingGeometryData geometryData) {
+  void _drawGrid(
+    Canvas canvas,
+    CartesianPaintingGeometryData geometryData,
+  ) {
     var border = _gridBorder
       ..color = _stylingData.gridStyle!.gridLineColor
       ..strokeWidth = _stylingData.gridStyle!.gridLineWidth;
@@ -480,7 +496,7 @@ class RenderCartesianScaffold extends RenderBox
     // create horizontal lines
     for (var i = 0; i <= geometryData.unitData.yUnitsCount; i++) {
       var y =
-          geometryData.graphPolygon.bottom - geometryData.graphUnitHeight * i;
+          (geometryData.graphPolygon.bottom) - geometryData.graphUnitHeight * i;
 
       var p1 = Offset(geometryData.graphPolygon.left, y);
       var p2 = Offset(geometryData.graphPolygon.right, y);
@@ -512,7 +528,10 @@ class RenderCartesianScaffold extends RenderBox
     }
   }
 
-  void _drawAxis(Canvas canvas, CartesianPaintingGeometryData geometryData) {
+  void _drawAxis(
+    Canvas canvas,
+    CartesianPaintingGeometryData geometryData,
+  ) {
     var axisPaint = _axisPaint
       ..color = _stylingData.axisStyle!.axisColor
       ..strokeWidth = _stylingData.axisStyle!.axisWidth;
@@ -587,10 +606,15 @@ class RenderCartesianScaffold extends RenderBox
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     for (final RenderBox child in children) {
-      final BoxParentData parentData =
+      final CartesianScaffoldParentData parentData =
           child.parentData! as CartesianScaffoldParentData;
+
+      final offset = child is LeafRenderObjectWidget
+          ? Offset(parentData.paintingGeometryData.graphPolygon.left,
+              parentData.paintingGeometryData.graphPolygon.top)
+          : parentData.offset;
       final bool isHit = result.addWithPaintOffset(
-        offset: parentData.offset,
+        offset: offset,
         position: position,
         hitTest: (BoxHitTestResult result, Offset transformed) {
           assert(transformed == position - parentData.offset);

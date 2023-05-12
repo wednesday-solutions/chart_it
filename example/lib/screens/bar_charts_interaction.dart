@@ -52,6 +52,32 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
       animationDuration: const Duration(milliseconds: 200),
       animateOnLoad: true,
       animateOnUpdate: true,
+      axisLabelBuilder: AxisLabelBuilder(
+        left: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Text("$index"),
+          );
+        },
+        bottom: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text("$index"),
+          );
+        },
+        top: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("$index"),
+          );
+        },
+        right: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text("$index"),
+          );
+        },
+      ),
       chartStructureData: const CartesianChartStructureData(
         xUnitValue: 1.0,
         yUnitValue: 5.0,

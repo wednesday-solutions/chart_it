@@ -66,7 +66,6 @@ List<BarGroup> makeGroupData(BuildContext context) {
     } else {
       return MultiBar(
         xValue: index + 1,
-        groupSpacing: 10.0,
         yValues: [
           BarData(
             barStyle: const BarDataStyle(

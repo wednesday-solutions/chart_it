@@ -168,7 +168,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var barStyle = group.yValue.barStyle ??
-        group.groupStyle ??
+        group.style ??
         data.series.seriesStyle ??
         defaultBarSeriesStyle;
 
@@ -186,7 +186,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       // dx pos to start the bar from
       dxCenter: dxOffset + (data.unitWidth * 0.5) - (data.barWidth * 0.5),
       barWidth: data.barWidth,
-      barSpacing: group.barSpacing,
+      leftPadding: group.padding,
+      rightPadding: group.padding,
       data: data,
     );
     // Finally paint the y-labels for this bar
@@ -213,15 +214,20 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     // Start Offset
     var x =
         dxOffset + (data.unitWidth * 0.5) - (data.barWidth * groupCount * 0.5);
+    final padding = group.padding;
+    final spacing = group.spacing;
 
     for (var i = 0; i < groupCount; i++) {
       final barData = group.yValues[i];
       // Precedence take like this
       // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
       var barStyle = barData.barStyle ??
-          group.groupStyle ??
+          group.style ??
           data.series.seriesStyle ??
           defaultBarSeriesStyle;
+
+      final leftPadding = i == 0 ? padding : spacing / 2;
+      final rightPadding = i == groupCount - 1 ? padding : spacing / 2;
 
       _drawBar(
         barGroup: group,
@@ -234,7 +240,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         // dx pos to start the bar in this group
         dxCenter: x,
         barWidth: data.barWidth,
-        barSpacing: group.groupSpacing,
+        leftPadding: leftPadding,
+        rightPadding: rightPadding,
         data: data,
       );
       // Finally paint the y-labels for this bar
@@ -250,19 +257,20 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  _drawBar(
-      {required BarGroup barGroup,
-      required int barGroupIndex,
-      required BarData barData,
-      required int barDataIndex,
-      required Canvas canvas,
-      required CartesianPaintingGeometryData chart,
-      BarDataStyle? style,
-      required double dxCenter,
-      required double barWidth,
-      required double barSpacing,
-      required _BarPainterData data}) {
-    var padding = (barSpacing * 0.5);
+  _drawBar({
+    required BarGroup barGroup,
+    required int barGroupIndex,
+    required BarData barData,
+    required int barDataIndex,
+    required Canvas canvas,
+    required CartesianPaintingGeometryData chart,
+    BarDataStyle? style,
+    required double dxCenter,
+    required double barWidth,
+    required double leftPadding,
+    required double rightPadding,
+    required _BarPainterData data,
+  }) {
     // The first thing to do is to get the data point into the range!
     // This is because we don't want our bar to exceed the min/max values
     // we then multiply it by the vRatio to get the vertical pixel value!
@@ -278,9 +286,9 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     var bottomRight = style?.cornerRadius?.bottomRight ?? Radius.zero;
 
     var bar = RRect.fromLTRBAndCorners(
-      dxCenter + padding, // start X + padding
+      dxCenter + leftPadding, // start X + padding
       chart.axisOrigin.dy - y, // axisOrigin's dY - yValue
-      dxCenter + barWidth - padding, // startX + barWidth
+      dxCenter + barWidth - rightPadding, // startX + barWidth
       chart.axisOrigin.dy, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
       topLeft: barData.yValue.isNegative ? bottomLeft : topLeft,

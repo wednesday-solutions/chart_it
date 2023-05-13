@@ -1,6 +1,7 @@
 ## 0.2.0
-* [BREAKING] Create `CartesianChartStylingData` to replace the earlier style class
-* [BREAKING] Create `CartesianChartStructureData`. Min max values and unit count values need to be moved here.
+* [BREAKING] New class `CartesianChartStylingData` to replace the earlier chart style.
+* [BREAKING] New class `CartesianChartStructureData` created. Min max values and unit count values need to be moved here.
+* [BREAKING] Separate Bar padding into separate value. Each `BarGroup` has a `padding`. `MultiBar` can additionally specify a `spacing` value which is used for adding space between bars of the same group.
 
 ## 0.1.0
 

@@ -25,13 +25,13 @@ abstract class BarGroup with EquatableMixin {
   /// Styling for the Bars in this [BarGroup].
   ///
   /// {@macro bar_styling_order}
-  final BarDataStyle? groupStyle;
+  final BarDataStyle? style;
+
+  /// The amount of padding applied to either side of the bars.
+  final double padding;
 
   /// {@macro bar_group}
-  BarGroup({
-    required this.xValue,
-    this.groupStyle,
-  });
+  BarGroup({required this.xValue, this.style, this.padding = 10});
 
   /// Lerps between two [BarGroup] objects for a factor [t].
   ///

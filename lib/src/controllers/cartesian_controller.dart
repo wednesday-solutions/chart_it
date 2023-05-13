@@ -1,9 +1,8 @@
 import 'dart:math';
 
+import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/chart_animations.dart';
-import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
@@ -50,23 +49,21 @@ class CartesianController extends ChangeNotifier
   @override
   bool animateOnUpdate;
 
-  // Values to keep updating when scrolling
-  Offset? pointer;
-
-  CartesianRangeContext? rangeContext;
+  CartesianChartStructureData structureData;
+  CartesianChartStylingData stylingData;
 
   /// The Animation and Data Controller for a Cartesian Chart.
   ///
   /// Encapsulates the required Chart Data, Animatable Data, Configs
   /// and Mapped Painters for every [CartesianSeries].
-  CartesianController({
-    required this.data,
-    required this.animation,
-    this.animateOnUpdate = true,
-    this.animateOnLoad = true,
-    this.rangeContext,
-    required this.calculateRange,
-  }) {
+  CartesianController(
+      {required this.data,
+      required this.animation,
+      this.animateOnUpdate = true,
+      this.animateOnLoad = true,
+      required this.calculateRange,
+      required this.structureData,
+      required this.stylingData}) {
     animateDataUpdates();
     // On Initialization, we need to animate our chart if necessary
     updateDataSeries(data, isInitPhase: true);
@@ -77,12 +74,9 @@ class CartesianController extends ChangeNotifier
     AnimationController? animation,
     bool? animateOnUpdate,
     bool? animateOnLoad,
-    CartesianRangeContext? rangeContext,
+    required CartesianChartStructureData structureData,
+    required CartesianChartStylingData stylingData,
   }) {
-    if (rangeContext != null && this.rangeContext != rangeContext) {
-      this.rangeContext = rangeContext;
-    }
-
     if (animateOnLoad != null && this.animateOnLoad != animateOnLoad) {
       this.animateOnLoad = animateOnLoad;
     }
@@ -97,7 +91,14 @@ class CartesianController extends ChangeNotifier
     }
 
     if (data != null && this.data != data) {
-      updateDataSeries(data, isInitPhase: false);
+      final oldStyle = this.stylingData;
+      final oldStructure = this.structureData;
+      this.structureData = structureData;
+      this.stylingData = stylingData;
+      updateDataSeries(data,
+          isInitPhase: false,
+          forceUpdate:
+              oldStructure != structureData || oldStyle != stylingData);
     }
   }
 
@@ -144,7 +145,7 @@ class CartesianController extends ChangeNotifier
       series.when(
         onBarSeries: (barSeries) {
           // Invalidate Painter for BarSeries
-          var painter = BarPainter(useGraphUnits: false);
+          var painter = BarPainter(useGraphUnits: true);
           var config = BarSeriesConfig();
 
           updateInteractionDetectionStates(barSeries.interactionEvents);
@@ -164,16 +165,42 @@ class CartesianController extends ChangeNotifier
     }
 
     // Invalidate the RangeData
-    var results = _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
-    return CartesianData(states: states, range: results);
+    var rangeResult =
+        _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
+
+    final totalXRange =
+        rangeResult.maxXRange.abs() + rangeResult.minXRange.abs();
+    final xUnitsCount = totalXRange / structureData.xUnitValue;
+
+    final totalYRange =
+        rangeResult.maxYRange.abs() + rangeResult.minYRange.abs();
+    final yUnitsCount = totalYRange / structureData.yUnitValue;
+
+    final gridUnitData = GridUnitsData(
+      xUnitValue: structureData.xUnitValue.toDouble(),
+      xUnitsCount: xUnitsCount,
+      yUnitValue: structureData.yUnitValue.toDouble(),
+      yUnitsCount: yUnitsCount,
+      totalXRange: totalXRange,
+      totalYRange: totalYRange,
+      maxXRange: rangeResult.maxXRange,
+      maxYRange: rangeResult.maxYRange,
+      minXRange: rangeResult.minXRange,
+      minYRange: rangeResult.minYRange,
+    );
+
+    return CartesianData(
+      states: states,
+      gridUnitsData: gridUnitData,
+    );
   }
 
   @override
-  CartesianData setData(List<CartesianSeries> data) {
+  CartesianData setData(List<CartesianSeries> data, bool forceUpdate) {
     // Get the cacheKey as a List of our CartesianSeries.
     var cacheKey = EquatableList<CartesianSeries>(data);
 
-    if (_cachedValues.containsKey(cacheKey)) {
+    if (_cachedValues.containsKey(cacheKey) && !forceUpdate) {
       // Cache entry found. Just return the CartesianData for this Series.
       targetData = _cachedValues[cacheKey]!;
     } else {
@@ -196,7 +223,11 @@ class CartesianController extends ChangeNotifier
     required bool isInitPhase,
   }) =>
       CartesianDataTween(
-        begin: isInitPhase ? CartesianData.zero(newData.range) : currentData,
+        begin: isInitPhase
+            ? CartesianData.zero(
+                gridUnitsData: newData.gridUnitsData,
+              )
+            : currentData,
         end: newData,
       );
 

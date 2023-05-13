@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:chart_it/src/charts/data/bars/bar_data.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
-import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 
 /// Defines a Simple singular Bar with a Single Y-Value
@@ -23,8 +22,6 @@ class SimpleBar extends BarGroup {
     required super.xValue,
     required this.yValue,
     this.barSpacing = 5.0,
-    super.label,
-    super.labelStyle,
     super.groupStyle,
   });
 
@@ -39,12 +36,6 @@ class SimpleBar extends BarGroup {
           target.barSpacing,
           t,
         ).asOrDefault(0.0),
-        label: target.label,
-        labelStyle: ChartTextStyle.lerp(
-          current?.labelStyle,
-          target.labelStyle,
-          t,
-        ),
         groupStyle: BarDataStyle.lerp(
           current?.groupStyle,
           target.groupStyle,
@@ -57,5 +48,5 @@ class SimpleBar extends BarGroup {
   }
 
   @override
-  List<Object?> get props => [xValue, yValue, labelStyle, groupStyle];
+  List<Object?> get props => [xValue, yValue, groupStyle];
 }

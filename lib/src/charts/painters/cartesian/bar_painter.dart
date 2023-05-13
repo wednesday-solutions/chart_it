@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/core.dart';
-import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/charts/painters/text/chart_text_painter.dart';
 import 'package:chart_it/src/extensions/interactions.dart';
@@ -13,7 +11,6 @@ import 'package:flutter/material.dart';
 
 class BarPainter implements CartesianPainter<BarInteractionResult> {
   final List<_BarInteractionData> _interactionData = List.empty(growable: true);
-  final _groupLabelTextPainters = <ChartTextPainter?>[];
 
   _BarPainterData? _data;
   bool useGraphUnits;
@@ -98,9 +95,9 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     required CartesianSeries<TouchInteractionEvents<TouchInteractionResult>>
         lerpSeries,
     required Canvas canvas,
-    required CartesianChartGeometryData chart,
+    required CartesianPaintingGeometryData chart,
     required CartesianConfig config,
-    required CartesianChartStyle style,
+    required CartesianChartStylingData style,
   }) {
     assert(
       config is BarSeriesConfig,
@@ -109,21 +106,21 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     _interactionData.clear();
 
     final unitWidth =
-        useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth;
+        (useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth) /
+            chart.xUnitValue;
 
     final data = _BarPainterData(
       series: lerpSeries as BarSeries,
       config: config as BarSeriesConfig,
-      vRatio: chart.graphHeight / chart.totalYRange,
+      vRatio: chart.graphPolygon.height / chart.unitData.totalYRange,
       unitWidth: unitWidth,
       graphUnitWidth: chart.graphUnitWidth,
       valueUnitWidth: chart.valueUnitHeight,
       barWidth: unitWidth / config.maxBarsInGroup,
-      graphEdgeInsets: chart.graphEdgeInsets,
     );
     _data = data;
 
-    var dx = chart.axisOrigin.dx; // where to start drawing bars on X-axis
+    var dx = 0.0; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
     for (var i = 0; i < data.series.barData.length; i++) {
       final group = data.series.barData[i];
@@ -156,56 +153,17 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         }
       }
 
-      _drawGroupLabel(
-        canvas: canvas,
-        chart: chart,
-        dxOffset: dx,
-        group: group,
-        groupIndex: i,
-        style: style,
-        data: data,
-      );
-
       dx += unitWidth;
     }
-  }
-
-  @override
-  EdgeInsets performAxisLabelLayout(
-      {required CartesianSeries series,
-      required CartesianChartStyle style,
-      required double graphUnitWidth,
-      required double valueUnitWidth}) {
-    assert(series is BarSeries);
-    var maxHeight = 0.0;
-    for (var i = 0; i < (series as BarSeries).barData.length; i++) {
-      final group = series.barData[i];
-      if (group.label != null) {
-        // TODO: rotate the text if it doesn't fit within the unitWidth
-        final painter = ChartTextPainter.fromChartTextStyle(
-          text: group.label!(group.xValue),
-          maxWidth: useGraphUnits ? graphUnitWidth : valueUnitWidth,
-          chartTextStyle:
-              group.labelStyle ?? series.labelStyle ?? defaultChartTextStyle,
-        )..layout();
-        maxHeight = max(maxHeight, painter.height);
-        _groupLabelTextPainters.add(painter);
-      } else {
-        _groupLabelTextPainters.add(null);
-      }
-    }
-
-    return EdgeInsets.only(
-        bottom: maxHeight + style.axisStyle!.tickLength + 15);
   }
 
   _drawSimpleBar(
       {required SimpleBar group,
       required int groupIndex,
       required Canvas canvas,
-      required CartesianChartGeometryData chart,
+      required CartesianPaintingGeometryData chart,
       required double dxOffset,
-      required CartesianChartStyle style,
+      required CartesianChartStylingData style,
       required _BarPainterData data}) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
@@ -233,20 +191,21 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     );
     // Finally paint the y-labels for this bar
     _drawBarValues(
-        canvas: canvas,
-        chart: chart,
-        barData: group.yValue,
-        style: style,
-        data: data);
+      canvas: canvas,
+      chart: chart,
+      barData: group.yValue,
+      data: data,
+      dx: dxOffset,
+    );
   }
 
   _drawBarSeries(
       {required MultiBar group,
       required int groupIndex,
       required Canvas canvas,
-      required CartesianChartGeometryData chart,
+      required CartesianPaintingGeometryData chart,
       required double dxOffset,
-      required CartesianChartStyle style,
+      required CartesianChartStylingData style,
       required _BarPainterData data}) {
     // var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
@@ -280,11 +239,12 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       );
       // Finally paint the y-labels for this bar
       _drawBarValues(
-          canvas: canvas,
-          chart: chart,
-          barData: barData,
-          style: style,
-          data: data);
+        canvas: canvas,
+        chart: chart,
+        barData: barData,
+        data: data,
+        dx: x,
+      );
 
       x += data.barWidth;
     }
@@ -296,7 +256,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       required BarData barData,
       required int barDataIndex,
       required Canvas canvas,
-      required CartesianChartGeometryData chart,
+      required CartesianPaintingGeometryData chart,
       BarDataStyle? style,
       required double dxCenter,
       required double barWidth,
@@ -356,45 +316,55 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  void _drawGroupLabel({
+  void _drawBarValues({
     required Canvas canvas,
-    required CartesianChartGeometryData chart,
-    required double dxOffset,
-    required BarGroup group,
-    required CartesianChartStyle style,
+    required CartesianPaintingGeometryData chart,
+    required BarData barData,
     required _BarPainterData data,
-    required int groupIndex,
+    required double dx,
   }) {
-    // We will draw the Label that the user had provided for our bar group
-    if (group.label != null) {
-      final textPainter = _groupLabelTextPainters[groupIndex];
-      textPainter?.paint(
-        canvas: canvas,
-        offset: Offset(
-          dxOffset + (data.unitWidth * 0.5),
-          chart.graphPolygon.bottom + style.axisStyle!.tickLength + 15,
-        ),
-      );
-    }
-  }
-
-  void _drawBarValues(
-      {required Canvas canvas,
-      required CartesianChartGeometryData chart,
-      required BarData barData,
-      required CartesianChartStyle style,
-      required _BarPainterData data}) {
     if (barData.label != null) {
       final textPainter = ChartTextPainter.fromChartTextStyle(
         text: barData.label!(barData.yValue),
         chartTextStyle: barData.labelStyle ?? defaultChartTextStyle,
       );
 
+      textPainter.layout();
+
+      double x = dx;
+
+      switch (barData.labelStyle?.align) {
+        case TextAlign.start:
+        case TextAlign.left:
+          x += textPainter.width;
+          break;
+        case TextAlign.end:
+        case TextAlign.right:
+          x += data.barWidth - textPainter.width;
+          break;
+        case TextAlign.justify:
+        case TextAlign.center:
+        case null:
+          x += data.barWidth / 2;
+          break;
+      }
+
+      double y = chart.axisOrigin.dy - (barData.yValue * data.vRatio);
+
+      switch (barData.labelPosition) {
+        case BarLabelPosition.insideBar:
+          y += textPainter.height;
+          break;
+        case BarLabelPosition.outsideBar:
+          y -= textPainter.height;
+          break;
+      }
+
       textPainter.paint(
         canvas: canvas,
         offset: Offset(
-          chart.graphPolygon.left - style.axisStyle!.tickLength - 15,
-          chart.axisOrigin.dy - (barData.yValue * data.vRatio),
+          x,
+          y,
         ),
       );
     }
@@ -438,8 +408,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     final index = previousBar?.barGroupIndex ?? bar.barGroupIndex;
     final widthMultiplicationFactor = index + 1;
     final currentUnitWidthEndOffset =
-        (data.graphUnitWidth * widthMultiplicationFactor) +
-            data.graphEdgeInsets.left;
+        data.graphUnitWidth * widthMultiplicationFactor;
 
     if (localPosition.dx <= currentUnitWidthEndOffset) {
       if (previousBar?.barGroupIndex == bar.barGroupIndex) {
@@ -546,7 +515,6 @@ class _BarPainterData {
   final double barWidth;
   final double graphUnitWidth;
   final double valueUnitWidth;
-  final EdgeInsets graphEdgeInsets;
 
   _BarPainterData({
     required this.series,
@@ -556,6 +524,5 @@ class _BarPainterData {
     required this.barWidth,
     required this.graphUnitWidth,
     required this.valueUnitWidth,
-    required this.graphEdgeInsets,
   });
 }

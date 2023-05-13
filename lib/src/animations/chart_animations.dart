@@ -20,7 +20,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
 
   bool get animateOnUpdate;
 
-  K setData(List<T> data);
+  K setData(List<T> data, bool forceUpdate);
 
   void setAnimatableData(K data);
 
@@ -56,12 +56,14 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
   void updateDataSeries(
     List<T> newSeries, {
     bool isInitPhase = false,
+    bool forceUpdate = false,
   }) {
     // Update the Target Data to the newest value
-    final targetData = setData(newSeries);
+    final targetData = setData(newSeries, forceUpdate);
 
     if (latestDataDispatchedToPainting != null &&
-        latestDataDispatchedToPainting == targetData) {
+        latestDataDispatchedToPainting == targetData &&
+        !forceUpdate) {
       return;
     } else {
       latestDataDispatchedToPainting = targetData;

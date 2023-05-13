@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 var rng = Random();
 
@@ -16,35 +15,26 @@ class TestBarChartsAnimation extends StatefulWidget {
 class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
         setState(() {});
       },
       child: BarChart(
         height: 400,
-        title: const Text('Demo Chart'),
-        chartStyle: CartesianChartStyle(
+        chartStructureData: const CartesianChartStructureData(xUnitValue: 1),
+        chartStylingData: CartesianChartStylingData(
           backgroundColor: theme.colorScheme.surface,
-          alignment: CartesianChartAlignment.spaceEvenly,
-          orientation: CartesianChartOrientation.vertical,
           axisStyle: CartesianAxisStyle(
-            axisWidth: 3.0,
-            showXAxisLabels: false,
+            axisWidth: 4.0,
             axisColor: theme.colorScheme.onBackground,
-            tickColor: theme.colorScheme.onBackground,
-            tickLabelStyle: ChartTextStyle(
-              textStyle: GoogleFonts.poppins(
-                color: theme.colorScheme.inverseSurface,
-              ),
-            ),
+            tickConfig: AxisTickConfig.forAllAxis(
+                tickColor: theme.colorScheme.inverseSurface),
           ),
           gridStyle: CartesianGridStyle(
             show: true,
             gridLineWidth: 1.0,
             gridLineColor: theme.colorScheme.onBackground,
-            xUnitValue: 1.0,
-            yUnitValue: 10.0,
           ),
         ),
         data: BarSeries(
@@ -65,31 +55,18 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
 }
 
 List<BarGroup> makeGroupData(BuildContext context) {
-  var theme = Theme.of(context);
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
   List<BarGroup> barSeries = List.generate(next(3, 5).toInt(), (index) {
     if (rng.nextBool()) {
       return SimpleBar(
         xValue: index + 1,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
-        yValue: BarData(yValue: next(10, 90)),
+        yValue: BarData(yValue: next(-15, 90)),
       );
     } else {
       return MultiBar(
         xValue: index + 1,
         groupSpacing: 10.0,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValues: [
           BarData(
             barStyle: const BarDataStyle(
@@ -108,7 +85,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 90),
+            yValue: next(-10, 90),
           ),
           BarData(
             barStyle: const BarDataStyle(
@@ -127,7 +104,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
                 topRight: Radius.circular(5.0),
               ),
             ),
-            yValue: next(10, 90),
+            yValue: next(-20, 90),
           ),
         ],
       );

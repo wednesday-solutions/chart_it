@@ -1,62 +1,15 @@
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_range.dart';
-import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 /// Callback for Mapping a String Value to a Label
 typedef LabelMapper = String Function(num value);
 
-/// Alignment of the Data Points for any Cartesian Charts
-enum CartesianChartAlignment {
-  start,
-  end,
-  center,
-  spaceEvenly,
-  spaceAround,
-  spaceBetween,
-}
-
 /// Orientation of the Chart
-enum CartesianChartOrientation { vertical, horizontal }
-
-class CartesianData with EquatableMixin {
-  List<PaintingState> states;
-  CartesianRangeResult range;
-
-  CartesianData({required this.states, required this.range});
-
-  factory CartesianData.zero(CartesianRangeResult targetRange) {
-    return CartesianData(states: List.empty(), range: targetRange);
-  }
-
-  static CartesianData lerp(
-    CartesianData? current,
-    CartesianData target,
-    double t,
-  ) {
-    return CartesianData(
-      states: PaintingState.lerpStateList(current?.states, target.states, t),
-      range: CartesianRangeResult.lerp(current?.range, target.range, t),
-    );
-  }
-
-  @override
-  List<Object> get props => [states, range];
-}
-
-class CartesianDataTween extends Tween<CartesianData> {
-  /// A Tween to interpolate between two [CartesianData]
-  ///
-  /// [end] object must not be null.
-  CartesianDataTween({
-    required CartesianData? begin,
-    required CartesianData end,
-  }) : super(begin: begin, end: end);
-
-  @override
-  CartesianData lerp(double t) => CartesianData.lerp(begin, end!, t);
+enum CartesianChartOrientation {
+  vertical,
+  // Horizontal not yet supported
+  // horizontal,
 }
 
 /// Base Series for any type of Data which can be plotted
@@ -113,5 +66,3 @@ abstract class CartesianSeries<E extends TouchInteractionEvents>
     }
   }
 }
-
-abstract class CartesianConfig with EquatableMixin {}

@@ -1,3 +1,7 @@
+## 0.2.0
+* [BREAKING] Create `CartesianChartStylingData` to replace the earlier style class
+* [BREAKING] Create `CartesianChartStructureData`. Min max values and unit count values need to be moved here.
+
 ## 0.1.0
 
 * Add Interaction support for charts.

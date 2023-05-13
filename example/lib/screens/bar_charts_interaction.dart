@@ -1,6 +1,5 @@
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TestBarChartsInteraction extends StatefulWidget {
   const TestBarChartsInteraction({Key? key}) : super(key: key);
@@ -53,29 +52,48 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
       animationDuration: const Duration(milliseconds: 200),
       animateOnLoad: true,
       animateOnUpdate: true,
-      maxYValue: 15,
-      title: const Text('Demo Chart'),
-      chartStyle: CartesianChartStyle(
+      axisLabelBuilder: AxisLabelBuilder(
+        left: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Text("$index"),
+          );
+        },
+        bottom: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text("$index"),
+          );
+        },
+        top: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("$index"),
+          );
+        },
+        right: (index, value) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text("$index"),
+          );
+        },
+      ),
+      chartStructureData: const CartesianChartStructureData(
+        xUnitValue: 1.0,
+        yUnitValue: 5.0,
+      ),
+      chartStylingData: CartesianChartStylingData(
         backgroundColor: theme.colorScheme.surface,
-        alignment: CartesianChartAlignment.spaceEvenly,
-        orientation: CartesianChartOrientation.vertical,
         axisStyle: CartesianAxisStyle(
           axisWidth: 3.0,
-          showXAxisLabels: false,
           axisColor: theme.colorScheme.onBackground,
-          tickColor: theme.colorScheme.onBackground,
-          tickLabelStyle: ChartTextStyle(
-            textStyle: GoogleFonts.poppins(
-              color: theme.colorScheme.inverseSurface,
-            ),
-          ),
+          tickConfig: AxisTickConfig.forAllAxis(
+              tickColor: theme.colorScheme.onBackground, showTicks: true),
         ),
         gridStyle: CartesianGridStyle(
           show: true,
           gridLineWidth: 1.0,
           gridLineColor: theme.colorScheme.onBackground,
-          xUnitValue: 1.0,
-          yUnitValue: 5.0,
         ),
       ),
       data: getSeries(),
@@ -87,18 +105,10 @@ int _interactionIndex = -1;
 int _barIndex = -1;
 
 List<BarGroup> makeGroupData(BuildContext context) {
-  var theme = Theme.of(context);
-
   List<BarGroup> barSeries = List.generate(4, (index) {
     if (index % 2 == 0) {
       return SimpleBar(
         xValue: index + 1,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValue: BarData(
             yValue: _interactionIndex == index
                 ? 9 + index / 2 * 0.5
@@ -108,12 +118,6 @@ List<BarGroup> makeGroupData(BuildContext context) {
       return MultiBar(
         xValue: index + 1,
         groupSpacing: 10.0,
-        label: (value) => 'Group ${index + 1}',
-        labelStyle: ChartTextStyle(
-          textStyle: GoogleFonts.poppins(
-            color: theme.colorScheme.inverseSurface,
-          ),
-        ),
         yValues: [
           BarData(
             barStyle: const BarDataStyle(

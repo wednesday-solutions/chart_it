@@ -1,12 +1,11 @@
 import 'dart:math';
 
-import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars/bar_data_style.dart';
 import 'package:chart_it/src/charts/data/bars/bar_group.dart';
 import 'package:chart_it/src/charts/data/bars/bar_interactions.dart';
 import 'package:chart_it/src/charts/data/bars/multi_bar.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data.dart';
-import 'package:chart_it/src/charts/data/core/shared/chart_text_style.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/widgets/bar_chart.dart';
 import 'package:chart_it/src/extensions/data_conversions.dart';
 
@@ -22,12 +21,6 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
   /// {@macro bar_styling_order}
   final BarDataStyle? seriesStyle;
 
-  /// Sets uniform styling for All the Group Labels in this [BarSeries].
-  ///
-  /// This styling can be overridden by:
-  /// * labelStyle in any [BarGroup]
-  final ChartTextStyle? labelStyle;
-
   /// The DataSet for our BarChart. It is Structured as a [BarGroup]
   /// that provides the X-Value and can contain a
   /// single or multiple group of bars.
@@ -41,7 +34,6 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
   ///
   /// See Also: [CartesianSeries]
   BarSeries({
-    this.labelStyle = defaultChartTextStyle,
     this.seriesStyle,
     required this.barData,
     super.interactionEvents = const BarInteractionEvents(isEnabled: false),
@@ -51,8 +43,7 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
   factory BarSeries.zero() => BarSeries(barData: List.empty());
 
   @override
-  List<Object?> get props =>
-      [labelStyle, seriesStyle, barData, interactionEvents];
+  List<Object?> get props => [seriesStyle, barData, interactionEvents];
 
   /// Lerps between two [BarSeries] for a factor [t]
   static BarSeries lerp(
@@ -61,11 +52,6 @@ class BarSeries extends CartesianSeries<BarInteractionEvents> {
     double t,
   ) {
     return BarSeries(
-      labelStyle: ChartTextStyle.lerp(
-        current?.labelStyle,
-        target.labelStyle,
-        t,
-      ),
       seriesStyle: BarDataStyle.lerp(
         current?.seriesStyle,
         target.seriesStyle,

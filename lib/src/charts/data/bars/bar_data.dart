@@ -28,6 +28,9 @@ class BarData extends Equatable {
   /// Text Styling for the [label].
   final ChartTextStyle? labelStyle;
 
+  /// Determines the position of the Bar Label.
+  final BarLabelPosition labelPosition;
+
   /// Styling for the Individual Bar in this [BarData].
   ///
   /// {@macro bar_styling_order}
@@ -42,6 +45,7 @@ class BarData extends Equatable {
     this.label,
     this.labelStyle = defaultChartTextStyle,
     this.barStyle,
+    this.labelPosition = BarLabelPosition.insideBar,
   });
 
   /// Lerps between two [BarData] values for a factor [t]
@@ -57,6 +61,7 @@ class BarData extends Equatable {
         t,
       ),
       barStyle: BarDataStyle.lerp(current?.barStyle, target?.barStyle, t),
+      labelPosition: target?.labelPosition ?? BarLabelPosition.insideBar,
     );
   }
 
@@ -69,5 +74,15 @@ class BarData extends Equatable {
       lerpList(current, target, t, lerp: lerp);
 
   @override
-  List<Object?> get props => [startYFrom, yValue, labelStyle, barStyle];
+  List<Object?> get props =>
+      [startYFrom, yValue, labelStyle, barStyle, labelPosition];
+}
+
+/// Determines the position of the Bar Label.
+enum BarLabelPosition {
+  /// Draws the label inside of the bar.
+  insideBar,
+
+  /// Draws the label outside of the bar.
+  outsideBar
 }

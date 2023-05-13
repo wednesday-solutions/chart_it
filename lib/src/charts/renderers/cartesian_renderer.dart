@@ -1,83 +1,77 @@
 import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
+import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class CartesianRenderer extends LeafRenderObjectWidget {
-  final double? width;
-  final double? height;
-
+class CartesianChartContainer extends LeafRenderObjectWidget {
   // Mandatory Fields
-  final CartesianChartStyle style;
+  final CartesianChartStylingData style;
+  final CartesianChartStructureData structure;
   final List<PaintingState> states;
-  final CartesianRangeResult rangeData;
   final InteractionDispatcher interactionDispatcher;
+  final GridUnitsData gridUnitsData;
 
-  const CartesianRenderer({
+  const CartesianChartContainer({
     Key? key,
-    this.width,
-    this.height,
     required this.style,
     required this.states,
-    required this.rangeData,
     required this.interactionDispatcher,
+    required this.structure,
+    required this.gridUnitsData,
   }) : super(key: key);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return CartesianRenderBox(
-      width: width,
-      height: height,
+    return RenderCartesianChartContainer(
       style: style,
       states: states,
-      rangeData: rangeData,
       interactionDispatcher: interactionDispatcher,
+      structure: structure,
+      gridUnitsData: gridUnitsData,
     );
   }
 
   @override
   void updateRenderObject(BuildContext context, RenderObject renderObject) {
-    assert(renderObject is CartesianRenderBox);
-    (renderObject as CartesianRenderBox)
-      ..width = width
-      ..height = height
+    assert(renderObject is RenderCartesianChartContainer);
+    (renderObject as RenderCartesianChartContainer)
       ..style = style
+      ..structure = structure
+      ..gridUnitsData = gridUnitsData
       ..states = states
-      ..range = rangeData
       ..interactionDispatcher = interactionDispatcher;
   }
 }
 
-class CartesianRenderBox extends RenderBox {
-  double? _width;
-
-  set width(double? value) {
-    if (_width == value) return;
-    _width = value;
-    markNeedsLayout();
-  }
-
-  double? _height;
-
-  set height(double? value) {
-    if (_height == value) return;
-    _height = value;
-    markNeedsLayout();
-  }
-
+class RenderCartesianChartContainer extends RenderBox {
   final CartesianChartPainter _painter;
   InteractionDispatcher _interactionDispatcher;
+
   set interactionDispatcher(InteractionDispatcher value) {
     _interactionDispatcher = value;
   }
 
   // Mandatory Fields
-  set style(CartesianChartStyle value) {
+  set style(CartesianChartStylingData value) {
     if (_painter.style == value) return;
     _painter.style = value;
+    markNeedsPaint();
+  }
+
+  set structure(CartesianChartStructureData value) {
+    if (_painter.style == value) return;
+    _painter.structure = value;
+    markNeedsPaint();
+  }
+
+  set gridUnitsData(GridUnitsData value) {
+    if (_painter.gridUnitsData == value) return;
+    _painter.gridUnitsData = value;
     markNeedsPaint();
   }
 
@@ -87,30 +81,24 @@ class CartesianRenderBox extends RenderBox {
     markNeedsPaint();
   }
 
-  set range(CartesianRangeResult value) {
-    if (_painter.rangeData == value) return;
-    _painter.rangeData = value;
-    markNeedsPaint();
-  }
-
   late final TapGestureRecognizer _tapGestureRecognizer;
   late final DoubleTapGestureRecognizer _doubleTapGestureRecognizer;
   late final PanGestureRecognizer _panGestureRecognizer;
 
-  CartesianRenderBox({
+  RenderCartesianChartContainer({
     double? width,
     double? height,
-    required CartesianChartStyle style,
+    required CartesianChartStylingData style,
+    required CartesianChartStructureData structure,
     required List<PaintingState> states,
-    required CartesianRangeResult rangeData,
     required InteractionDispatcher interactionDispatcher,
-  })  : _width = width,
-        _height = height,
-        _interactionDispatcher = interactionDispatcher,
+    required GridUnitsData gridUnitsData,
+  })  : _interactionDispatcher = interactionDispatcher,
         _painter = CartesianChartPainter(
           style: style,
           states: states,
-          rangeData: rangeData,
+          structure: structure,
+          gridUnitsData: gridUnitsData,
         );
 
   _registerGestureRecognizers() {
@@ -137,7 +125,7 @@ class CartesianRenderBox extends RenderBox {
 
   @override
   Size computeDryLayout(BoxConstraints constraints) =>
-      Size(_width ?? constraints.maxWidth, _height ?? constraints.maxHeight);
+      Size(constraints.maxWidth, constraints.maxHeight);
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -177,10 +165,13 @@ class CartesianRenderBox extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    final canvas = context.canvas
-      ..save()
-      ..translate(offset.dx, offset.dy);
-    _painter.paint(canvas, size);
-    canvas.restore();
+    assert(parentData is CartesianScaffoldParentData,
+        "${parentData.runtimeType} is not a subclass of $CartesianScaffoldParentData. $CartesianChartContainer should be a direct child of $CartesianScaffold.");
+    final paintingGeometryData =
+        (parentData as CartesianScaffoldParentData).paintingGeometryData;
+    _painter.paint(context.canvas, size, paintingGeometryData);
   }
+
+  @override
+  bool get isRepaintBoundary => true;
 }

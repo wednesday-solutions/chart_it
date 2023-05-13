@@ -90,7 +90,7 @@ class RenderAxisLabels extends RenderBox
   set constraintEdgeLabels(bool value) {
     if (_constraintEdgeLabels == value) return;
     _constraintEdgeLabels = value;
-    markNeedsPaint();
+    markNeedsLayout();
   }
 
   bool _centerLabels;
@@ -98,7 +98,7 @@ class RenderAxisLabels extends RenderBox
   set centerLabels(bool value) {
     if (_centerLabels == value) return;
     _centerLabels = value;
-    markNeedsPaint();
+    markNeedsLayout();
   }
 
   RenderAxisLabels({
@@ -203,10 +203,6 @@ class RenderAxisLabels extends RenderBox
       }
     }
 
-    // while (child != null) {
-    //   child.layout(childConstraints, parentUsesSize: true);
-    //   child = (child.parentData as MultiChildLayoutParentData).nextSibling;
-    // }
     return Size(constraints.maxWidth, constraints.maxHeight);
   }
 
@@ -265,73 +261,6 @@ class RenderAxisLabels extends RenderBox
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    // final paintingGeometryData =
-    //     (parentData as CartesianScaffoldParentData).paintingGeometryData;
-    //
-    // if (_orientation == AxisOrientation.vertical) {
-    //   var child = firstChild;
-    //   Offset childOffset =
-    //       Offset(offset.dx, paintingGeometryData.graphPolygon.bottom);
-    //   var index = 0;
-    //   while (child != null) {
-    //     Offset paintingOffset = childOffset;
-    //
-    //     if (_centerLabels) {
-    //       paintingOffset -= Offset(0, paintingGeometryData.graphUnitHeight / 2);
-    //     }
-    //
-    //     if (_constraintEdgeLabels) {
-    //       if (index == 0) {
-    //         paintingOffset -= Offset(0, child.size.height / 2);
-    //       }
-    //
-    //       if (index == childCount - 1) {
-    //         paintingOffset += Offset(0, child.size.height / 2);
-    //       }
-    //     }
-    //
-    //     context.paintChild(
-    //         child, paintingOffset - Offset(0, child.size.height / 2));
-    //
-    //     childOffset -= Offset(0, paintingGeometryData.graphUnitHeight);
-    //     index++;
-    //     child = (child.parentData as MultiChildLayoutParentData).nextSibling;
-    //   }
-    // }
-    //
-    // if (_orientation == AxisOrientation.horizontal) {
-    //   var child = firstChild;
-    //   Offset childOffset = offset;
-    //   var index = 0;
-    //   while (child != null) {
-    //     Offset paintOffset = childOffset;
-    //
-    //     if (_centerLabels) {
-    //       paintOffset += Offset(paintingGeometryData.graphUnitWidth / 2, 0);
-    //     }
-    //
-    //     if (_constraintEdgeLabels) {
-    //       if (index == 0) {
-    //         paintOffset += Offset(child.size.width / 2, 0);
-    //       }
-    //
-    //       if (index == childCount - 1) {
-    //         paintOffset -= Offset(child.size.width / 2, 0);
-    //       }
-    //     }
-    //
-    //     context.paintChild(
-    //         child, paintOffset - Offset(child.size.width / 2, 0));
-    //
-    //     childOffset += Offset(
-    //       paintingGeometryData.graphUnitWidth,
-    //       0,
-    //     );
-    //
-    //     index++;
-    //     child = (child.parentData as MultiChildLayoutParentData).nextSibling;
-    //   }
-    // }
     defaultPaint(context, offset);
   }
 }

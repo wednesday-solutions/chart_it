@@ -8,9 +8,9 @@
 
 Chart_It is a fully written in dart, strongly customizable and seamlessly animated Collection of Charts.
 
-|          ![barcharts](pub_images/bar-charts-read-me.gif)           |               ![piecharts](pub_images/pie-charts-read-me.gif)                |
-|:------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
-| [Learn More](https://flutter.wednesday.is/charts/guides/bar-chart) | [Learn More](https://flutter.wednesday.is/charts/guides/pie-and-donut-chart) |
+| ![barcharts](https://github.com/wednesday-solutions/chart_it/raw/dev/pub_images/bar-charts-read-me.gif) | ![piecharts](https://github.com/wednesday-solutions/chart_it/raw/dev/pub_images/pie-charts-read-me.gif) |
+|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|
+|                   [Learn More](https://flutter.wednesday.is/charts/guides/bar-chart)                    |              [Learn More](https://flutter.wednesday.is/charts/guides/pie-and-donut-chart)               |
 
 ## Installation
 Add the `chart_it` package to your project's `pubspec.yaml` file:

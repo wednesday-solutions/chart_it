@@ -30,8 +30,13 @@ class CartesianChartStructureData extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [orientation, xUnitValue, yUnitValue, maxXValue, maxYValue];
+  List<Object?> get props => [
+        orientation,
+        xUnitValue,
+        yUnitValue,
+        maxXValue,
+        maxYValue,
+      ];
 
   CartesianChartStructureData copyWith({
     CartesianChartOrientation? orientation,
@@ -243,13 +248,31 @@ class CartesianAxisStyle extends Equatable {
   }
 }
 
-class AxisLabelBuilder {
-  final LabelBuilder? left;
-  final LabelBuilder? top;
-  final LabelBuilder? right;
-  final LabelBuilder? bottom;
+class AxisLabelConfig extends Equatable {
+  final LabelBuilder builder;
+  final bool constraintEdgeLabels;
+  final bool centerLabels;
 
-  const AxisLabelBuilder({
+  const AxisLabelConfig({
+    required this.builder,
+    this.constraintEdgeLabels = false,
+    this.centerLabels = false,
+  }) : assert(
+          !(constraintEdgeLabels && centerLabels),
+          "Both centerLabels and constraintEdgeLabels cannot be true at the same time.",
+        );
+
+  @override
+  List<Object?> get props => [constraintEdgeLabels, centerLabels];
+}
+
+class AxisLabels {
+  final AxisLabelConfig? left;
+  final AxisLabelConfig? top;
+  final AxisLabelConfig? right;
+  final AxisLabelConfig? bottom;
+
+  const AxisLabels({
     this.left,
     this.top,
     this.right,

@@ -11,9 +11,8 @@ class CartesianScaffoldParentData extends ContainerBoxParentData<RenderBox> {
       CartesianPaintingGeometryData.zero;
 
   @override
-  String toString() {
-    return 'CartesianScaffoldParentData{paintingGeometryData: $paintingGeometryData}';
-  }
+  String toString() =>
+      'CartesianScaffoldParentData{paintingGeometryData: $paintingGeometryData}';
 }
 
 enum ChartScaffoldSlot { center, left, bottom, right, top }
@@ -22,10 +21,10 @@ typedef LabelBuilder = Widget Function(int index, double value);
 
 class CartesianScaffold extends RenderObjectWidget
     with SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot> {
-  final LabelBuilder? leftLabel;
-  final LabelBuilder? rightLabel;
-  final LabelBuilder? topLabel;
-  final LabelBuilder? bottomLabel;
+  final AxisLabelConfig? leftLabel;
+  final AxisLabelConfig? rightLabel;
+  final AxisLabelConfig? topLabel;
+  final AxisLabelConfig? bottomLabel;
   final Widget chart;
   final GridUnitsData gridUnitsData;
   final CartesianChartStylingData stylingData;
@@ -55,7 +54,9 @@ class CartesianScaffold extends RenderObjectWidget
           return AxisLabelsRenderer(
             gridUnitsData: gridUnitsData,
             orientation: AxisOrientation.vertical,
-            labelBuilder: leftLabel!,
+            constraintEdgeLabels: leftLabel!.constraintEdgeLabels,
+            centerLabels: leftLabel!.centerLabels,
+            labelBuilder: leftLabel!.builder,
           );
         }
         break;
@@ -64,8 +65,9 @@ class CartesianScaffold extends RenderObjectWidget
           return AxisLabelsRenderer(
             gridUnitsData: gridUnitsData,
             orientation: AxisOrientation.vertical,
-            constraintEdgeLabels: true,
-            labelBuilder: rightLabel!,
+            constraintEdgeLabels: rightLabel!.constraintEdgeLabels,
+            centerLabels: rightLabel!.centerLabels,
+            labelBuilder: rightLabel!.builder,
           );
         }
         break;
@@ -74,7 +76,9 @@ class CartesianScaffold extends RenderObjectWidget
           return AxisLabelsRenderer(
             gridUnitsData: gridUnitsData,
             orientation: AxisOrientation.horizontal,
-            labelBuilder: topLabel!,
+            constraintEdgeLabels: topLabel!.constraintEdgeLabels,
+            centerLabels: topLabel!.centerLabels,
+            labelBuilder: topLabel!.builder,
           );
         }
         break;
@@ -83,8 +87,9 @@ class CartesianScaffold extends RenderObjectWidget
           return AxisLabelsRenderer(
             gridUnitsData: gridUnitsData,
             orientation: AxisOrientation.horizontal,
-            centerLabels: true,
-            labelBuilder: bottomLabel!,
+            constraintEdgeLabels: bottomLabel!.constraintEdgeLabels,
+            centerLabels: bottomLabel!.centerLabels,
+            labelBuilder: bottomLabel!.builder,
           );
         }
         break;
@@ -96,7 +101,8 @@ class CartesianScaffold extends RenderObjectWidget
 
   @override
   SlottedContainerRenderObjectMixin<ChartScaffoldSlot> createRenderObject(
-      BuildContext context) {
+    BuildContext context,
+  ) {
     return RenderCartesianScaffold(
       gridUnitsData: gridUnitsData,
       stylingData: stylingData,
@@ -107,7 +113,9 @@ class CartesianScaffold extends RenderObjectWidget
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant RenderCartesianScaffold renderObject) {
+    BuildContext context,
+    covariant RenderCartesianScaffold renderObject,
+  ) {
     renderObject
       ..gridUnitsData = gridUnitsData
       ..stylingData = stylingData
@@ -357,10 +365,11 @@ class RenderCartesianScaffold extends RenderBox
     return renderBox.size;
   }
 
-  _positionRenderBox(
-      {required RenderBox renderBox,
-      required Offset offset,
-      required CartesianPaintingGeometryData paintingGeometryData}) {
+  _positionRenderBox({
+    required RenderBox renderBox,
+    required Offset offset,
+    required CartesianPaintingGeometryData paintingGeometryData,
+  }) {
     final parentData = renderBox.parentData as CartesianScaffoldParentData;
     parentData.offset = offset;
     parentData.paintingGeometryData = paintingGeometryData;
@@ -538,25 +547,37 @@ class RenderCartesianScaffold extends RenderBox
 
     // We will use a L shaped path for the Axes
     var axis = Path();
-    axis.moveTo(geometryData.graphPolygon.topLeft.dx,
-        geometryData.graphPolygon.topLeft.dy);
+    axis.moveTo(
+      geometryData.graphPolygon.topLeft.dx,
+      geometryData.graphPolygon.topLeft.dy,
+    );
     axis.lineTo(
-        geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // +ve y axis
-    axis.lineTo(geometryData.graphPolygon.right,
-        geometryData.axisOrigin.dy); // +ve x axis
+      geometryData.axisOrigin.dx,
+      geometryData.axisOrigin.dy,
+    ); // +ve y axis
+    axis.lineTo(
+      geometryData.graphPolygon.right,
+      geometryData.axisOrigin.dy,
+    ); // +ve x axis
 
     if (_gridUnitsData.minYRange.isNegative) {
       // Paint negative Y-axis if we have negative values
-      axis.moveTo(geometryData.graphPolygon.bottomLeft.dx,
-          geometryData.graphPolygon.bottomLeft.dy);
+      axis.moveTo(
+        geometryData.graphPolygon.bottomLeft.dx,
+        geometryData.graphPolygon.bottomLeft.dy,
+      );
       axis.lineTo(
-          geometryData.axisOrigin.dx, geometryData.axisOrigin.dy); // -ve y axis
+        geometryData.axisOrigin.dx,
+        geometryData.axisOrigin.dy,
+      ); // -ve y axis
     }
 
     if (_gridUnitsData.minXRange.isNegative) {
       // Paint negative X-axis if we have Negative values
-      axis.lineTo(geometryData.graphPolygon.left,
-          geometryData.axisOrigin.dy); // -ve x axis
+      axis.lineTo(
+        geometryData.graphPolygon.left,
+        geometryData.axisOrigin.dy,
+      ); // -ve x axis
     }
 
     canvas.drawPath(axis, axisPaint);
@@ -610,8 +631,10 @@ class RenderCartesianScaffold extends RenderBox
           child.parentData! as CartesianScaffoldParentData;
 
       final offset = child is LeafRenderObjectWidget
-          ? Offset(parentData.paintingGeometryData.graphPolygon.left,
-              parentData.paintingGeometryData.graphPolygon.top)
+          ? Offset(
+              parentData.paintingGeometryData.graphPolygon.left,
+              parentData.paintingGeometryData.graphPolygon.top,
+            )
           : parentData.offset;
       final bool isHit = result.addWithPaintOffset(
         offset: offset,
@@ -621,9 +644,7 @@ class RenderCartesianScaffold extends RenderBox
           return child.hitTest(result, position: transformed);
         },
       );
-      if (isHit) {
-        return true;
-      }
+      if (isHit) return true;
     }
     return false;
   }

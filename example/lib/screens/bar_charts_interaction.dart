@@ -13,23 +13,25 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
   getSeries() {
     return BarSeries(
       interactionEvents: BarInteractionEvents(
-          isEnabled: true,
-          snapToBarConfig: const SnapToBarConfig.forAll(
-              snapToWidth: true,
-              snapToHeight: true,
-              snapToBarBehaviour: SnapToBarBehaviour.snapToSection),
-          onTap: (result) {
-            setState(() {
-              _interactionIndex = result.barGroupIndex;
-              _barIndex = result.barDataIndex;
-            });
-          },
-          onDrag: (result) {
-            setState(() {
-              _interactionIndex = result.barGroupIndex;
-              _barIndex = result.barDataIndex;
-            });
-          }),
+        isEnabled: true,
+        snapToBarConfig: const SnapToBarConfig.forAll(
+          snapToWidth: true,
+          snapToHeight: true,
+          snapToBarBehaviour: SnapToBarBehaviour.snapToSection,
+        ),
+        onTap: (result) {
+          setState(() {
+            _interactionIndex = result.barGroupIndex;
+            _barIndex = result.barDataIndex;
+          });
+        },
+        onDrag: (result) {
+          setState(() {
+            _interactionIndex = result.barGroupIndex;
+            _barIndex = result.barDataIndex;
+          });
+        },
+      ),
       seriesStyle: const BarDataStyle(
         barColor: Color(0xFFBDA2F4),
         strokeWidth: 3.0,
@@ -52,31 +54,41 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
       animationDuration: const Duration(milliseconds: 200),
       animateOnLoad: true,
       animateOnUpdate: true,
-      axisLabelBuilder: AxisLabelBuilder(
-        left: (index, value) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Text("$index"),
-          );
-        },
-        bottom: (index, value) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text("$index"),
-          );
-        },
-        top: (index, value) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text("$index"),
-          );
-        },
-        right: (index, value) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text("$index"),
-          );
-        },
+      axisLabels: AxisLabels(
+        left: AxisLabelConfig(
+          builder: (index, value) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Text("$index"),
+            );
+          },
+        ),
+        bottom: AxisLabelConfig(
+          centerLabels: true,
+          builder: (index, value) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text("$index"),
+            );
+          },
+        ),
+        top: AxisLabelConfig(
+          builder: (index, value) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text("$index"),
+            );
+          },
+        ),
+        right: AxisLabelConfig(
+          constraintEdgeLabels: true,
+          builder: (index, value) {
+            return Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text("$index"),
+            );
+          },
+        ),
       ),
       chartStructureData: const CartesianChartStructureData(
         xUnitValue: 1.0,
@@ -88,7 +100,9 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
           axisWidth: 3.0,
           axisColor: theme.colorScheme.onBackground,
           tickConfig: AxisTickConfig.forAllAxis(
-              tickColor: theme.colorScheme.onBackground, showTicks: true),
+            tickColor: theme.colorScheme.onBackground,
+            showTicks: true,
+          ),
         ),
         gridStyle: CartesianGridStyle(
           show: true,
@@ -105,69 +119,73 @@ int _interactionIndex = -1;
 int _barIndex = -1;
 
 List<BarGroup> makeGroupData(BuildContext context) {
-  List<BarGroup> barSeries = List.generate(4, (index) {
-    if (index % 2 == 0) {
-      return SimpleBar(
-        xValue: index + 1,
-        yValue: BarData(
+  List<BarGroup> barSeries = List.generate(
+    4,
+    (index) {
+      if (index % 2 == 0) {
+        return SimpleBar(
+          xValue: index + 1,
+          yValue: BarData(
             yValue: _interactionIndex == index
                 ? 9 + index / 2 * 0.5
-                : 8 + index / 2 * 0.5),
-      );
-    } else {
-      return MultiBar(
-        xValue: index + 1,
-        yValues: [
-          BarData(
-            barStyle: const BarDataStyle(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFFBDA2F4),
-                  Color(0xFF7136E7),
-                ],
-              ),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFFBDA2F4),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
-            ),
-            yValue: _interactionIndex == index
-                ? _barIndex == 0
-                    ? 10.5 + index * 0.5
-                    : 10 + index * 0.5
-                : 10 + index * 0.5,
+                : 8 + index / 2 * 0.5,
           ),
-          BarData(
-            barStyle: const BarDataStyle(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFFE39F56),
-                  Color(0xFFBDA2F4),
-                ],
+        );
+      } else {
+        return MultiBar(
+          xValue: index + 1,
+          yValues: [
+            BarData(
+              barStyle: const BarDataStyle(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Color(0xFFBDA2F4),
+                    Color(0xFF7136E7),
+                  ],
+                ),
+                strokeWidth: 3.0,
+                strokeColor: Color(0xFFBDA2F4),
+                cornerRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5.0),
+                  topRight: Radius.circular(5.0),
+                ),
               ),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFFE39F56),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
+              yValue: _interactionIndex == index
+                  ? _barIndex == 0
+                      ? 10.5 + index * 0.5
+                      : 10 + index * 0.5
+                  : 10 + index * 0.5,
             ),
-            yValue: _interactionIndex == index
-                ? _barIndex == 1
-                    ? 4.5 + index * 0.5
-                    : 4 + index * 0.5
-                : 4 + index * 0.5,
-          ),
-        ],
-      );
-    }
-  });
+            BarData(
+              barStyle: const BarDataStyle(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Color(0xFFE39F56),
+                    Color(0xFFBDA2F4),
+                  ],
+                ),
+                strokeWidth: 3.0,
+                strokeColor: Color(0xFFE39F56),
+                cornerRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5.0),
+                  topRight: Radius.circular(5.0),
+                ),
+              ),
+              yValue: _interactionIndex == index
+                  ? _barIndex == 1
+                      ? 4.5 + index * 0.5
+                      : 4 + index * 0.5
+                  : 4 + index * 0.5,
+            ),
+          ],
+        );
+      }
+    },
+  );
 
   return barSeries;
 }

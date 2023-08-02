@@ -21,7 +21,7 @@ class BarChart extends CartesianChart {
     super.animation,
     super.chartStructureData,
     super.chartStylingData,
-    super.axisLabelBuilder,
+    super.axisLabels,
     required this.data,
   });
 
@@ -98,10 +98,10 @@ class _BarChartState extends State<BarChart>
           stylingData: stylingData,
           width: widget.width,
           height: widget.height,
-          leftLabel: widget.axisLabelBuilder.left,
-          rightLabel: widget.axisLabelBuilder.right,
-          bottomLabel: widget.axisLabelBuilder.bottom,
-          topLabel: widget.axisLabelBuilder.top,
+          leftLabel: widget.axisLabels.left,
+          rightLabel: widget.axisLabels.right,
+          bottomLabel: widget.axisLabels.bottom,
+          topLabel: widget.axisLabels.top,
           chart: CartesianChartContainer(
             style: stylingData,
             structure: widget.chartStructureData,

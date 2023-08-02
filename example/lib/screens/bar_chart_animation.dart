@@ -29,7 +29,8 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
             axisWidth: 4.0,
             axisColor: theme.colorScheme.onBackground,
             tickConfig: AxisTickConfig.forAllAxis(
-                tickColor: theme.colorScheme.inverseSurface),
+              tickColor: theme.colorScheme.inverseSurface,
+            ),
           ),
           gridStyle: CartesianGridStyle(
             show: true,

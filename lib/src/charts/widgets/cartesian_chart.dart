@@ -33,7 +33,7 @@ abstract class CartesianChart extends StatefulWidget {
   final CartesianChartStructureData chartStructureData;
 
   /// Builder to create labels along all the axis.
-  final AxisLabelBuilder axisLabelBuilder;
+  final AxisLabels axisLabels;
 
   const CartesianChart({
     Key? key,
@@ -45,6 +45,6 @@ abstract class CartesianChart extends StatefulWidget {
     this.animation,
     this.chartStylingData = const CartesianChartStylingData(),
     this.chartStructureData = const CartesianChartStructureData(),
-    this.axisLabelBuilder = const AxisLabelBuilder(),
+    this.axisLabels = const AxisLabels(),
   }) : super(key: key);
 }

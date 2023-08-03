@@ -46,51 +46,64 @@ class TestBarChart extends StatelessWidget {
             ),
           ),
           Expanded(
-              child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Bar Chart State Changes",
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Bar Chart State Changes",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onBackground)),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TestBarChartsAnimation(),
-              ),
-              Text("Tap the chart to change data.",
+                      fontSize: 22,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TestBarChartsAnimation(),
+                ),
+                Text(
+                  "Tap the chart to change data.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.onBackground)),
-              const Divider(
-                height: 100,
-                thickness: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Bar Chart Interactions",
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+                ),
+                const Divider(
+                  height: 100,
+                  thickness: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Bar Chart Interactions",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onBackground)),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TestBarChartsInteraction(),
-              ),
-              Text("Tap or drag to interact with the chart.",
+                      fontSize: 22,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TestBarChartsInteraction(),
+                ),
+                Text(
+                  "Tap or drag to interact with the chart.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.onBackground)),
-              const SizedBox(
-                height: 50,
-              )
-            ],
-          )),
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );

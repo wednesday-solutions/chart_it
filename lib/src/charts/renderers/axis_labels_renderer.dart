@@ -71,8 +71,7 @@ class RenderAxisLabels extends RenderBox
   GridUnitsData _gridUnitsData;
 
   set gridUnitsData(GridUnitsData value) {
-    if (_gridUnitsData == value) return;
-
+    if (_gridUnitsData == value && !value.isInitState) return;
     _gridUnitsData = value;
     markNeedsLayout();
   }

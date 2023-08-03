@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
-import 'package:chart_it/src/charts/renderers/axis_labels.dart';
+import 'package:chart_it/src/charts/renderers/axis_labels_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 

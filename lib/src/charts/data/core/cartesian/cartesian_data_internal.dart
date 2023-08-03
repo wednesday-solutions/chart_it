@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 /// Holds the unit values and ranges of the chart.
 class GridUnitsData extends Equatable {
+  final bool isInitState;
   final double xUnitValue;
   final double xUnitsCount;
   final double yUnitValue;
@@ -18,6 +19,7 @@ class GridUnitsData extends Equatable {
   final double minYRange;
 
   const GridUnitsData({
+    this.isInitState = false,
     required this.xUnitValue,
     required this.xUnitsCount,
     required this.yUnitValue,
@@ -45,8 +47,8 @@ class GridUnitsData extends Equatable {
 
   static GridUnitsData lerp(
       GridUnitsData? current, GridUnitsData target, double t) {
-    // TODO: Check which values of current can be null.
     return GridUnitsData(
+      isInitState: target.isInitState,
       xUnitValue: lerpDouble(
               current?.xUnitValue ?? target.xUnitValue, target.xUnitValue, t) ??
           1,
@@ -72,8 +74,37 @@ class GridUnitsData extends Equatable {
     );
   }
 
+  GridUnitsData copyWith({
+    bool? isInitState,
+    double? xUnitValue,
+    double? xUnitsCount,
+    double? yUnitValue,
+    double? yUnitsCount,
+    double? totalXRange,
+    double? totalYRange,
+    double? maxXRange,
+    double? maxYRange,
+    double? minXRange,
+    double? minYRange,
+  }) {
+    return GridUnitsData(
+      isInitState: isInitState ?? this.isInitState,
+      xUnitValue: xUnitValue ?? this.xUnitValue,
+      xUnitsCount: xUnitsCount ?? this.xUnitsCount,
+      yUnitValue: yUnitValue ?? this.yUnitValue,
+      yUnitsCount: yUnitsCount ?? this.yUnitsCount,
+      totalXRange: totalXRange ?? this.totalXRange,
+      totalYRange: totalYRange ?? this.totalYRange,
+      maxXRange: maxXRange ?? this.maxXRange,
+      maxYRange: maxYRange ?? this.maxYRange,
+      minXRange: minXRange ?? this.minXRange,
+      minYRange: minYRange ?? this.minYRange,
+    );
+  }
+
   @override
-  List<Object?> get props => [
+  List<Object> get props => [
+        isInitState,
         xUnitsCount,
         xUnitValue,
         yUnitsCount,
@@ -88,7 +119,7 @@ class GridUnitsData extends Equatable {
 
   @override
   String toString() {
-    return 'GridUnitsData{xUnitValue: $xUnitValue, xUnitsCount: $xUnitsCount, yUnitValue: $yUnitValue, yUnitsCount: $yUnitsCount, totalXRange: $totalXRange, totalYRange: $totalYRange, maxXRange: $maxXRange, maxYRange: $maxYRange, minXRange: $minXRange, minYRange: $minYRange}';
+    return 'GridUnitsData{isInitState: $isInitState, xUnitValue: $xUnitValue, xUnitsCount: $xUnitsCount, yUnitValue: $yUnitValue, yUnitsCount: $yUnitsCount, totalXRange: $totalXRange, totalYRange: $totalYRange, maxXRange: $maxXRange, maxYRange: $maxYRange, minXRange: $minXRange, minYRange: $minYRange}';
   }
 }
 

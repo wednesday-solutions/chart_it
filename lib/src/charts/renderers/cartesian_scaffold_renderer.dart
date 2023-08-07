@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/renderers/axis_labels_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -26,7 +27,7 @@ class CartesianScaffold extends RenderObjectWidget
   final AxisLabelConfig? topLabel;
   final AxisLabelConfig? bottomLabel;
   final Widget chart;
-  final GridUnitsData gridUnitsData;
+  final CartesianGridUnitsData gridUnitsData;
   final CartesianChartStylingData stylingData;
   final CartesianChartStructureData structure;
   final double? width;
@@ -129,9 +130,9 @@ class CartesianScaffold extends RenderObjectWidget
 
 class RenderCartesianScaffold extends RenderBox
     with SlottedContainerRenderObjectMixin<ChartScaffoldSlot> {
-  GridUnitsData _gridUnitsData;
+  CartesianGridUnitsData _gridUnitsData;
 
-  set gridUnitsData(GridUnitsData value) {
+  set gridUnitsData(CartesianGridUnitsData value) {
     if (_gridUnitsData == value) return;
     _gridUnitsData = value;
     markNeedsLayout();
@@ -167,7 +168,7 @@ class RenderCartesianScaffold extends RenderBox
   final Paint _axisPaint;
 
   RenderCartesianScaffold({
-    required GridUnitsData gridUnitsData,
+    required CartesianGridUnitsData gridUnitsData,
     required CartesianChartStylingData stylingData,
     double? width,
     double? height,
@@ -586,7 +587,7 @@ class RenderCartesianScaffold extends RenderBox
   CartesianPaintingGeometryData _calculatePaintingGeometryData(
     Size widgetSize,
     Offset origin,
-    GridUnitsData gridUnitsData,
+    CartesianGridUnitsData gridUnitsData,
   ) {
     // TODO: Calculate the effective width & height of the graph
     final xUnitValue = gridUnitsData.xUnitValue.toDouble();

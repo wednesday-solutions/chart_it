@@ -1,5 +1,6 @@
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class CartesianChartPainter {
   CartesianChartStylingData style;
   CartesianChartStructureData structure;
   List<PaintingState> states;
-  GridUnitsData gridUnitsData;
+  CartesianGridUnitsData gridUnitsData;
 
   CartesianChartPainter({
     required this.style,

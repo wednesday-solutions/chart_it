@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
@@ -178,7 +179,7 @@ class CartesianController extends ChangeNotifier
         rangeResult.maxYRange.abs() + rangeResult.minYRange.abs();
     final yUnitsCount = totalYRange / structureData.yUnitValue;
 
-    final gridUnitData = GridUnitsData(
+    final gridUnitData = CartesianGridUnitsData(
       xUnitValue: structureData.xUnitValue.toDouble(),
       xUnitsCount: xUnitsCount,
       yUnitValue: structureData.yUnitValue.toDouble(),

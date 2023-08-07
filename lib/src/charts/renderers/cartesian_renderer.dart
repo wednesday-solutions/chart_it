@@ -1,5 +1,5 @@
 import 'package:chart_it/src/charts/data/core.dart';
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_chart_painter.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
@@ -14,7 +14,7 @@ class CartesianChartContainer extends LeafRenderObjectWidget {
   final CartesianChartStructureData structure;
   final List<PaintingState> states;
   final InteractionDispatcher interactionDispatcher;
-  final GridUnitsData gridUnitsData;
+  final CartesianGridUnitsData gridUnitsData;
 
   const CartesianChartContainer({
     Key? key,
@@ -69,7 +69,7 @@ class RenderCartesianChartContainer extends RenderBox {
     markNeedsPaint();
   }
 
-  set gridUnitsData(GridUnitsData value) {
+  set gridUnitsData(CartesianGridUnitsData value) {
     if (_painter.gridUnitsData == value) return;
     _painter.gridUnitsData = value;
     markNeedsPaint();
@@ -92,7 +92,7 @@ class RenderCartesianChartContainer extends RenderBox {
     required CartesianChartStructureData structure,
     required List<PaintingState> states,
     required InteractionDispatcher interactionDispatcher,
-    required GridUnitsData gridUnitsData,
+    required CartesianGridUnitsData gridUnitsData,
   })  : _interactionDispatcher = interactionDispatcher,
         _painter = CartesianChartPainter(
           style: style,

@@ -69,7 +69,7 @@ mixin ChartAnimationsMixin<K, T> on ChangeNotifier {
       latestDataDispatchedToPainting = targetData;
     }
 
-    // Tween a List of Tweens for CartesianSeries
+    // Tween a List of Tweens for any DataSeries
     tweenData = getTweens(newData: targetData, isInitPhase: isInitPhase);
 
     // Finally animate the differences

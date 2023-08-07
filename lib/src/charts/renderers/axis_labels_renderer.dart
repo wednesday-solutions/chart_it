@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/renderers/cartesian_scaffold_renderer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/rendering.dart';
 enum AxisOrientation { vertical, horizontal }
 
 class AxisLabelsRenderer extends MultiChildRenderObjectWidget {
-  final GridUnitsData gridUnitsData;
+  final CartesianGridUnitsData gridUnitsData;
   final AxisOrientation orientation;
   final bool constraintEdgeLabels;
   final bool centerLabels;
@@ -68,9 +68,9 @@ class RenderAxisLabels extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
-  GridUnitsData _gridUnitsData;
+  CartesianGridUnitsData _gridUnitsData;
 
-  set gridUnitsData(GridUnitsData value) {
+  set gridUnitsData(CartesianGridUnitsData value) {
     if (_gridUnitsData == value && !value.isInitState) return;
     _gridUnitsData = value;
     markNeedsLayout();
@@ -101,7 +101,7 @@ class RenderAxisLabels extends RenderBox
   }
 
   RenderAxisLabels({
-    required GridUnitsData gridUnitsData,
+    required CartesianGridUnitsData gridUnitsData,
     required AxisOrientation orientation,
     required bool constraintEdgeLabels,
     required bool centerLabels,

@@ -1,131 +1,11 @@
-import 'dart:ui';
-
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
-/// Holds the unit values and ranges of the chart.
-class GridUnitsData extends Equatable {
-  final bool isInitState;
-  final double xUnitValue;
-  final double xUnitsCount;
-  final double yUnitValue;
-  final double yUnitsCount;
-  final double totalXRange;
-  final double totalYRange;
-  final double maxXRange;
-  final double maxYRange;
-  final double minXRange;
-  final double minYRange;
-
-  const GridUnitsData({
-    this.isInitState = false,
-    required this.xUnitValue,
-    required this.xUnitsCount,
-    required this.yUnitValue,
-    required this.yUnitsCount,
-    required this.totalXRange,
-    required this.totalYRange,
-    required this.maxXRange,
-    required this.maxYRange,
-    required this.minXRange,
-    required this.minYRange,
-  });
-
-  static const zero = GridUnitsData(
-    xUnitValue: 1,
-    xUnitsCount: 1,
-    yUnitValue: 1,
-    yUnitsCount: 1,
-    totalXRange: 0,
-    totalYRange: 0,
-    maxXRange: 0,
-    maxYRange: 0,
-    minXRange: 0,
-    minYRange: 0,
-  );
-
-  static GridUnitsData lerp(
-      GridUnitsData? current, GridUnitsData target, double t) {
-    return GridUnitsData(
-      isInitState: target.isInitState,
-      xUnitValue: lerpDouble(
-              current?.xUnitValue ?? target.xUnitValue, target.xUnitValue, t) ??
-          1,
-      xUnitsCount: lerpDouble(current?.xUnitsCount ?? target.xUnitsCount,
-              target.xUnitsCount, t) ??
-          0.0,
-      yUnitValue: lerpDouble(
-              current?.yUnitValue ?? target.yUnitValue, target.yUnitValue, t) ??
-          1,
-      yUnitsCount: lerpDouble(current?.yUnitsCount ?? target.yUnitsCount,
-              target.yUnitsCount, t) ??
-          0.0,
-      totalXRange: lerpDouble(current?.totalXRange ?? target.totalXRange,
-              target.totalXRange, t) ??
-          0.0,
-      totalYRange: lerpDouble(current?.totalYRange ?? target.totalYRange,
-              target.totalYRange, t) ??
-          0.0,
-      maxXRange: lerpDouble(current?.maxXRange, target.maxXRange, t) ?? 0,
-      maxYRange: lerpDouble(current?.maxYRange, target.maxYRange, t) ?? 0,
-      minXRange: lerpDouble(current?.minXRange, target.minXRange, t) ?? 0,
-      minYRange: lerpDouble(current?.minYRange, target.minYRange, t) ?? 0,
-    );
-  }
-
-  GridUnitsData copyWith({
-    bool? isInitState,
-    double? xUnitValue,
-    double? xUnitsCount,
-    double? yUnitValue,
-    double? yUnitsCount,
-    double? totalXRange,
-    double? totalYRange,
-    double? maxXRange,
-    double? maxYRange,
-    double? minXRange,
-    double? minYRange,
-  }) {
-    return GridUnitsData(
-      isInitState: isInitState ?? this.isInitState,
-      xUnitValue: xUnitValue ?? this.xUnitValue,
-      xUnitsCount: xUnitsCount ?? this.xUnitsCount,
-      yUnitValue: yUnitValue ?? this.yUnitValue,
-      yUnitsCount: yUnitsCount ?? this.yUnitsCount,
-      totalXRange: totalXRange ?? this.totalXRange,
-      totalYRange: totalYRange ?? this.totalYRange,
-      maxXRange: maxXRange ?? this.maxXRange,
-      maxYRange: maxYRange ?? this.maxYRange,
-      minXRange: minXRange ?? this.minXRange,
-      minYRange: minYRange ?? this.minYRange,
-    );
-  }
-
-  @override
-  List<Object> get props => [
-        isInitState,
-        xUnitsCount,
-        xUnitValue,
-        yUnitsCount,
-        yUnitValue,
-        totalXRange,
-        totalYRange,
-        maxXRange,
-        maxYRange,
-        minXRange,
-        minYRange
-      ];
-
-  @override
-  String toString() {
-    return 'GridUnitsData{isInitState: $isInitState, xUnitValue: $xUnitValue, xUnitsCount: $xUnitsCount, yUnitValue: $yUnitValue, yUnitsCount: $yUnitsCount, totalXRange: $totalXRange, totalYRange: $totalYRange, maxXRange: $maxXRange, maxYRange: $maxYRange, minXRange: $minXRange, minYRange: $minYRange}';
-  }
-}
-
 class CartesianData with EquatableMixin {
   List<PaintingState> states;
-  GridUnitsData gridUnitsData;
+  CartesianGridUnitsData gridUnitsData;
 
   CartesianData({
     required this.states,
@@ -133,7 +13,7 @@ class CartesianData with EquatableMixin {
   });
 
   factory CartesianData.zero({
-    required GridUnitsData gridUnitsData,
+    required CartesianGridUnitsData gridUnitsData,
   }) {
     return CartesianData(
       states: List.empty(),
@@ -148,8 +28,8 @@ class CartesianData with EquatableMixin {
   ) {
     return CartesianData(
       states: PaintingState.lerpStateList(current?.states, target.states, t),
-      gridUnitsData:
-          GridUnitsData.lerp(current?.gridUnitsData, target.gridUnitsData, t),
+      gridUnitsData: CartesianGridUnitsData.lerp(
+          current?.gridUnitsData, target.gridUnitsData, t),
     );
   }
 
@@ -182,7 +62,7 @@ class CartesianPaintingGeometryData extends Equatable {
   final double valueUnitWidth;
   final double valueUnitHeight;
 
-  final GridUnitsData unitData;
+  final CartesianGridUnitsData unitData;
 
   final double xUnitValue;
 
@@ -204,7 +84,7 @@ class CartesianPaintingGeometryData extends Equatable {
     graphUnitHeight: 1,
     valueUnitWidth: 1,
     valueUnitHeight: 1,
-    unitData: GridUnitsData.zero,
+    unitData: CartesianGridUnitsData.zero,
     xUnitValue: 1,
   );
 
@@ -227,7 +107,7 @@ class CartesianPaintingGeometryData extends Equatable {
     double? graphUnitHeight,
     double? valueUnitWidth,
     double? valueUnitHeight,
-    GridUnitsData? unitData,
+    CartesianGridUnitsData? unitData,
     EdgeInsets? graphEdgeInsets,
     double? xUnitValue,
   }) {
@@ -252,6 +132,16 @@ class CartesianPaintingGeometryData extends Equatable {
 
   @override
   String toString() {
-    return 'CartesianPaintingGeometryData{graphPolygon: $graphPolygon, axisOrigin: $axisOrigin, graphUnitWidth: $graphUnitWidth, graphUnitHeight: $graphUnitHeight, valueUnitWidth: $valueUnitWidth, valueUnitHeight: $valueUnitHeight, unitData: $unitData, xUnitValue: $xUnitValue}';
+    return '''
+    CartesianPaintingGeometryData{
+      graphPolygon: $graphPolygon, 
+      axisOrigin: $axisOrigin, 
+      graphUnitWidth: $graphUnitWidth, 
+      graphUnitHeight: $graphUnitHeight, 
+      valueUnitWidth: $valueUnitWidth, 
+      valueUnitHeight: $valueUnitHeight, 
+      unitData: $unitData, 
+      xUnitValue: $xUnitValue,
+    }''';
   }
 }

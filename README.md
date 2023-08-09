@@ -16,7 +16,7 @@ Chart_It is a fully written in dart, strongly customizable and seamlessly animat
 Add the `chart_it` package to your project's `pubspec.yaml` file:
 ```yaml
 dependencies:
-  chart_it: ^0.1.0
+  chart_it: ^0.2.0
 ```
 Alternatively, you can also run the following command in your Flutter Project:
 ```shell

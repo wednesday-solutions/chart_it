@@ -22,6 +22,28 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
       },
       child: BarChart(
         height: 400,
+        axisLabels: AxisLabels(
+          left: AxisLabelConfig(
+            constraintEdgeLabels: true,
+            builder: (index, _) => Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Text(
+                '$index',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          bottom: AxisLabelConfig(
+            centerLabels: true,
+            builder: (index, _) => Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                '$index',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
         chartStructureData: const CartesianChartStructureData(xUnitValue: 1),
         chartStylingData: CartesianChartStylingData(
           backgroundColor: theme.colorScheme.surface,
@@ -58,58 +80,61 @@ class _TestBarChartsAnimationState extends State<TestBarChartsAnimation> {
 List<BarGroup> makeGroupData(BuildContext context) {
   double next(num min, num max) => rng.nextDouble() * (max - min) + min;
 
-  List<BarGroup> barSeries = List.generate(next(3, 5).toInt(), (index) {
-    if (rng.nextBool()) {
-      return SimpleBar(
-        xValue: index + 1,
-        yValue: BarData(yValue: next(-15, 90)),
-      );
-    } else {
-      return MultiBar(
-        xValue: index + 1,
-        yValues: [
-          BarData(
-            barStyle: const BarDataStyle(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFFBDA2F4),
-                  Color(0xFF7136E7),
-                ],
+  List<BarGroup> barSeries = List.generate(
+    next(3, 5).toInt(),
+    (index) {
+      if (rng.nextBool()) {
+        return SimpleBar(
+          xValue: index + 1,
+          yValue: BarData(yValue: next(-15, 90)),
+        );
+      } else {
+        return MultiBar(
+          xValue: index + 1,
+          yValues: [
+            BarData(
+              barStyle: const BarDataStyle(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Color(0xFFBDA2F4),
+                    Color(0xFF7136E7),
+                  ],
+                ),
+                strokeWidth: 3.0,
+                strokeColor: Color(0xFFBDA2F4),
+                cornerRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5.0),
+                  topRight: Radius.circular(5.0),
+                ),
               ),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFFBDA2F4),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
+              yValue: next(-10, 90),
             ),
-            yValue: next(-10, 90),
-          ),
-          BarData(
-            barStyle: const BarDataStyle(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFFE39F56),
-                  Color(0xFFBDA2F4),
-                ],
+            BarData(
+              barStyle: const BarDataStyle(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Color(0xFFE39F56),
+                    Color(0xFFBDA2F4),
+                  ],
+                ),
+                strokeWidth: 3.0,
+                strokeColor: Color(0xFFE39F56),
+                cornerRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5.0),
+                  topRight: Radius.circular(5.0),
+                ),
               ),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFFE39F56),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
+              yValue: next(-20, 90),
             ),
-            yValue: next(-20, 90),
-          ),
-        ],
-      );
-    }
-  });
+          ],
+        );
+      }
+    },
+  );
 
   return barSeries;
 }

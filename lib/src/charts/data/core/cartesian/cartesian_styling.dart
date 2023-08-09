@@ -248,9 +248,15 @@ class CartesianAxisStyle extends Equatable {
   }
 }
 
+/// Provides the configuration for a Axis Label Widget for a Cartesian Axis.
 class AxisLabelConfig extends Equatable {
+  /// The Builder method to provide a widget for the label.
   final LabelBuilder builder;
+
+  /// Controls if the labels at the edges should pull inwards or not.
   final bool constraintEdgeLabels;
+
+  /// Controls if the label should be centered along the draw point.
   final bool centerLabels;
 
   const AxisLabelConfig({
@@ -266,6 +272,7 @@ class AxisLabelConfig extends Equatable {
   List<Object?> get props => [constraintEdgeLabels, centerLabels];
 }
 
+/// Public class to provide label configuration along each edge of the Cartesian Chart.
 class AxisLabels {
   final AxisLabelConfig? left;
   final AxisLabelConfig? top;

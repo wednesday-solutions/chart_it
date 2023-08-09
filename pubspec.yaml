@@ -5,7 +5,7 @@ homepage: https://flutter.wednesday.is/charts/chart-it
 repository: https://github.com/wednesday-solutions/chart_it
 
 environment:
-  sdk: ">=2.19.2 <3.0.0"
+  sdk: ">=2.19.2 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:

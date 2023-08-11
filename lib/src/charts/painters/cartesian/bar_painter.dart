@@ -139,6 +139,15 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         // We need to find the arrangement of our bar group
         if (group.arrangement == BarGroupArrangement.stack) {
           // TODO: Paint Stacked Bars
+          _drawStackedBars(
+            group: group,
+            groupIndex: i,
+            canvas: canvas,
+            chart: chart,
+            dxOffset: dx,
+            style: style,
+            data: data,
+          );
         } else {
           // Paint Bar Series across unit width
           _drawBarSeries(
@@ -157,14 +166,15 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
-  _drawSimpleBar(
-      {required SimpleBar group,
-      required int groupIndex,
-      required Canvas canvas,
-      required CartesianPaintingGeometryData chart,
-      required double dxOffset,
-      required CartesianChartStylingData style,
-      required _BarPainterData data}) {
+  _drawSimpleBar({
+    required SimpleBar group,
+    required int groupIndex,
+    required Canvas canvas,
+    required CartesianPaintingGeometryData chart,
+    required double dxOffset,
+    required CartesianChartStylingData style,
+    required _BarPainterData data,
+  }) {
     // Precedence take like this
     // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
     var barStyle = group.yValue.barStyle ??
@@ -184,7 +194,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
       chart: chart,
       style: barStyle,
       // dx pos to start the bar from
-      dxCenter: dxOffset + (data.unitWidth * 0.5) - (data.barWidth * 0.5),
+      dxPos: dxOffset + (data.unitWidth * 0.5) - (data.barWidth * 0.5),
+      dyPos: chart.axisOrigin.dy,
       barWidth: data.barWidth,
       leftPadding: group.padding,
       rightPadding: group.padding,
@@ -200,14 +211,15 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     );
   }
 
-  _drawBarSeries(
-      {required MultiBar group,
-      required int groupIndex,
-      required Canvas canvas,
-      required CartesianPaintingGeometryData chart,
-      required double dxOffset,
-      required CartesianChartStylingData style,
-      required _BarPainterData data}) {
+  _drawBarSeries({
+    required MultiBar group,
+    required int groupIndex,
+    required Canvas canvas,
+    required CartesianPaintingGeometryData chart,
+    required double dxOffset,
+    required CartesianChartStylingData style,
+    required _BarPainterData data,
+  }) {
     // var groupWidth = _unitWidth / group.yValues.length;
     // Draw individual bars in this group
     var groupCount = group.yValues.length; // No. of groups for this multibar
@@ -238,7 +250,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         chart: chart,
         style: barStyle,
         // dx pos to start the bar in this group
-        dxCenter: x,
+        dxPos: x,
+        dyPos: chart.axisOrigin.dy,
         barWidth: data.barWidth,
         leftPadding: leftPadding,
         rightPadding: rightPadding,
@@ -257,6 +270,62 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
+  _drawStackedBars({
+    required MultiBar group,
+    required int groupIndex,
+    required Canvas canvas,
+    required CartesianPaintingGeometryData chart,
+    required double dxOffset,
+    required CartesianChartStylingData style,
+    required _BarPainterData data,
+  }) {
+    var stackCount = group.yValues.length; // No. of bars for this stack
+
+    // Start Vertical Offset
+    var y = chart.axisOrigin.dy;
+
+    for (var i = 0; i < stackCount; i++) {
+      final barData = group.yValues[i];
+      final verticalHeight = barData.yValue * data.vRatio;
+      // Precedence take like this
+      // barStyle > groupStyle > seriesStyle > defaultSeriesStyle
+      var barStyle = barData.barStyle ??
+          group.style ??
+          data.series.seriesStyle ??
+          defaultBarSeriesStyle;
+
+      // Since we have only one yValue, we only have to draw one bar
+      _drawBar(
+        barGroup: group,
+        barGroupIndex: groupIndex,
+        barData: barData,
+        barDataIndex: i,
+        canvas: canvas,
+        chart: chart,
+        style: barStyle,
+        // dx pos to start the bar from
+        dxPos: dxOffset + (data.unitWidth * 0.5) - (data.barWidth * 0.5),
+        // dy pos to increase the height as the bars stack
+        dyPos: y,
+        barWidth: data.barWidth,
+        leftPadding: group.padding,
+        rightPadding: group.padding,
+        data: data,
+      );
+      // Finally paint the y-labels for this bar
+      _drawBarValues(
+        canvas: canvas,
+        chart: chart,
+        barData: barData,
+        data: data,
+        dx: dxOffset,
+      );
+
+      // TODO: Increment the dxCenter on y value height, instead of x
+      y -= verticalHeight;
+    }
+  }
+
   _drawBar({
     required BarGroup barGroup,
     required int barGroupIndex,
@@ -265,7 +334,8 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     required Canvas canvas,
     required CartesianPaintingGeometryData chart,
     BarDataStyle? style,
-    required double dxCenter,
+    required double dxPos,
+    required double dyPos,
     required double barWidth,
     required double leftPadding,
     required double rightPadding,
@@ -286,10 +356,10 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     var bottomRight = style?.cornerRadius?.bottomRight ?? Radius.zero;
 
     var bar = RRect.fromLTRBAndCorners(
-      dxCenter + leftPadding, // start X + padding
-      chart.axisOrigin.dy - y, // axisOrigin's dY - yValue
-      dxCenter + barWidth - rightPadding, // startX + barWidth
-      chart.axisOrigin.dy, // axisOrigin's dY
+      dxPos + leftPadding, // start X + padding
+      dyPos - y, // axisOrigin's dY - yValue
+      dxPos + barWidth - rightPadding, // startX + barWidth
+      dyPos, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
       topLeft: barData.yValue.isNegative ? bottomLeft : topLeft,
       topRight: barData.yValue.isNegative ? bottomRight : topRight,

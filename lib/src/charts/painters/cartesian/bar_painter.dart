@@ -282,7 +282,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     var stackCount = group.yValues.length; // No. of bars for this stack
 
     // Start Vertical Offset
-    var y = chart.axisOrigin.dy;
+    var positiveYPos = chart.axisOrigin.dy, negativeYPos = chart.axisOrigin.dy;
 
     for (var i = 0; i < stackCount; i++) {
       final barData = group.yValues[i];
@@ -306,7 +306,7 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         // dx pos to start the bar from
         dxPos: dxOffset + (data.unitWidth * 0.5) - (data.barWidth * 0.5),
         // dy pos to increase the height as the bars stack
-        dyPos: y,
+        dyPos: barData.yValue.isNegative ? negativeYPos : positiveYPos,
         barWidth: data.barWidth,
         leftPadding: group.padding,
         rightPadding: group.padding,
@@ -321,8 +321,13 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
         dx: dxOffset,
       );
 
-      // TODO: Increment the dxCenter on y value height, instead of x
-      y -= verticalHeight;
+      if (!barData.yValue.isNegative) {
+        positiveYPos -= verticalHeight;
+      } else {
+        // If value is negative then height needs to increase
+        // because to go into negative axis, the height needs to be incremented from axis origin
+        negativeYPos += verticalHeight;
+      }
     }
   }
 

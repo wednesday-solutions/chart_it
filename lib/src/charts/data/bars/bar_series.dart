@@ -93,7 +93,7 @@ class BarSeriesConfig extends CartesianConfig {
         // In a Vertical Stack, we can also have few bars in Negative Region
         minY = min(minY, yValue.fold(0, (a, b) => min(a, b.yValue.toDouble())));
         // For a stack, the y value of the bar is the total of all bars
-        maxY = max(maxY, yValue.fold(0, (a, b) => a + b.yValue));
+        maxY = max(maxY, yValue.fold(0, (a, b) => max(a, a + b.yValue)));
       } else {
         // Is this BarGroup a Multibar with Series Arrangement?
         foundAtleastOneBarSeries = (barGroup is MultiBar &&

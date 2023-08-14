@@ -360,11 +360,13 @@ class BarPainter implements CartesianPainter<BarInteractionResult> {
     var bottomLeft = style?.cornerRadius?.bottomLeft ?? Radius.zero;
     var bottomRight = style?.cornerRadius?.bottomRight ?? Radius.zero;
 
+    var strokeWidthOffset = (style?.strokeWidth ?? 0) * 0.5;
+
     var bar = RRect.fromLTRBAndCorners(
-      dxPos + leftPadding, // start X + padding
-      dyPos - y, // axisOrigin's dY - yValue
-      dxPos + barWidth - rightPadding, // startX + barWidth
-      dyPos, // axisOrigin's dY
+      dxPos + leftPadding + strokeWidthOffset, // start X + padding
+      dyPos - y + strokeWidthOffset, // axisOrigin's dY - yValue
+      dxPos + barWidth - rightPadding - strokeWidthOffset, // startX + barWidth
+      dyPos - strokeWidthOffset, // axisOrigin's dY
       // We are swapping top & bottom corners for negative i.e. inverted bar
       topLeft: barData.yValue.isNegative ? bottomLeft : topLeft,
       topRight: barData.yValue.isNegative ? bottomRight : topRight,

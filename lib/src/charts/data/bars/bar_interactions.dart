@@ -1,5 +1,5 @@
-import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:chart_it/chart_it.dart';
+import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 
@@ -123,7 +123,7 @@ class SnapToBarConfig extends Equatable {
     this.snapToHeightOnTap = false,
     this.snapToWidthOnDoubleTap = true,
     this.snapToHeightOnDoubleTap = false,
-    this.snapToBarBehaviour = SnapToBarBehaviour.snapToSection,
+    this.snapToBarBehaviour = SnapToBarBehaviour.snapToNearest,
   });
 
   /// {@macro SnapToBarConfig}
@@ -132,7 +132,7 @@ class SnapToBarConfig extends Equatable {
   const SnapToBarConfig.forAll({
     required bool snapToWidth,
     required bool snapToHeight,
-    this.snapToBarBehaviour = SnapToBarBehaviour.snapToSection,
+    this.snapToBarBehaviour = SnapToBarBehaviour.snapToNearest,
   })  : snapToWidthOnDrag = snapToWidth,
         snapToWidthOnTap = snapToWidth,
         snapToWidthOnDoubleTap = snapToWidth,
@@ -151,7 +151,7 @@ class SnapToBarConfig extends Equatable {
         snapToHeightOnDrag = false,
         snapToHeightOnTap = false,
         snapToHeightOnDoubleTap = false,
-        snapToBarBehaviour = SnapToBarBehaviour.snapToSection;
+        snapToBarBehaviour = SnapToBarBehaviour.snapToNearest;
 
   @override
   List<Object?> get props => [

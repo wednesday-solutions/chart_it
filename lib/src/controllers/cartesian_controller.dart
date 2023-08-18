@@ -4,7 +4,7 @@ import 'package:chart_it/chart_it.dart';
 import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
-import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
+import 'package:chart_it/src/charts/painters/cartesian/demo_bar_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
@@ -148,7 +148,7 @@ class CartesianController extends ChangeNotifier
       series.when(
         onBarSeries: (barSeries) {
           // Invalidate Painter for BarSeries
-          var painter = BarPainter(useGraphUnits: true);
+          var painter = DemoBarPainter(useGraphUnits: true);
           var config = BarSeriesConfig();
 
           updateInteractionDetectionStates(barSeries.interactionEvents);

@@ -16,7 +16,7 @@ class _TestBarChartsInteractionState extends State<TestBarChartsInteraction> {
         isEnabled: true,
         snapToBarConfig: const SnapToBarConfig.forAll(
           snapToWidth: true,
-          snapToHeight: false,
+          snapToHeight: true,
         ),
         onTap: (result) {
           setState(() {

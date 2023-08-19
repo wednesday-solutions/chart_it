@@ -20,8 +20,8 @@ enum ChartScaffoldSlot { center, left, bottom, right, top }
 
 typedef LabelBuilder = Widget Function(int index, double value);
 
-class CartesianScaffold extends RenderObjectWidget
-    with SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot> {
+class CartesianScaffold
+    extends SlottedMultiChildRenderObjectWidget<ChartScaffoldSlot, RenderBox> {
   final AxisLabelConfig? leftLabel;
   final AxisLabelConfig? rightLabel;
   final AxisLabelConfig? topLabel;
@@ -101,9 +101,8 @@ class CartesianScaffold extends RenderObjectWidget
   }
 
   @override
-  SlottedContainerRenderObjectMixin<ChartScaffoldSlot> createRenderObject(
-    BuildContext context,
-  ) {
+  SlottedContainerRenderObjectMixin<ChartScaffoldSlot, RenderBox>
+      createRenderObject(BuildContext context) {
     return RenderCartesianScaffold(
       gridUnitsData: gridUnitsData,
       stylingData: stylingData,
@@ -129,7 +128,7 @@ class CartesianScaffold extends RenderObjectWidget
 }
 
 class RenderCartesianScaffold extends RenderBox
-    with SlottedContainerRenderObjectMixin<ChartScaffoldSlot> {
+    with SlottedContainerRenderObjectMixin<ChartScaffoldSlot, RenderBox> {
   CartesianGridUnitsData _gridUnitsData;
 
   set gridUnitsData(CartesianGridUnitsData value) {

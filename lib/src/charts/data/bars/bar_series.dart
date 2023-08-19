@@ -77,6 +77,7 @@ class BarSeriesConfig extends CartesianConfig {
     List<BarGroup> barData,
     Function(double minX, double maxX, double minY, double maxY) onUpdate,
   ) {
+    var foundAtleastOneBarSeries = false;
     for (var i = 0; i < barData.length; i++) {
       final barGroup = barData[i];
       var yValue = barGroup.yValues();
@@ -92,8 +93,12 @@ class BarSeriesConfig extends CartesianConfig {
         // In a Vertical Stack, we can also have few bars in Negative Region
         minY = min(minY, yValue.fold(0, (a, b) => min(a, b.yValue.toDouble())));
         // For a stack, the y value of the bar is the total of all bars
-        maxY = max(maxY, yValue.fold(0, (a, b) => a + b.yValue));
+        maxY = max(maxY, yValue.fold(0, (a, b) => max(a, a + b.yValue)));
       } else {
+        // Is this BarGroup a Multibar with Series Arrangement?
+        foundAtleastOneBarSeries = (barGroup is MultiBar &&
+            barGroup.arrangement == BarGroupArrangement.series);
+
         for (var i = 0; i < yValue.length; i++) {
           final data = yValue[i];
           minY = min(minY, data.yValue.toDouble());
@@ -104,7 +109,11 @@ class BarSeriesConfig extends CartesianConfig {
       minX = min(minX, barGroup.xValue.toDouble());
       maxX = max(maxX, barGroup.xValue.toDouble());
 
-      maxBarsInGroup = max(maxBarsInGroup, yValue.length);
+      // We don't need to shrink the bar width if there are
+      // no bar groups with Series Arrangement.
+      if (foundAtleastOneBarSeries) {
+        maxBarsInGroup = max(maxBarsInGroup, yValue.length);
+      }
 
       onUpdate(minX, maxX, minY, maxY);
     }

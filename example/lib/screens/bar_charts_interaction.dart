@@ -167,8 +167,8 @@ List<BarGroup> makeGroupData(BuildContext context) {
               ),
               yValue: _interactionIndex == index
                   ? _barIndex == 0
-                  ? 10.5 + index * 0.5
-                  : 10 + index * 0.5
+                      ? 10.5 + index * 0.5
+                      : 10 + index * 0.5
                   : 10 + index * 0.5,
             ),
             BarData(
@@ -190,8 +190,8 @@ List<BarGroup> makeGroupData(BuildContext context) {
               ),
               yValue: _interactionIndex == index
                   ? _barIndex == 1
-                  ? 4.5 + index * 0.5
-                  : 4 + index * 0.5
+                      ? 4.5 + index * 0.5
+                      : 4 + index * 0.5
                   : 4 + index * 0.5,
             ),
           ],

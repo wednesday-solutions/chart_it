@@ -84,52 +84,54 @@ List<BarGroup> makeGroupData(BuildContext context) {
     next(3, 5).toInt(),
     (index) {
       if (rng.nextBool()) {
-        return rng.nextBool() ? SimpleBar(
-          xValue: index + 1,
-          yValue: BarData(yValue: next(-15, 90)),
-        ) : MultiBar(
-          xValue: index + 1,
-          arrangement: BarGroupArrangement.stack,
-          yValues: [
-            BarData(
-              barStyle: const BarDataStyle(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFFBDA2F4),
-                    Color(0xFF7136E7),
-                  ],
-                ),
-                strokeWidth: 3.0,
-                strokeColor: Color(0xFFBDA2F4),
-                cornerRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5.0),
-                  topRight: Radius.circular(5.0),
-                ),
-              ),
-              yValue: next(-10, 90),
-            ),
-            BarData(
-              barStyle: const BarDataStyle(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFFE39F56),
-                    Color(0xFFBDA2F4),
-                  ],
-                ),
-                strokeWidth: 3.0,
-                strokeColor: Color(0xFFE39F56),
-                cornerRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              yValue: next(-20, 90),
-            ),
-          ],
-        );
+        return rng.nextBool()
+            ? SimpleBar(
+                xValue: index + 1,
+                yValue: BarData(yValue: next(-15, 90)),
+              )
+            : MultiBar(
+                xValue: index + 1,
+                arrangement: BarGroupArrangement.stack,
+                yValues: [
+                  BarData(
+                    barStyle: const BarDataStyle(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Color(0xFFBDA2F4),
+                          Color(0xFF7136E7),
+                        ],
+                      ),
+                      strokeWidth: 3.0,
+                      strokeColor: Color(0xFFBDA2F4),
+                      cornerRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5.0),
+                        topRight: Radius.circular(5.0),
+                      ),
+                    ),
+                    yValue: next(-10, 90),
+                  ),
+                  BarData(
+                    barStyle: const BarDataStyle(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Color(0xFFE39F56),
+                          Color(0xFFBDA2F4),
+                        ],
+                      ),
+                      strokeWidth: 3.0,
+                      strokeColor: Color(0xFFE39F56),
+                      cornerRadius: BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    yValue: next(-20, 90),
+                  ),
+                ],
+              );
       } else {
         return MultiBar(
           xValue: index + 1,

@@ -143,6 +143,7 @@ List<BarGroup> makeGroupData(BuildContext context) {
         //         : 8 + index / 2 * 0.5,
         //   ),
         // );
+
         return MultiBar(
           xValue: index + 1,
           arrangement: BarGroupArrangement.series,

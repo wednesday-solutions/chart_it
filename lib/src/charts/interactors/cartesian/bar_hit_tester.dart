@@ -193,9 +193,7 @@ class BarHitTester {
       if (snapToBarConfig.shouldSnapToWidth(type)) {
         final isLastBar = i == bars.length - 1;
         final isPointerAfterBar = bar.isPointerAfterBar(localPosition);
-        // The condition here is
-        // 1. If Pointer is after bar and
-        // 2. Is not the last bar.
+
         if (!isPointerAfterBar || isLastBar) {
           return _snapToNearestBar(
             localPosition: localPosition,

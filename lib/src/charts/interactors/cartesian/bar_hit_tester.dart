@@ -60,8 +60,8 @@ class BarHitTester {
     required BarGroupInteractionData currentGroup,
   }) {
     final distToPrev =
-    (localPosition.dx - (previousGroup?.groupEnd ?? double.maxFinite))
-        .abs();
+        (localPosition.dx - (previousGroup?.groupEnd ?? double.maxFinite))
+            .abs();
     final distToNext = (currentGroup.groupStart - localPosition.dx).abs();
 
     if (distToPrev < distToNext && previousGroup != null) {
@@ -79,7 +79,8 @@ class BarHitTester {
   }) {
     final index = previousGroup?.groupIndex ?? currentGroup.groupIndex;
     final widthMultiplicationFactor = index + 1;
-    final currentUnitWidthEndOffset = graphUnitWidth * widthMultiplicationFactor;
+    final currentUnitWidthEndOffset =
+        graphUnitWidth * widthMultiplicationFactor;
 
     final BarGroupInteractionData interactionGroup;
     if (localPosition.dx < currentUnitWidthEndOffset) {

@@ -1,3 +1,6 @@
+## 0.2.1
+* Add implementation of Stacked Bars for Bar Chart Widget.
+
 ## 0.2.0
 * [BREAKING] New class `CartesianChartStylingData` to replace the earlier chart style.
 * [BREAKING] New class `CartesianChartStructureData` created. Min max values and unit count values need to be moved here.

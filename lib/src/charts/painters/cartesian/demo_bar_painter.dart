@@ -47,71 +47,34 @@ class DemoBarPainter implements CartesianPainter<BarInteractionResult> {
       var snapToBarConfig = data.series.interactionEvents.snapToBarConfig;
       var fuzziness = data.series.interactionEvents.fuzziness;
 
-      _BarGroupInteractionWrapper previousGroup;
+      _BarGroupInteractionWrapper? previousGroup;
       // _BarInteractionData? previousBar;
 
       for (var i = 0; i < _groupInteractions.length; i++) {
+        final currentGroup = _groupInteractions[i];
         final isLastGroup = i == _groupInteractions.length - 1;
-        final group = _groupInteractions[i];
+        final isPointerAfterGroup =
+            currentGroup.isPointerAfterCurrentGroup(localPosition);
 
-        if (group.isInteractionWithinBounds(localPosition)) {
-          // Our pointer is in this current group. Need to find closest interactable bar in this group itself.
-          final shouldSnapToHeight = snapToBarConfig.shouldSnapToHeight(type);
-
-          // FIXME: It doesn't really makes sense to iterate into every single bar here
-          // FIXME: but we then can't do fuzziness without iterated into every single bar.
-          // FIXME: For snapping, even if we find the nearest bar between two bars, we shouldn't exit for the loop, but go through the other bars as well.
-          for (var j = 0; j < group.barInteractions.length; j++) {
-            final bar = group.barInteractions[j];
-
-            // Step 1: Check with Fuzziness
-            if (bar.containsWithFuzziness(
-              position: localPosition,
-              fuzziness: fuzziness,
-              snapToHeight: shouldSnapToHeight,
-            )) {
-              return bar.getInteractionResult(localPosition, type);
-            }
-
-            // Step 2: Check with Snapping
-            if (snapToBarConfig.shouldSnapToWidth(type)) {
-              switch (snapToBarConfig.snapToBarBehaviour) {
-                // case SnapToBarBehaviour.snapToNearest:
-                //   {
-                //     // If config is snapToNearest, then we must find the closest bar to the pointer in current & previous group
-                //     return _snapToNearestBar(
-                //       localPosition: localPosition,
-                //       fuzziness: fuzziness,
-                //       type: type,
-                //       previousBar: previousBar,
-                //       currentBar: currentBar,
-                //       isPointerAfterBar: isPointerAfterBar,
-                //       isLastBar: isLastBar,
-                //       shouldSnapToHeight: shouldSnapToHeight,
-                //     );
-                //   }
-                case SnapToBarBehaviour.snapToSection:
-                  {
-                    // If config is SnapToSection, then we must find the closest bar to the pointer in current group
-                    // No need to look into the bar data of previous group.
-                    return _snapToSectionBar(
-                      localPosition: localPosition,
-                      currentGroup: group,
-                      data: data,
-                      type: type,
-                      fuzziness: fuzziness,
-                      shouldSnapToHeight: shouldSnapToHeight,
-                    );
-                  }
-                default:
-                  return null;
-              }
-            }
-          }
-        } else if (!group.isPointerAfterCurrentGroup(localPosition) ||
-            isLastGroup) {
+        if (currentGroup.isInteractionWithinBounds(localPosition)) {
+          // TODO: For each bar, check contains with Fuzziness or findNearest bar
+          return _barDataFromInteractionBehaviour(
+            currentGroup: currentGroup,
+            localPosition: localPosition,
+            fuzziness: fuzziness,
+            type: type,
+          );
+        } else if (!isPointerAfterGroup || isLastGroup) {
+          // TODO: Find the nearest group.
+          return _barDataFromInteractionBehaviour(
+            previousGroup: previousGroup,
+            currentGroup: currentGroup,
+            localPosition: localPosition,
+            fuzziness: fuzziness,
+            type: type,
+          );
         } else {
-          previousGroup = group;
+          previousGroup = currentGroup;
         }
       }
     }
@@ -524,6 +487,83 @@ class DemoBarPainter implements CartesianPainter<BarInteractionResult> {
     }
   }
 
+  BarInteractionResult? _barDataFromInteractionBehaviour({
+    _BarGroupInteractionWrapper? previousGroup,
+    required _BarGroupInteractionWrapper currentGroup,
+    required Offset localPosition,
+    required SnapToBarConfig snapToBarConfig,
+    required Fuzziness fuzziness,
+    required TouchInteractionType type,
+  }) {
+    final shouldSnapToHeight = snapToBarConfig.shouldSnapToHeight(type);
+    // First we find the quickest exit by fuzziness
+    final foundWithFuzziness = _findInGroupWithFuzziness(
+      previousGroup: previousGroup,
+      currentGroup: currentGroup,
+      localPosition: localPosition,
+      fuzziness: fuzziness,
+      snapToHeight: shouldSnapToHeight,
+      type: type,
+    );
+    if (foundWithFuzziness != null) {
+      return foundWithFuzziness;
+    }
+
+    if (previousGroup == null) {
+      // We couldn't find a previous group. That means the pointer is most likely
+      // within this group
+      switch (snapToBarConfig.snapToBarBehaviour) {
+        case SnapToBarBehaviour.snapToNearest:
+          // TODO: Have to find find the closest group, as per what is the nearest
+          break;
+        case SnapToBarBehaviour.snapToSection:
+          // TODO: Have to find the closest section which has the group
+          break;
+      }
+    } else {
+      // The pointer lies somewhere between these groups, in this case we have
+      // to find the closest group first to the pointer.
+      // TODO: Find the closest group.
+      switch (snapToBarConfig.snapToBarBehaviour) {
+        case SnapToBarBehaviour.snapToNearest:
+          // TODO: Have to find find the closest group, as per what is the nearest
+          break;
+        case SnapToBarBehaviour.snapToSection:
+          // TODO: Have to find find the closest group, as per what is the nearest
+          break;
+      }
+    }
+
+    return null;
+  }
+
+  BarInteractionResult? _findInGroupWithFuzziness({
+    _BarGroupInteractionWrapper? previousGroup,
+    required _BarGroupInteractionWrapper currentGroup,
+    required Offset localPosition,
+    required Fuzziness fuzziness,
+    required bool snapToHeight,
+    required TouchInteractionType type,
+  }) {
+    var bars = <_BarInteractionData>[];
+    if (previousGroup != null) {
+      bars.addAll(previousGroup.barInteractions);
+    }
+    bars.addAll(currentGroup.barInteractions);
+
+    for (var i = 0; i < bars.length; i++) {
+      final bar = bars[i];
+      if (bar.containsWithFuzziness(
+        position: localPosition,
+        fuzziness: fuzziness,
+        snapToHeight: snapToHeight,
+      )) {
+        bar.getInteractionResult(localPosition, type);
+      }
+    }
+    return null;
+  }
+
   BarInteractionResult? _snapToNearestBar({
     required Offset localPosition,
     required Fuzziness fuzziness,
@@ -576,15 +616,31 @@ class DemoBarPainter implements CartesianPainter<BarInteractionResult> {
       case GroupType.multiBarSeries:
         {
           // TODO: We need to find the nearest bar with dx
-          _findNearestBarWithDx(localPosition, previousBar, current);
+          // _findNearestBarWithDx(localPosition, previousBar, current);
         }
         break;
       case GroupType.multiBarStack:
         {
           // TODO: We need to find the nearest bar with dy
-          _findNearestBarWithDy(localPosition, previous, current);
+          _BarInteractionData? nearestBar;
+          _BarInteractionData? previous;
+          //FIXME: Primary requirement. Don't exit the loop because there are multiple bars here
+          for (var i = 0; i < currentGroup.barInteractions.length; i++) {
+            final isLastBar = i == _interactionData.length - 1;
+            final current = currentGroup.barInteractions[i];
+
+            if (previous == null || isLastBar) {
+              nearestBar = current;
+            } else {
+              nearestBar =
+                  _findNearestBarWithDy(localPosition, previous, current);
+            }
+
+            previous = current;
+          }
+          // When the for loop is done, we will return the nearestBar that is left
+          return nearestBar?.getInteractionResult(localPosition, type);
         }
-        break;
     }
   }
 

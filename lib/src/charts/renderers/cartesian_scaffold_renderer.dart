@@ -22,7 +22,8 @@ enum ChartScaffoldSlot { center, left, bottom, right, top }
 typedef LabelBuilder = Widget Function(int index, double value);
 
 class CartesianScaffold extends RenderObjectWidget
-    with SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot, RenderBox> {
+    with
+        SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot, RenderBox> {
   final AxisLabelConfig? leftLabel;
   final AxisLabelConfig? rightLabel;
   final AxisLabelConfig? topLabel;

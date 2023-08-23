@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';

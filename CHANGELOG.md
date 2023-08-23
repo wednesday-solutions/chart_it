@@ -1,3 +1,6 @@
+## 0.2.2
+* Fix deprecated class issue.
+
 ## 0.2.1
 * Add implementation of Stacked Bars for Bar Chart Widget.
 

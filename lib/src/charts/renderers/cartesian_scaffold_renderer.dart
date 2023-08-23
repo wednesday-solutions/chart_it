@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'dart:math';
 
 import 'package:chart_it/chart_it.dart';
@@ -20,8 +21,9 @@ enum ChartScaffoldSlot { center, left, bottom, right, top }
 
 typedef LabelBuilder = Widget Function(int index, double value);
 
-class CartesianScaffold
-    extends SlottedMultiChildRenderObjectWidget<ChartScaffoldSlot, RenderBox> {
+class CartesianScaffold extends RenderObjectWidget
+    with
+        SlottedMultiChildRenderObjectWidgetMixin<ChartScaffoldSlot, RenderBox> {
   final AxisLabelConfig? leftLabel;
   final AxisLabelConfig? rightLabel;
   final AxisLabelConfig? topLabel;

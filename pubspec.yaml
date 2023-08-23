@@ -6,7 +6,8 @@ repository: https://github.com/wednesday-solutions/chart_it
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=1.17.0"
+# In fl_chart package, they don't provide the flutter config in environment.
+#  flutter: ">=1.17.0"
 
 dependencies:
   flutter:

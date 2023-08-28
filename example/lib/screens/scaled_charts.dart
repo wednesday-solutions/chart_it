@@ -18,7 +18,7 @@ class _ScaledChartsState extends State<ScaledCharts> {
       },
       child: Padding(
         padding: const EdgeInsets.all(30.0),
-        child: BarChart(
+        child: CandleStickChart(
           height: 600,
           axisLabels: AxisLabels(
             left: AxisLabelConfig(
@@ -58,56 +58,15 @@ class _ScaledChartsState extends State<ScaledCharts> {
               gridLineColor: theme.colorScheme.onBackground,
             ),
           ),
-          data: BarSeries(
-            seriesStyle: const BarDataStyle(
-              barColor: Color(0xFFBDA2F4),
-              strokeWidth: 3.0,
-              strokeColor: Color(0xFF7136E7),
-              cornerRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                topRight: Radius.circular(5.0),
-              ),
-            ),
-            barData: <BarGroup>[
-              SimpleBar(
-                xValue: 1,
-                yValue: const BarData(yValue: 10.0),
-              ),
-              SimpleBar(
-                xValue: 2,
-                yValue: const BarData(yValue: 40.0),
-              ),
-              SimpleBar(
-                xValue: 3,
-                yValue: const BarData(yValue: 90.0),
-              ),
-              SimpleBar(
-                xValue: 4,
-                yValue: const BarData(yValue: 70.0),
-              ),
-              SimpleBar(
-                xValue: 5,
-                yValue: const BarData(yValue: 20.0),
-              ),
-              SimpleBar(
-                xValue: 6,
-                yValue: const BarData(yValue: 60.0),
-              ),
-              SimpleBar(
-                xValue: 7,
-                yValue: const BarData(yValue: 80.0),
-              ),
-              SimpleBar(
-                xValue: 8,
-                yValue: const BarData(yValue: 0.0),
-              ),
-              SimpleBar(
-                xValue: 9,
-                yValue: const BarData(yValue: 100.0),
-              ),
-              SimpleBar(
-                xValue: 10,
-                yValue: const BarData(yValue: 50.0),
+          data: CandleStickSeries(
+            candles: [
+              Candle(
+                date: DateTime.now(),
+                open: 1780.36,
+                high: 1873.93,
+                low: 1755.34,
+                close: 1848.56,
+                volume: 0,
               ),
             ],
           ),

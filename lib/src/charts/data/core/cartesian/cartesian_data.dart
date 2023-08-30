@@ -1,4 +1,5 @@
 import 'package:chart_it/src/charts/data/bars/bar_series.dart';
+import 'package:chart_it/src/charts/data/candle_sticks.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:equatable/equatable.dart';
 
@@ -24,10 +25,13 @@ abstract class CartesianSeries<E extends TouchInteractionEvents>
   /// to the matched callback. All callbacks must be provided.
   T when<T>({
     required T Function(BarSeries series) onBarSeries,
+    required T Function(CandleStickSeries series) onCandleStickSeries,
   }) {
     switch (runtimeType) {
       case BarSeries:
         return onBarSeries(this as BarSeries);
+      case CandleStickSeries:
+        return onCandleStickSeries(this as CandleStickSeries);
       default:
         throw TypeError();
     }

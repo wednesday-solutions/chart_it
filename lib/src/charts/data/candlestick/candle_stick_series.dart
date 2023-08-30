@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/candlestick/candle.dart';
 import 'package:chart_it/src/charts/data/core.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 
 /// This class defines the Data Set to be provided to the CandleStickChart
 /// and the Global Styling options.
@@ -14,11 +17,7 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
   /// {@macro bar_styling_order}
   // final BarDataStyle? seriesStyle;
 
-  /// The DataSet for our CandleStickChart. It is Structured as a [BarGroup]
-  /// that provides the X-Value and can contain a
-  /// single or multiple group of bars.
-  // final List<BarGroup> barData;
-
+  /// The DataSet for our CandleStickChart. It contains the data for each candle.
   final List<Candle> candles;
 
   /// This class defines the Data Set to be provided to the CandleStickChart,
@@ -42,10 +41,10 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
 
   /// Lerps between two [CandleStickSeries] for a factor [t]
   static CandleStickSeries lerp(
-      CandleStickSeries? current,
-      CandleStickSeries target,
-      double t,
-      ) {
+    CandleStickSeries? current,
+    CandleStickSeries target,
+    double t,
+  ) {
     return CandleStickSeries(
       // seriesStyle: BarDataStyle.lerp(
       //   current?.seriesStyle,
@@ -56,4 +55,37 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
       interactionEvents: target.interactionEvents,
     );
   }
+}
+
+/// Defines [CandleStickSeries] specific data variables, which are utilized
+/// when drawing a [CandleStickChart].
+///
+/// Also calculates the minimum & maximum value in a given list of [Candle].
+class CandleStickSeriesConfig extends CartesianConfig {
+  /// Returns the value of this [SliceData] in [onUpdate].
+  void calcOpenCloseRange(
+    List<Candle> candles,
+    Function(
+      double minAmt,
+      double maxAmt,
+      int timeStamp,
+    ) onUpdate,
+  ) {
+    for (var i = 0; i < candles.length; i++) {
+      // TODO: Find the highest and lowest based on opening & closing params
+      final candle = candles[i];
+
+      var minAmt = 0.0;
+      var maxAmt = 0.0;
+
+      minAmt = min(minAmt, candle.close.toDouble());
+      maxAmt = max(maxAmt, candle.open.toDouble());
+
+      var timeStamp = candle.date.toUtc().millisecondsSinceEpoch ~/ 1000;
+      onUpdate(minAmt, maxAmt, timeStamp);
+    }
+  }
+
+  @override
+  List<Object?> get props => [];
 }

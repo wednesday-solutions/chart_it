@@ -53,7 +53,7 @@ class _CandleStickChartState extends State<CandleStickChart>
       stylingData: widget.chartStylingData,
       calculateRange: (context) {
         final structure = widget.chartStructureData;
-        var maxXRange = structure.maxXValue?.toDouble() ?? 0; /*widget.data.barData.length.toDouble();*/
+        var maxXRange = structure.maxXValue?.toDouble() ?? widget.data.candles.length.toDouble();
         var maxYRange = structure.maxYValue?.toDouble() ?? context.maxY;
         return CartesianRangeResult(
           xUnitValue: 1,

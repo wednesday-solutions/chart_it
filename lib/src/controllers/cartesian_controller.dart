@@ -5,7 +5,9 @@ import 'package:chart_it/src/animations/chart_animations.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/painters/cartesian/bar_painter.dart';
+import 'package:chart_it/src/charts/painters/cartesian/candle_stick_painter.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
+import 'package:chart_it/src/charts/state/candle_stick_series_state.dart';
 import 'package:chart_it/src/charts/state/painting_state.dart';
 import 'package:chart_it/src/extensions/primitives.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
@@ -164,6 +166,25 @@ class CartesianController extends ChangeNotifier
             BarSeriesState(data: barSeries, config: config, painter: painter),
           );
         },
+        onCandleStickSeries: (candleSticks) {
+          // TODO: We have to create painter for our CandleSticks Here!!!!
+          var painter = CandleStickPainter(useGraphUnits: true);
+          var config = CandleStickSeriesConfig();
+
+          updateInteractionDetectionStates(candleSticks.interactionEvents);
+
+          config.calcOpenCloseRange(candleSticks.candles, (minAmt, maxAmt, timeStamp){
+            // TODO: The amount will be Y values and Dates will be X values
+            minXValue = min(timeStamp.toDouble(), minXValue);
+            maxXValue = max(timeStamp.toDouble(), maxXValue);
+            minYValue = min(minAmt, minYValue);
+            maxYValue = max(maxAmt, maxYValue);
+          });
+
+          states.add(
+            CandleStickState(data: candleSticks, config: config, painter: painter),
+          );
+        }
       );
     }
 

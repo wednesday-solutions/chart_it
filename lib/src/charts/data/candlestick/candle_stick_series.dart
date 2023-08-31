@@ -63,7 +63,7 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
 /// Also calculates the minimum & maximum value in a given list of [Candle].
 class CandleStickSeriesConfig extends CartesianConfig {
   /// Returns the value of this [SliceData] in [onUpdate].
-  void calcOpenCloseRange(
+  void calcHighLowRange(
     List<Candle> candles,
     Function(
       double minAmt,
@@ -72,14 +72,14 @@ class CandleStickSeriesConfig extends CartesianConfig {
     ) onUpdate,
   ) {
     for (var i = 0; i < candles.length; i++) {
-      // TODO: Find the highest and lowest based on opening & closing params
+      // TODO: Find the highest and lowest based on high & low params
       final candle = candles[i];
 
       var minAmt = 0.0;
       var maxAmt = 0.0;
 
-      minAmt = min(minAmt, candle.close.toDouble());
-      maxAmt = max(maxAmt, candle.open.toDouble());
+      minAmt = min(minAmt, candle.low.toDouble());
+      maxAmt = max(maxAmt, candle.high.toDouble());
 
       var timeStamp = candle.date.toUtc().millisecondsSinceEpoch ~/ 1000;
       onUpdate(minAmt, maxAmt, timeStamp);

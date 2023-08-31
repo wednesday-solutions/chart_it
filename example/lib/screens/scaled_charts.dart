@@ -23,10 +23,10 @@ class _ScaledChartsState extends State<ScaledCharts> {
           axisLabels: AxisLabels(
             left: AxisLabelConfig(
               constraintEdgeLabels: false,
-              builder: (index, _) => Padding(
+              builder: (_, value) => Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Text(
-                  '$index',
+                  value.toStringAsFixed(1),
                   style: const TextStyle(color: Colors.white),
                 ),
               ),

@@ -9,30 +9,34 @@ import 'package:flutter/material.dart';
 
 class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
   final List<BarGroupInteractionData> _groupInteractions =
-  List.empty(growable: true);
+      List.empty(growable: true);
 
   _CandleStickPainterData? _data;
   bool useGraphUnits;
 
-  late Paint _barPaint;
-  late Paint _barStroke;
-  // late double _candleWidth;
-  // late double _low;
-  // late double _high;
-  // late double _close;
-  // late Color _bullColor;
-  // late Color _bearColor;
+  late Paint _bullPaint;
+  late Paint _bearPaint;
+  late Paint _bullStroke;
+  late Paint _bearStroke;
 
   CandleStickPainter({required this.useGraphUnits}) {
-    _barPaint = Paint();
-    _barStroke = Paint()..style = PaintingStyle.stroke;
+    _bullPaint = Paint()..color = Colors.lightGreen;
+    _bearPaint = Paint()..color = Colors.red;
+
+    _bullStroke = Paint()
+      ..color = Colors.lightGreen
+      ..style = PaintingStyle.stroke;
+
+    _bearStroke = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke;
   }
 
   @override
   BarInteractionResult? hitTest(
-      TouchInteractionType type,
-      Offset localPosition,
-      ) {
+    TouchInteractionType type,
+    Offset localPosition,
+  ) {
     final data = _data;
     if (data == null || !data.series.interactionEvents.shouldHitTest) {
       return null;
@@ -58,15 +62,15 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
   @override
   void paint({
     required CartesianSeries<TouchInteractionEvents<TouchInteractionResult>>
-    lerpSeries,
+        lerpSeries,
     required Canvas canvas,
     required CartesianPaintingGeometryData chart,
     required CartesianConfig config,
     required CartesianChartStylingData style,
   }) {
     assert(
-    config is CandleStickSeriesConfig,
-    "$CandleStickPainter required $CandleStickSeriesConfig but found ${config.runtimeType}",
+      config is CandleStickSeriesConfig,
+      "$CandleStickPainter required $CandleStickSeriesConfig but found ${config.runtimeType}",
     );
     _groupInteractions.clear();
 
@@ -85,53 +89,67 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     );
     _data = data;
 
-    var dxOffset = const Offset(0, 0); // where to start drawing bars on X-axis
+    var x = 0.0; // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
     for (var i = 0; i < data.series.candles.length; i++) {
       final candle = data.series.candles[i];
       // TODO: Paint each bar individually
+      final barWidth = data.unitWidth * 0.5;
 
-      // paintCandle(canvas, dxOffset, i, candle);
-      dxOffset += Offset(unitWidth, 0);
+      _paintCandle(
+        dxPos: x,
+        dyPos: chart.axisOrigin.dy,
+        barWidth: barWidth,
+        canvas: canvas,
+        candle: candle,
+        data: data,
+      );
+
+      x += data.unitWidth;
     }
   }
 
-  /// draws a single candle
-  // void paintCandle(Canvas canvas, Offset offset, int index, Candle candle) {
-  //   Color color = candle.isBull ? _bullColor : _bearColor;
-  //
-  //   Paint paint = Paint()
-  //     ..color = color
-  //     ..style = PaintingStyle.stroke
-  //     ..strokeWidth = 1;
-  //
-  //   double x = size.width + offset.dx - (index + 0.5) * _candleWidth;
-  //
-  //   canvas.drawLine(
-  //     Offset(x, offset.dy + (_high - candle.high) / range),
-  //     Offset(x, offset.dy + (_high - candle.low) / range),
-  //     paint,
-  //   );
-  //
-  //   final double openCandleY = offset.dy + (_high - candle.open) / range;
-  //   final double closeCandleY = offset.dy + (_high - candle.close) / range;
-  //
-  //   if ((openCandleY - closeCandleY).abs() > 1) {
-  //     canvas.drawLine(
-  //       Offset(x, openCandleY),
-  //       Offset(x, closeCandleY),
-  //       paint..strokeWidth = _candleWidth * 0.8,
-  //     );
-  //   } else {
-  //     // if the candle body is too small
-  //     final double mid = (closeCandleY + openCandleY) / 2;
-  //     canvas.drawLine(
-  //       Offset(x, mid - 0.5),
-  //       Offset(x, mid + 0.5),
-  //       paint..strokeWidth = _candleWidth * 0.8,
-  //     );
-  //   }
-  // }
+  _paintCandle({
+    required double dxPos,
+    required double dyPos,
+    required double barWidth,
+    required Canvas canvas,
+    required Candle candle,
+    required _CandleStickPainterData data,
+  }) {
+    var dxOffset = dxPos + (data.unitWidth * 0.5);
+    // TODO: First we have to determine if we have to paint red candle or green candle!!
+    // If Closing is greater than Opening price, IT IS GREEN!! i.e. profit
+    // If Closing is lower than Opening price, IT IS RED!! i.e. loss
+
+    var isBull = candle.close > candle.open;
+    // var isBear = candle.close < candle.open;
+
+    // Above condition will determine their paint color. Now we have to draw the candles.
+    // This will be done in two steps.
+    // 1. Draw Line for High & Low
+    final highDy = candle.high * data.vRatio;
+    var highOffset = Offset(dxOffset, dyPos - highDy);
+
+    final lowDy = candle.low * data.vRatio;
+    var lowOffset = Offset(dxOffset, dyPos - lowDy);
+    canvas.drawLine(
+      highOffset,
+      lowOffset,
+      (isBull ? _bullStroke : _bearStroke)
+        ..strokeWidth = data.unitWidth * 0.075,
+    );
+    // 2. Draw Rectangle for Open and Close.
+    final openDy = candle.open * data.vRatio;
+    final closeDy = candle.close * data.vRatio;
+    var body = Rect.fromLTRB(
+      dxPos + (data.unitWidth * 0.5) - (barWidth * 0.5),
+      dyPos - openDy,
+      dxPos + (data.unitWidth * 0.5) + (barWidth * 0.5),
+      dyPos - closeDy,
+    );
+    canvas.drawRect(body, isBull ? _bullPaint : _bearPaint);
+  }
 }
 
 class _CandleStickPainterData {

@@ -75,7 +75,7 @@ class CandleStickSeriesConfig extends CartesianConfig {
       // TODO: Find the highest and lowest based on high & low params
       final candle = candles[i];
 
-      var minAmt = 0.0;
+      var minAmt = double.infinity;
       var maxAmt = 0.0;
 
       minAmt = min(minAmt, candle.low.toDouble());

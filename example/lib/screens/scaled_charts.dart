@@ -20,6 +20,8 @@ class _ScaledChartsState extends State<ScaledCharts> {
         padding: const EdgeInsets.all(30.0),
         child: CandleStickChart(
           height: 600,
+          animateOnLoad: false,
+          animateOnUpdate: false,
           axisLabels: AxisLabels(
             left: AxisLabelConfig(
               constraintEdgeLabels: false,
@@ -75,7 +77,7 @@ class _ScaledChartsState extends State<ScaledCharts> {
                 date: DateTime.now().subtract(const Duration(days: 3)),
                 open: 1780.36,
                 high: 1873.93,
-                low: 1755.34,
+                low: 1720.34,
                 close: 1848.56,
                 volume: 0,
               ),

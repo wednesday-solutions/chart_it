@@ -51,10 +51,11 @@ class _CandleStickChartState extends State<CandleStickChart>
       animateOnUpdate: widget.animateOnUpdate,
       structureData: widget.chartStructureData,
       stylingData: widget.chartStylingData,
+      enforceOriginsWithZero: false,
       calculateRange: (context) {
         final structure = widget.chartStructureData;
         var minXRange = context.minX;
-        var maxXRange = structure.maxXValue?.toDouble() ?? widget.data.candles.length.toDouble();
+        var maxXRange = structure.maxXValue?.toDouble() ?? context.maxX;
         var maxYRange = structure.maxYValue?.toDouble() ?? context.maxY;
         return CartesianRangeResult(
           xUnitValue: 86400, // 1 Day of difference

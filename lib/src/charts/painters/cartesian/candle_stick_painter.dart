@@ -93,9 +93,9 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     // We will draw each group and their individual bars
     for (var i = 0; i < data.series.candles.length; i++) {
       final candle = data.series.candles[i];
-      // TODO: Paint each bar individually
       final barWidth = data.unitWidth * 0.5;
 
+      // Paint each bar individually
       _paintCandle(
         dxPos: x,
         dyPos: chart.axisOrigin.dy,

@@ -25,6 +25,8 @@ class CartesianController extends ChangeNotifier
 
   final List<CartesianSeries> data;
 
+  final bool enforceOriginsWithZero;
+
   /// The Current Data which will be lerped across every animation tick.
   late CartesianData currentData;
 
@@ -64,6 +66,7 @@ class CartesianController extends ChangeNotifier
     required this.animation,
     this.animateOnUpdate = true,
     this.animateOnLoad = true,
+    this.enforceOriginsWithZero = true,
     required this.calculateRange,
     required this.structureData,
     required this.stylingData,
@@ -122,7 +125,7 @@ class CartesianController extends ChangeNotifier
     }
 
     // We need to check for negative y values
-    if (results.minYRange.isNegative) {
+    if (!enforceOriginsWithZero || results.minYRange.isNegative) {
       while (results.minYRange % results.yUnitValue != 0) {
         results.minYRange = results.minYRange.round().toDouble();
         results.minYRange--;
@@ -140,8 +143,8 @@ class CartesianController extends ChangeNotifier
     // Set our Range Holders
     var maxXValue = 0.0;
     var maxYValue = 0.0;
-    var minXValue = 0.0;
-    var minYValue = 0.0;
+    var minXValue = double.infinity;
+    var minYValue = double.infinity;
     // Set our State holder
     var states = <PaintingState>[];
 
@@ -167,7 +170,7 @@ class CartesianController extends ChangeNotifier
           );
         },
         onCandleStickSeries: (candleSticks) {
-          // TODO: We have to create painter for our CandleSticks Here!!!!
+          // Invalidate Painter for CandleStick Series
           var painter = CandleStickPainter(useGraphUnits: true);
           var config = CandleStickSeriesConfig();
 
@@ -189,21 +192,18 @@ class CartesianController extends ChangeNotifier
     }
 
     // Invalidate the RangeData
-    var rangeResult =
-        _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
+    var rangeResult = _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
 
-    final totalXRange =
-        rangeResult.maxXRange.abs() + rangeResult.minXRange.abs();
-    final xUnitsCount = totalXRange / structureData.xUnitValue;
+    final totalXRange = rangeResult.maxXRange - rangeResult.minXRange;
+    final xUnitsCount = totalXRange / rangeResult.xUnitValue;
 
-    final totalYRange =
-        rangeResult.maxYRange.abs() + rangeResult.minYRange.abs();
-    final yUnitsCount = totalYRange / structureData.yUnitValue;
+    final totalYRange = rangeResult.maxYRange - rangeResult.minYRange;
+    final yUnitsCount = totalYRange / rangeResult.yUnitValue;
 
     final gridUnitData = CartesianGridUnitsData(
-      xUnitValue: structureData.xUnitValue.toDouble(),
+      xUnitValue: rangeResult.xUnitValue.toDouble(),
       xUnitsCount: xUnitsCount,
-      yUnitValue: structureData.yUnitValue.toDouble(),
+      yUnitValue: rangeResult.yUnitValue.toDouble(),
       yUnitsCount: yUnitsCount,
       totalXRange: totalXRange,
       totalYRange: totalYRange,

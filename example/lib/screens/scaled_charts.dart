@@ -42,7 +42,10 @@ class _ScaledChartsState extends State<ScaledCharts> {
               ),
             ),
           ),
-          chartStructureData: const CartesianChartStructureData(xUnitValue: 1),
+          chartStructureData: const CartesianChartStructureData(
+            xUnitValue: 1,
+            yUnitValue: 200,
+          ),
           chartStylingData: CartesianChartStylingData(
             backgroundColor: theme.colorScheme.surface,
             axisStyle: CartesianAxisStyle(
@@ -60,6 +63,38 @@ class _ScaledChartsState extends State<ScaledCharts> {
           ),
           data: CandleStickSeries(
             candles: [
+              Candle(
+                date: DateTime.now().subtract(const Duration(days: 4)),
+                open: 1780.36,
+                high: 1873.93,
+                low: 1755.34,
+                close: 1848.56,
+                volume: 0,
+              ),
+              Candle(
+                date: DateTime.now().subtract(const Duration(days: 3)),
+                open: 1780.36,
+                high: 1873.93,
+                low: 1755.34,
+                close: 1848.56,
+                volume: 0,
+              ),
+              Candle(
+                date: DateTime.now().subtract(const Duration(days: 2)),
+                open: 1780.36,
+                high: 1873.93,
+                low: 1755.34,
+                close: 1848.56,
+                volume: 0,
+              ),
+              Candle(
+                date: DateTime.now().subtract(const Duration(days: 1)),
+                open: 1780.36,
+                high: 1873.93,
+                low: 1755.34,
+                close: 1848.56,
+                volume: 0,
+              ),
               Candle(
                 date: DateTime.now(),
                 open: 1780.36,

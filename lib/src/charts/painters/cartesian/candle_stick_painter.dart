@@ -16,6 +16,12 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
 
   late Paint _barPaint;
   late Paint _barStroke;
+  // late double _candleWidth;
+  // late double _low;
+  // late double _high;
+  // late double _close;
+  // late Color _bullColor;
+  // late Color _bearColor;
 
   CandleStickPainter({required this.useGraphUnits}) {
     _barPaint = Paint();
@@ -79,15 +85,53 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     );
     _data = data;
 
-    var dx = 0.0; // where to start drawing bars on X-axis
+    var dxOffset = const Offset(0, 0); // where to start drawing bars on X-axis
     // We will draw each group and their individual bars
     for (var i = 0; i < data.series.candles.length; i++) {
+      final candle = data.series.candles[i];
       // TODO: Paint each bar individually
 
-      dx += unitWidth;
+      // paintCandle(canvas, dxOffset, i, candle);
+      dxOffset += Offset(unitWidth, 0);
     }
   }
 
+  /// draws a single candle
+  // void paintCandle(Canvas canvas, Offset offset, int index, Candle candle) {
+  //   Color color = candle.isBull ? _bullColor : _bearColor;
+  //
+  //   Paint paint = Paint()
+  //     ..color = color
+  //     ..style = PaintingStyle.stroke
+  //     ..strokeWidth = 1;
+  //
+  //   double x = size.width + offset.dx - (index + 0.5) * _candleWidth;
+  //
+  //   canvas.drawLine(
+  //     Offset(x, offset.dy + (_high - candle.high) / range),
+  //     Offset(x, offset.dy + (_high - candle.low) / range),
+  //     paint,
+  //   );
+  //
+  //   final double openCandleY = offset.dy + (_high - candle.open) / range;
+  //   final double closeCandleY = offset.dy + (_high - candle.close) / range;
+  //
+  //   if ((openCandleY - closeCandleY).abs() > 1) {
+  //     canvas.drawLine(
+  //       Offset(x, openCandleY),
+  //       Offset(x, closeCandleY),
+  //       paint..strokeWidth = _candleWidth * 0.8,
+  //     );
+  //   } else {
+  //     // if the candle body is too small
+  //     final double mid = (closeCandleY + openCandleY) / 2;
+  //     canvas.drawLine(
+  //       Offset(x, mid - 0.5),
+  //       Offset(x, mid + 0.5),
+  //       paint..strokeWidth = _candleWidth * 0.8,
+  //     );
+  //   }
+  // }
 }
 
 class _CandleStickPainterData {

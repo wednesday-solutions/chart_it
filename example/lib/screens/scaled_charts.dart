@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:chart_it/chart_it.dart';
 import 'package:flutter/material.dart';
+
+var rng = Random();
 
 class ScaledCharts extends StatefulWidget {
   const ScaledCharts({super.key});
@@ -20,8 +24,6 @@ class _ScaledChartsState extends State<ScaledCharts> {
         padding: const EdgeInsets.all(30.0),
         child: CandleStickChart(
           height: 600,
-          animateOnLoad: true,
-          animateOnUpdate: true,
           axisLabels: AxisLabels(
             left: AxisLabelConfig(
               constraintEdgeLabels: false,
@@ -33,25 +35,15 @@ class _ScaledChartsState extends State<ScaledCharts> {
                 ),
               ),
             ),
-            bottom: AxisLabelConfig(
-              centerLabels: true,
-              builder: (index, _) => Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  '$index',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
           ),
           chartStructureData: const CartesianChartStructureData(
             xUnitValue: 1,
-            yUnitValue: 50,
+            yUnitValue: 500,
           ),
           chartStylingData: CartesianChartStylingData(
             backgroundColor: theme.colorScheme.surface,
             axisStyle: CartesianAxisStyle(
-              axisWidth: 4.0,
+              axisWidth: 2.0,
               axisColor: theme.colorScheme.onBackground,
               tickConfig: AxisTickConfig.forAllAxis(
                 tickColor: theme.colorScheme.inverseSurface,
@@ -59,56 +51,40 @@ class _ScaledChartsState extends State<ScaledCharts> {
             ),
             gridStyle: CartesianGridStyle(
               show: true,
-              gridLineWidth: 0.5,
+              gridLineWidth: 0.15,
               gridLineColor: theme.colorScheme.onBackground,
             ),
           ),
-          data: CandleStickSeries(
-            candles: [
-              Candle(
-                date: DateTime.now().subtract(const Duration(days: 4)),
-                open: 1780.36,
-                high: 1873.93,
-                low: 1755.34,
-                close: 1848.56,
-                volume: 0,
-              ),
-              Candle(
-                date: DateTime.now().subtract(const Duration(days: 3)),
-                open: 1780.36,
-                high: 1873.93,
-                low: 1720.34,
-                close: 1848.56,
-                volume: 0,
-              ),
-              Candle(
-                date: DateTime.now().subtract(const Duration(days: 2)),
-                open: 1780.36,
-                high: 1873.93,
-                low: 1755.34,
-                close: 1848.56,
-                volume: 0,
-              ),
-              Candle(
-                date: DateTime.now().subtract(const Duration(days: 1)),
-                open: 1780.36,
-                high: 1873.93,
-                low: 1755.34,
-                close: 1848.56,
-                volume: 0,
-              ),
-              Candle(
-                date: DateTime.now(),
-                open: 1780.36,
-                high: 1873.93,
-                low: 1755.34,
-                close: 1848.56,
-                volume: 0,
-              ),
-            ],
-          ),
+          data: CandleStickSeries(candles: _sampleCandleData()),
         ),
       ),
     );
+  }
+
+  List<Candle> _sampleCandleData() {
+    var listLength = 50;
+    double next(num min, num max) => rng.nextDouble() * (max - min) + min;
+
+    return List.generate(listLength, (index) {
+      /// TODO Things to take care of here!!!
+      /// 1. Opening cannot exceed high
+      /// 2. Closing cannot exceed low
+      final high = next(1500, 5000);
+      final low = next(1000, 4000);
+
+      final open = next(high, low);
+      final close = rng.nextBool() ? next(open, high) : next(low, open);
+
+      return Candle(
+        date: DateTime.now().subtract(
+          Duration(days: listLength - (index + 1)),
+        ),
+        open: open,
+        high: high,
+        low: low,
+        close: close,
+        volume: 0,
+      );
+    });
   }
 }

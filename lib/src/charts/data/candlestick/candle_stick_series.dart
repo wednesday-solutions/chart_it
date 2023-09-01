@@ -37,7 +37,7 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
   factory CandleStickSeries.zero() => CandleStickSeries(candles: List.empty());
 
   @override
-  List<Object?> get props => [/*seriesStyle, barData,*/ interactionEvents];
+  List<Object?> get props => [candles, interactionEvents];
 
   /// Lerps between two [CandleStickSeries] for a factor [t]
   static CandleStickSeries lerp(

@@ -21,15 +21,18 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
   late Paint _bearStroke;
 
   CandleStickPainter({required this.useGraphUnits}) {
-    _bullPaint = Paint()..color = Colors.lightGreen;
-    _bearPaint = Paint()..color = Colors.red;
+    const bullColor = Color(0xFF1CBC91);
+    const bearColor = Color(0xFFF05536);
+
+    _bullPaint = Paint()..color = bullColor;
+    _bearPaint = Paint()..color = bearColor;
 
     _bullStroke = Paint()
-      ..color = Colors.lightGreen
+      ..color = bullColor
       ..style = PaintingStyle.stroke;
 
     _bearStroke = Paint()
-      ..color = Colors.red
+      ..color = bearColor
       ..style = PaintingStyle.stroke;
   }
 
@@ -86,7 +89,6 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
       unitWidth: unitWidth,
       graphUnitWidth: chart.graphUnitWidth,
       valueUnitWidth: chart.valueUnitHeight,
-      barWidth: unitWidth / 10,
     );
     _data = data;
 
@@ -94,7 +96,7 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     // We will draw each group and their individual bars
     for (var i = 0; i < data.series.candles.length; i++) {
       final candle = data.series.candles[i];
-      final barWidth = data.unitWidth * 0.5;
+      final barWidth = data.unitWidth * 0.8;
 
       // Paint each bar individually
       _paintCandle(
@@ -142,7 +144,7 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
       highOffset,
       lowOffset,
       (isBull ? _bullStroke : _bearStroke)
-        ..strokeWidth = data.unitWidth * 0.075,
+        ..strokeWidth = data.unitWidth * 0.1,
     );
     // 2. Draw Rectangle for Open and Close.
     final openDy = (candle.open - unitData.minYRange) * data.vRatio;
@@ -166,7 +168,6 @@ class _CandleStickPainterData {
   // compute the vertical pixel value for each data point
   final double vRatio;
   final double unitWidth;
-  final double barWidth;
   final double graphUnitWidth;
   final double valueUnitWidth;
 
@@ -175,7 +176,6 @@ class _CandleStickPainterData {
     required this.config,
     required this.vRatio,
     required this.unitWidth,
-    required this.barWidth,
     required this.graphUnitWidth,
     required this.valueUnitWidth,
   });

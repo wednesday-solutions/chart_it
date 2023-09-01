@@ -50,7 +50,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
         },
       ),
       SidebarXItem(
-        icon: Icons.label_outline_rounded,
+        icon: Icons.candlestick_chart,
         label: 'Scaled Chart',
         onTap: () {
           _controller.selectIndex(2);
@@ -107,7 +107,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
                   case 1:
                     return const TestPieChart();
                   case 2:
-                    return const ScaledCharts();
+                    return const CandleStickCharts();
                   default:
                     return const Text('No Page Found');
                 }

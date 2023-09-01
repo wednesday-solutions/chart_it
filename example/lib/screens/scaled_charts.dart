@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 var rng = Random();
 
-class ScaledCharts extends StatefulWidget {
-  const ScaledCharts({super.key});
+class CandleStickCharts extends StatefulWidget {
+  const CandleStickCharts({super.key});
 
   @override
-  State<ScaledCharts> createState() => _ScaledChartsState();
+  State<CandleStickCharts> createState() => _CandleStickChartsState();
 }
 
-class _ScaledChartsState extends State<ScaledCharts> {
+class _CandleStickChartsState extends State<CandleStickCharts> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

@@ -20,8 +20,8 @@ class _ScaledChartsState extends State<ScaledCharts> {
         padding: const EdgeInsets.all(30.0),
         child: CandleStickChart(
           height: 600,
-          animateOnLoad: false,
-          animateOnUpdate: false,
+          animateOnLoad: true,
+          animateOnUpdate: true,
           axisLabels: AxisLabels(
             left: AxisLabelConfig(
               constraintEdgeLabels: false,
@@ -46,7 +46,7 @@ class _ScaledChartsState extends State<ScaledCharts> {
           ),
           chartStructureData: const CartesianChartStructureData(
             xUnitValue: 1,
-            yUnitValue: 200,
+            yUnitValue: 50,
           ),
           chartStylingData: CartesianChartStylingData(
             backgroundColor: theme.colorScheme.surface,

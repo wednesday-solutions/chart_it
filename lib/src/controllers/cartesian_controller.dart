@@ -143,7 +143,7 @@ class CartesianController extends ChangeNotifier
     // Set our Range Holders
     var maxXValue = 0.0;
     var maxYValue = 0.0;
-    var minXValue = double.infinity;
+    var minXValue = 0.0;
     var minYValue = double.infinity;
     // Set our State holder
     var states = <PaintingState>[];
@@ -195,10 +195,10 @@ class CartesianController extends ChangeNotifier
     var rangeResult = _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
 
     final totalXRange = rangeResult.maxXRange - rangeResult.minXRange;
-    final xUnitsCount = totalXRange / rangeResult.xUnitValue;
+    final xUnitsCount = totalXRange / structureData.xUnitValue;
 
     final totalYRange = rangeResult.maxYRange - rangeResult.minYRange;
-    final yUnitsCount = totalYRange / rangeResult.yUnitValue;
+    final yUnitsCount = totalYRange / structureData.yUnitValue;
 
     final gridUnitData = CartesianGridUnitsData(
       xUnitValue: rangeResult.xUnitValue.toDouble(),

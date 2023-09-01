@@ -2,6 +2,7 @@ import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/candle_sticks.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
+import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
 import 'package:chart_it/src/charts/interactors/cartesian/bar_hit_tester.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
@@ -102,8 +103,11 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
         barWidth: barWidth,
         canvas: canvas,
         candle: candle,
+        unitData: chart.unitData,
         data: data,
       );
+      // canvas.save();
+      // canvas.restore();
 
       x += data.unitWidth;
     }
@@ -115,6 +119,7 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     required double barWidth,
     required Canvas canvas,
     required Candle candle,
+    required CartesianGridUnitsData unitData,
     required _CandleStickPainterData data,
   }) {
     var dxOffset = dxPos + (data.unitWidth * 0.5);
@@ -128,10 +133,10 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     // Above condition will determine their paint color. Now we have to draw the candles.
     // This will be done in two steps.
     // 1. Draw Line for High & Low
-    final highDy = candle.high * data.vRatio;
+    final highDy = (candle.high - unitData.minYRange) * data.vRatio;
     var highOffset = Offset(dxOffset, dyPos - highDy);
 
-    final lowDy = candle.low * data.vRatio;
+    final lowDy = (candle.low - unitData.minYRange) * data.vRatio;
     var lowOffset = Offset(dxOffset, dyPos - lowDy);
     canvas.drawLine(
       highOffset,
@@ -140,8 +145,8 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
         ..strokeWidth = data.unitWidth * 0.075,
     );
     // 2. Draw Rectangle for Open and Close.
-    final openDy = candle.open * data.vRatio;
-    final closeDy = candle.close * data.vRatio;
+    final openDy = (candle.open - unitData.minYRange) * data.vRatio;
+    final closeDy = (candle.close - unitData.minYRange) * data.vRatio;
     var body = Rect.fromLTRB(
       dxPos + (data.unitWidth * 0.5) - (barWidth * 0.5),
       dyPos - openDy,

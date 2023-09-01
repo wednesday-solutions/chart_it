@@ -176,7 +176,8 @@ class CartesianController extends ChangeNotifier
 
           updateInteractionDetectionStates(candleSticks.interactionEvents);
 
-          config.calcHighLowRange(candleSticks.candles, (minAmt, maxAmt, timeStamp){
+          config.calcHighLowRange(candleSticks.candles,
+              (minAmt, maxAmt, timeStamp) {
             // TODO: The amount will be Y values and Dates will be X values
             minXValue = min(timeStamp.toDouble(), minXValue);
             maxXValue = max(timeStamp.toDouble(), maxXValue);
@@ -185,14 +186,19 @@ class CartesianController extends ChangeNotifier
           });
 
           states.add(
-            CandleStickState(data: candleSticks, config: config, painter: painter),
+            CandleStickState(
+              data: candleSticks,
+              config: config,
+              painter: painter,
+            ),
           );
-        }
+        },
       );
     }
 
     // Invalidate the RangeData
-    var rangeResult = _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
+    var rangeResult =
+        _invalidateRange(maxXValue, maxYValue, minXValue, minYValue);
 
     final totalXRange = rangeResult.maxXRange - rangeResult.minXRange;
     final xUnitsCount = totalXRange / structureData.xUnitValue;

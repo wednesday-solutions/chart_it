@@ -143,8 +143,7 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     canvas.drawLine(
       highOffset,
       lowOffset,
-      (isBull ? _bullStroke : _bearStroke)
-        ..strokeWidth = data.unitWidth * 0.1,
+      (isBull ? _bullStroke : _bearStroke)..strokeWidth = data.unitWidth * 0.1,
     );
     // 2. Draw Rectangle for Open and Close.
     final openDy = (candle.open - unitData.minYRange) * data.vRatio;

@@ -65,11 +65,7 @@ class CandleStickSeriesConfig extends CartesianConfig {
   /// Returns the value of this [SliceData] in [onUpdate].
   void calcHighLowRange(
     List<Candle> candles,
-    Function(
-      double minAmt,
-      double maxAmt,
-      int timeStamp,
-    ) onUpdate,
+    Function(double minAmt, double maxAmt) onUpdate,
   ) {
     for (var i = 0; i < candles.length; i++) {
       // TODO: Find the highest and lowest based on high & low params
@@ -81,8 +77,7 @@ class CandleStickSeriesConfig extends CartesianConfig {
       minAmt = min(minAmt, candle.low.toDouble());
       maxAmt = max(maxAmt, candle.high.toDouble());
 
-      var timeStamp = candle.date.toUtc().millisecondsSinceEpoch ~/ 1000;
-      onUpdate(minAmt, maxAmt, timeStamp);
+      onUpdate(minAmt, maxAmt);
     }
   }
 

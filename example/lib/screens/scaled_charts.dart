@@ -76,9 +76,9 @@ class _CandleStickChartsState extends State<CandleStickCharts> {
       final close = rng.nextBool() ? next(open, high) : next(low, open);
 
       return Candle(
-        date: DateTime.now().subtract(
-          Duration(days: listLength - (index + 1)),
-        ),
+        // date: DateTime.now().subtract(
+        //   Duration(days: listLength - (index + 1)),
+        // ),
         open: open,
         high: high,
         low: low,

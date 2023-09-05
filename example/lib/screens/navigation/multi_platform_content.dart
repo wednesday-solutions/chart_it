@@ -1,6 +1,6 @@
 import 'package:example/screens/bar_chart.dart';
+import 'package:example/screens/candlestick_charts.dart';
 import 'package:example/screens/pie_chart.dart';
-import 'package:example/screens/scaled_charts.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,7 +51,7 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
       ),
       SidebarXItem(
         icon: Icons.candlestick_chart,
-        label: 'Scaled Chart',
+        label: 'Candle Stick Chart',
         onTap: () {
           _controller.selectIndex(2);
           if (CurrentDevice.isMobile) {

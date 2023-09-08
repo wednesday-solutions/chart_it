@@ -606,10 +606,12 @@ class RenderCartesianScaffold extends RenderBox
     final valueUnitHeight = graphPolygon.height / gridUnitsData.totalYRange;
 
     // Calculate the Offset for Axis Origin
-    var negativeXRange =
-        (_gridUnitsData.minXRange.abs() / xUnitValue) * graphUnitWidth;
-    var negativeYRange =
-        (_gridUnitsData.minYRange.abs() / yUnitValue) * graphUnitHeight;
+    var negativeXRange = (_gridUnitsData.minXRange.isNegative)
+        ? (_gridUnitsData.minXRange.abs() / xUnitValue) * graphUnitWidth
+        : 0.0;
+    var negativeYRange = (_gridUnitsData.minYRange.isNegative)
+        ? (_gridUnitsData.minYRange.abs() / yUnitValue) * graphUnitHeight
+        : 0.0;
     var xOffset = graphPolygon.left + negativeXRange;
     var yOffset = graphPolygon.bottom - negativeYRange;
     final axisOrigin = Offset(xOffset, yOffset);

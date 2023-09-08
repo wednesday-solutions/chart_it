@@ -1,4 +1,5 @@
 import 'package:example/screens/bar_chart.dart';
+import 'package:example/screens/candlestick_charts.dart';
 import 'package:example/screens/pie_chart.dart';
 import 'package:example/tools/current_device.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,16 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
         label: 'Pie Chart',
         onTap: () {
           _controller.selectIndex(1);
+          if (CurrentDevice.isMobile) {
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+      SidebarXItem(
+        icon: Icons.candlestick_chart,
+        label: 'Candle Stick Chart',
+        onTap: () {
+          _controller.selectIndex(2);
           if (CurrentDevice.isMobile) {
             Navigator.of(context).pop();
           }
@@ -95,6 +106,8 @@ class _MultiPlatformContentState extends State<MultiPlatformContent> {
                     return const TestBarChart();
                   case 1:
                     return const TestPieChart();
+                  case 2:
+                    return const CandleStickCharts();
                   default:
                     return const Text('No Page Found');
                 }

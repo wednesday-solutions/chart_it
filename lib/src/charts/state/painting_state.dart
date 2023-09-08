@@ -1,5 +1,6 @@
 import 'package:chart_it/src/animations/lerps.dart';
 import 'package:chart_it/src/charts/state/bar_series_state.dart';
+import 'package:chart_it/src/charts/state/candle_stick_series_state.dart';
 import 'package:chart_it/src/charts/state/pie_series_state.dart';
 import 'package:equatable/equatable.dart';
 
@@ -25,6 +26,7 @@ abstract class PaintingState<SERIES, CONFIG, PAINTER> with EquatableMixin {
             : current;
     return target._when(
       barState: () => BarSeriesState.lerp(currentValue, target, t),
+      candleStickState: () => CandleStickState.lerp(current, target, t),
       pieState: () => PieSeriesState.lerp(currentValue, target, t),
     );
   }
@@ -41,11 +43,14 @@ abstract class PaintingState<SERIES, CONFIG, PAINTER> with EquatableMixin {
   /// [PaintingState] object, and provides callback method for the matching type.
   T _when<T>({
     required T Function() barState,
+    required T Function() candleStickState,
     required T Function() pieState,
   }) {
     switch (runtimeType) {
       case BarSeriesState:
         return barState();
+      case CandleStickState:
+        return candleStickState();
       case PieSeriesState:
         return pieState();
       default:

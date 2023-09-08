@@ -3,7 +3,7 @@ import 'package:chart_it/src/charts/data/candle_sticks.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
-import 'package:chart_it/src/charts/interactors/cartesian/bar_hit_tester.dart';
+import 'package:chart_it/src/charts/interactors/cartesian/candle_hit_tester.dart';
 import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 enum _CandleType { bull, bear, neutral }
 
 class CandleStickPainter implements CartesianPainter<CandleInteractionResult> {
-  final List<BarGroupInteractionData> _groupInteractions =
+  final List<CandleStickInteractionData> _interactionData =
       List.empty(growable: true);
 
   final defStyle = defaultCandleSticksStyle;
@@ -40,14 +40,13 @@ class CandleStickPainter implements CartesianPainter<CandleInteractionResult> {
     if (data.series.interactionEvents.isEnabled) {
       var fuzziness = data.series.interactionEvents.fuzziness;
 
-      // return BarHitTester.hitTest(
-      //   graphUnitWidth: data.graphUnitWidth,
-      //   localPosition: localPosition,
-      //   type: type,
-      //   interactionData: _groupInteractions,
-      //   snapToBarConfig: snapToBarConfig,
-      //   fuzziness: fuzziness,
-      // );
+      return CandleStickHitTester.hitTest(
+        graphUnitWidth: data.graphUnitWidth,
+        localPosition: localPosition,
+        type: type,
+        interactionData: _interactionData,
+        fuzziness: fuzziness,
+      );
     }
     // No Interactions for this BarSeries.
     return null;
@@ -66,7 +65,7 @@ class CandleStickPainter implements CartesianPainter<CandleInteractionResult> {
       config is CandleStickSeriesConfig,
       "$CandleStickPainter required $CandleStickSeriesConfig but found ${config.runtimeType}",
     );
-    _groupInteractions.clear();
+    _interactionData.clear();
 
     final unitWidth =
         (useGraphUnits ? chart.graphUnitWidth : chart.valueUnitWidth) /
@@ -145,6 +144,12 @@ class CandleStickPainter implements CartesianPainter<CandleInteractionResult> {
       dyPos - closeDy,
     );
     canvas.drawRect(body, bodyPaint);
+    // Before we move onto the next candle, we need to save the rectangle data for this candle
+    final candleData = CandleStickInteractionData(
+      rect: Rect.fromLTRB(body.left, highOffset.dy, body.left, lowOffset.dy),
+      candle: candle,
+    );
+    _interactionData.add(candleData);
   }
 
   Paint _getBodyPaint(Candle candle, CandleStyle style) {

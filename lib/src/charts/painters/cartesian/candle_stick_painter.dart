@@ -1,5 +1,7 @@
+import 'package:chart_it/src/charts/constants/defaults.dart';
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/candle_sticks.dart';
+import 'package:chart_it/src/charts/data/candlestick/candle_style.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
@@ -8,32 +10,23 @@ import 'package:chart_it/src/charts/painters/cartesian/cartesian_painter.dart';
 import 'package:chart_it/src/interactions/interactions.dart';
 import 'package:flutter/material.dart';
 
+enum _CandleType { bull, bear, neutral }
+
 class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
   final List<BarGroupInteractionData> _groupInteractions =
       List.empty(growable: true);
 
+  final defStyle = defaultCandleSticksStyle;
+
   _CandleStickPainterData? _data;
   bool useGraphUnits;
 
-  late Paint _bullPaint;
-  late Paint _bearPaint;
-  late Paint _bullStroke;
-  late Paint _bearStroke;
+  late Paint _bodyPaint;
+  late Paint _wickPaint;
 
   CandleStickPainter({required this.useGraphUnits}) {
-    const bullColor = Color(0xFF1CBC91);
-    const bearColor = Color(0xFFF05536);
-
-    _bullPaint = Paint()..color = bullColor;
-    _bearPaint = Paint()..color = bearColor;
-
-    _bullStroke = Paint()
-      ..color = bullColor
-      ..style = PaintingStyle.stroke;
-
-    _bearStroke = Paint()
-      ..color = bearColor
-      ..style = PaintingStyle.stroke;
+    _bodyPaint = Paint();
+    _wickPaint = Paint()..style = PaintingStyle.stroke;
   }
 
   @override
@@ -96,20 +89,17 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     // We will draw each group and their individual bars
     for (var i = 0; i < data.series.candles.length; i++) {
       final candle = data.series.candles[i];
-      final barWidth = data.unitWidth * 0.8;
 
       // Paint each bar individually
       _paintCandle(
         dxPos: x,
         dyPos: chart.axisOrigin.dy,
-        barWidth: barWidth,
         canvas: canvas,
         candle: candle,
         unitData: chart.unitData,
         data: data,
+        style: style,
       );
-      // canvas.save();
-      // canvas.restore();
 
       x += data.unitWidth;
     }
@@ -118,21 +108,25 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
   _paintCandle({
     required double dxPos,
     required double dyPos,
-    required double barWidth,
     required Canvas canvas,
     required Candle candle,
     required CartesianGridUnitsData unitData,
     required _CandleStickPainterData data,
+    required CartesianChartStylingData style,
   }) {
     var dxOffset = dxPos + (data.unitWidth * 0.5);
-    // TODO: First we have to determine if we have to paint red candle or green candle!!
-    // If Closing is greater than Opening price, IT IS GREEN!! i.e. profit
-    // If Closing is lower than Opening price, IT IS RED!! i.e. loss
+    // Precedence take like this
+    // seriesStyle > candleStyle > defaultSeriesStyle
+    var style = candle.candleStyle ?? data.series.seriesStyle ?? defStyle;
 
-    var isBull = candle.close > candle.open;
-    // var isBear = candle.close < candle.open;
-
-    // Above condition will determine their paint color. Now we have to draw the candles.
+    var bodyPaint = _getBodyPaint(candle, style);
+    var wickPaint = _getWickPaint(candle, style);
+    wickPaint
+      ..strokeWidth = (style.wickWidth ?? defStyle.wickWidth)!
+      ..strokeCap = (style.roundedTips ?? defStyle.roundedTips)!
+          ? StrokeCap.round
+          : StrokeCap.square;
+    // Above methods will determine their paint color. Now we have to draw the candles.
     // This will be done in two steps.
     // 1. Draw Line for High & Low
     final highDy = (candle.high - unitData.minYRange) * data.vRatio;
@@ -140,12 +134,11 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
 
     final lowDy = (candle.low - unitData.minYRange) * data.vRatio;
     var lowOffset = Offset(dxOffset, dyPos - lowDy);
-    canvas.drawLine(
-      highOffset,
-      lowOffset,
-      (isBull ? _bullStroke : _bearStroke)..strokeWidth = data.unitWidth * 0.1,
-    );
+    canvas.drawLine(highOffset, lowOffset, wickPaint);
+
     // 2. Draw Rectangle for Open and Close.
+    var barWidth = data.unitWidth * (style.bodyWidth ?? defStyle.bodyWidth)!;
+
     final openDy = (candle.open - unitData.minYRange) * data.vRatio;
     final closeDy = (candle.close - unitData.minYRange) * data.vRatio;
     var body = Rect.fromLTRB(
@@ -154,7 +147,45 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
       dxPos + (data.unitWidth * 0.5) + (barWidth * 0.5),
       dyPos - closeDy,
     );
-    canvas.drawRect(body, isBull ? _bullPaint : _bearPaint);
+    canvas.drawRect(body, bodyPaint);
+  }
+
+  Paint _getBodyPaint(Candle candle, CandleStyle style) {
+    var type = _getCandleType(candle);
+    switch (type) {
+      case _CandleType.bull:
+        return _bodyPaint..color = (style.bullColor ?? defStyle.bullColor)!;
+      case _CandleType.bear:
+        return _bodyPaint..color = (style.bearColor ?? defStyle.bearColor)!;
+      case _CandleType.neutral:
+        return _bodyPaint
+          ..color = (style.neutralColor ?? defStyle.neutralColor)!;
+    }
+  }
+
+  Paint _getWickPaint(Candle candle, CandleStyle style) {
+    var type = _getCandleType(candle);
+    switch (type) {
+      case _CandleType.bull:
+        return _wickPaint..color = (style.bullColor ?? defStyle.bullColor)!;
+      case _CandleType.bear:
+        return _wickPaint..color = (style.bearColor ?? defStyle.bearColor)!;
+      case _CandleType.neutral:
+        return _wickPaint
+          ..color = (style.neutralColor ?? defStyle.neutralColor)!;
+    }
+  }
+
+  _CandleType _getCandleType(Candle candle) {
+    if (candle.close > candle.open) {
+      return _CandleType.bull;
+    } else if (candle.close < candle.open) {
+      return _CandleType.bear;
+    } else if (candle.close == candle.open) {
+      return _CandleType.neutral;
+    } else {
+      throw ArgumentError('Invalid Candle Type');
+    }
   }
 }
 

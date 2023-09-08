@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/candlestick/candle.dart';
+import 'package:chart_it/src/charts/data/candlestick/candle_style.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 
@@ -12,10 +13,10 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.
 ///
 /// See Also: [CartesianSeries]
 class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
-  /// Sets uniform styling for All the Bars in this [CandleStickSeries].
+  /// Sets uniform styling for All the Candles in this [CandleStickSeries].
   ///
-  /// {@macro bar_styling_order}
-  // final BarDataStyle? seriesStyle;
+  /// {@macro candle_stick_styling_order}
+  final CandleStyle? seriesStyle;
 
   /// The DataSet for our CandleStickChart. It contains the data for each candle.
   final List<Candle> candles;
@@ -28,7 +29,7 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
   ///
   /// See Also: [CartesianSeries]
   CandleStickSeries({
-    // this.seriesStyle,
+    this.seriesStyle,
     required this.candles,
     super.interactionEvents = const BarInteractionEvents(isEnabled: false),
   });
@@ -37,7 +38,7 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
   factory CandleStickSeries.zero() => CandleStickSeries(candles: List.empty());
 
   @override
-  List<Object?> get props => [candles, interactionEvents];
+  List<Object?> get props => [candles, seriesStyle, interactionEvents];
 
   /// Lerps between two [CandleStickSeries] for a factor [t]
   static CandleStickSeries lerp(
@@ -46,11 +47,11 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
     double t,
   ) {
     return CandleStickSeries(
-      // seriesStyle: BarDataStyle.lerp(
-      //   current?.seriesStyle,
-      //   target.seriesStyle,
-      //   t,
-      // ),
+      seriesStyle: CandleStyle.lerp(
+        current?.seriesStyle,
+        target.seriesStyle,
+        t,
+      ),
       candles: Candle.lerpCandleList(current?.candles, target.candles, t),
       interactionEvents: target.interactionEvents,
     );

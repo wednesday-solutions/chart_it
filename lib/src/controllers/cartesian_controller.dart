@@ -273,6 +273,9 @@ class CartesianController extends ChangeNotifier
       if (state is BarSeriesState) {
         var result = state.painter.hitTest(interactionType, localPosition);
         if (result != null) state.data.interactionEvents.onInteraction(result);
+      } else if (state is CandleStickState) {
+        var result = state.painter.hitTest(interactionType, localPosition);
+        if (result != null) state.data.interactionEvents.onInteraction(result);
       }
     }
   }

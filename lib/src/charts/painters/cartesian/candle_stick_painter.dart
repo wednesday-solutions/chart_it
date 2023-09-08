@@ -1,7 +1,5 @@
 import 'package:chart_it/src/charts/constants/defaults.dart';
-import 'package:chart_it/src/charts/data/bars.dart';
 import 'package:chart_it/src/charts/data/candle_sticks.dart';
-import 'package:chart_it/src/charts/data/candlestick/candle_style.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_grid_units.dart';
@@ -12,7 +10,7 @@ import 'package:flutter/material.dart';
 
 enum _CandleType { bull, bear, neutral }
 
-class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
+class CandleStickPainter implements CartesianPainter<CandleInteractionResult> {
   final List<BarGroupInteractionData> _groupInteractions =
       List.empty(growable: true);
 
@@ -30,7 +28,7 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
   }
 
   @override
-  BarInteractionResult? hitTest(
+  CandleInteractionResult? hitTest(
     TouchInteractionType type,
     Offset localPosition,
   ) {
@@ -40,7 +38,6 @@ class CandleStickPainter implements CartesianPainter<BarInteractionResult> {
     }
 
     if (data.series.interactionEvents.isEnabled) {
-      var snapToBarConfig = data.series.interactionEvents.snapToBarConfig;
       var fuzziness = data.series.interactionEvents.fuzziness;
 
       // return BarHitTester.hitTest(

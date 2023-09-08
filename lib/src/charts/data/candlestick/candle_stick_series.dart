@@ -1,8 +1,6 @@
 import 'dart:math';
 
-import 'package:chart_it/src/charts/data/bars.dart';
-import 'package:chart_it/src/charts/data/candlestick/candle.dart';
-import 'package:chart_it/src/charts/data/candlestick/candle_style.dart';
+import 'package:chart_it/src/charts/data/candle_sticks.dart';
 import 'package:chart_it/src/charts/data/core.dart';
 import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.dart';
 
@@ -12,7 +10,7 @@ import 'package:chart_it/src/charts/data/core/cartesian/cartesian_data_internal.
 /// The CandleStickSeries is **mandatory** to be provided to the [CandleStickChart] widget.
 ///
 /// See Also: [CartesianSeries]
-class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
+class CandleStickSeries extends CartesianSeries<CandleInteractionEvents> {
   /// Sets uniform styling for All the Candles in this [CandleStickSeries].
   ///
   /// {@macro candle_stick_styling_order}
@@ -31,7 +29,7 @@ class CandleStickSeries extends CartesianSeries<BarInteractionEvents> {
   CandleStickSeries({
     this.seriesStyle,
     required this.candles,
-    super.interactionEvents = const BarInteractionEvents(isEnabled: false),
+    super.interactionEvents = const CandleInteractionEvents(isEnabled: false),
   });
 
   /// Constructs a Factory Instance of [CandleStickSeries] without any Data.

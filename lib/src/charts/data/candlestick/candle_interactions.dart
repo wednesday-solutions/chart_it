@@ -42,7 +42,8 @@ class CandleInteractionEvents
 /// See also:
 /// * [TouchInteractionType]
 /// {@endtemplate}
-class CandleInteractionResult extends TouchInteractionResult with EquatableMixin {
+class CandleInteractionResult extends TouchInteractionResult
+    with EquatableMixin {
   /// The [BarGroup] matching the interaction.
   final Candle candle;
 

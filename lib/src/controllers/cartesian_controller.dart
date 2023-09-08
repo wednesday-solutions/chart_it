@@ -176,8 +176,7 @@ class CartesianController extends ChangeNotifier
 
           updateInteractionDetectionStates(candleSticks.interactionEvents);
 
-          config.calcHighLowRange(candleSticks.candles,
-              (minAmt, maxAmt) {
+          config.calcHighLowRange(candleSticks.candles, (minAmt, maxAmt) {
             // TODO: The amount will be Y values and Dates will be X values
             // minXValue = min(timeStamp.toDouble(), minXValue);
             // maxXValue = max(timeStamp.toDouble(), maxXValue);
